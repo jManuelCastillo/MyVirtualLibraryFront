@@ -1,0 +1,23 @@
+
+<div class="grid">
+<div class=" flex flex-row flex-wrap align-items-center flex justify-content-between w-full"   >
+    <!-- header title -->
+    <div class="flex text-2xl font-semibold mx-4 title" >My Virtual Library</div>
+    <div class="flex flex-wrap flex-auto xl:justify-content-end lg:justify-content-end md:justify-content-center sm:justify-content-between" >
+      
+        <!-- menu -->
+        <div class="flex m-4">
+        <p-tabMenu [model]="items" [activeItem]="activeItem" (activeItemChange)="onActiveItemChange($event)"></p-tabMenu>
+    </div>
+        <!-- avatar column -->
+        <div class="flex ">
+            <div class="flex flex-column align-items-center my-2 mx-6">
+                <p-avatar class="flex align-items-center justify-content-center" icon="pi pi-user" size="xlarge" shape="circle"
+                    [style]="{ 'background-color': '#2196F3', color: '#ffffff' }"></p-avatar>
+                <span class="flex align-items-center justify-content-center">Usuario</span>
+            </div>
+        </div>
+   
+    </div>
+</div>
+</div>

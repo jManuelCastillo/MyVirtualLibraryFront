@@ -1,0 +1,88 @@
+<app-navbar></app-navbar>
+<!-- title -->
+<div class="grid p-align-center mt-2 w-full">
+    <div class="bg-cover bg-center border-round h-25rem w-full align-items-center justify-content-center flex flex-column h-full"
+        style="background-image: url('../../../../assets/images/libraryIMG.png')">
+        <span class="text-6xl text-50 flex ">VISÍTANOS</span>
+        <span class="text-xl text-50 font-italic flex"> Busca un libro que necesitas </span>
+    </div>
+</div>
+
+
+<!-- recomended -->
+<div class="grid p-align-center mt-2 w-full flex-column">
+    <div class="flex justify-content-start ml-8">
+        <p class="text-2xl font-bold">Recomendaciones</p>
+    </div>
+</div>
+<div class="grid w-full p-6 ">
+
+    <div class="col-1"></div>
+    <div class="col-11 grid flex align-items-center  justify-content-between">
+
+        <div class="flex flex-wrap column-gap-3 row-gap-2 m-4" *ngFor="let book of bookList.slice(0,6); let i=index">
+            <div class="flex align-items-center  justify-content-center bg-cover bg-center flex-wrap"
+                style="width: 150px; height: 200px;  background-image: url('{{book.image}}')">
+            </div>
+            <div class="flex flex-column font-bold text-gray-900">
+                <div class="flex align-items-center font-bold border-round ml-2">{{book.title}}</div>
+                <div class="flex align-items-center font-light ml-2">{{book.author}}</div>
+                <div class="flex align-items-center font-light ml-2">{{book.publisher}}</div>
+                <div class="flex align-items-center font-light ml-2">{{book.pages}} páginas</div>
+
+            </div>
+        </div>
+
+        <div class="col-1"></div>
+
+    </div>
+
+</div>
+<!-- search -->
+<div class="grid mt-2 w-full cusGrid p-6" style="background-color: rgb(232, 213, 196);">
+    <div class=" w-full align-items-center justify-content-center flex flex-column h-full">
+        <span class="text-4xl font-bold">
+            Busca un libro
+        </span>
+        <div class="card w-9 flex flex-row justify-content-center mt-4">
+            <span class="p-input-icon-right flex w-full mr-2">
+                <i class="pi pi-search"></i>
+                <input class="w-full" type="text" pInputText (ngModel)="inputSearch" placeholder="Escribe un {{selectFilter}}" />
+            </span>
+            <span class="p-input-icon-right flex">
+                <p-splitButton [label]='selectFilter' (onchange)="search('info')" [model]="searchItems"></p-splitButton>
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- search results -->
+
+<div class="grid w-full p-3 cusGrid " style="background-color: rgb(240, 238, 237);" *ngFor="let book of bookList; let j=index" >
+    <div class="col-2"></div>
+    <div class="col-7 grid bg-white flex" >
+
+        <div class="flex bg-cover bg-center flex-wrap my-5 mx-1"
+            style="width: 150px; height: 200px;  background-image: url('{{bookList[j].image}}')">
+        </div>
+        <div class="flex-1 flex h-full font-bold m-2 ">
+            <div class="flex flex-column justify-content-around flex-wrap">
+                <div class="flex align-items-center">{{bookList[j].title}}</div>
+                <div class="flex align-items-center">{{bookList[j].description}}</div>
+                <div class="flex flex-row justify-content-between">
+                    <span class="flex align-items-center">{{bookList[j].formats}}</span>
+                    <span class="flex align-items-start text-white bg-gray-500 px-3">{{bookList[j].pages}} pág.</span>
+                </div>
+            </div>
+
+
+        </div>
+        <div class="flex flex-column m-2">
+            <p-splitButton class="flex justify-content-end" label="Gestionar" [model]="this.optionsItems" (onClick)="options('info')"
+                styleClass="p-button-outlined p-button-warning mr-2 mb-2"></p-splitButton>
+            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star" styleClass="p-button-rounded p-button-warning"></p-button>
+        </div>
+    </div>
+    <div class="col-3"></div>
+
+</div>
