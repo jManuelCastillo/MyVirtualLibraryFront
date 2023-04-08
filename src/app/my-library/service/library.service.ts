@@ -43,7 +43,7 @@ const bookList: Book[] = [
     description: 'The Wise Man\'s Fear is a fantasy novel by Patrick Rothfuss, the second book in the Kingkiller Chronicle series. It continues the story of Kvothe, who is now a student at the University and embarks on various adventures.'
   },
   {
-    title: 'The Two Towers',
+    title: 'The Lord of the Rings: The Two Towers',
     author: 'J.R.R. Tolkien',
     publisher: 'George Allen & Unwin',
     ISBN: '978-0-618-25761-3',
@@ -56,7 +56,7 @@ const bookList: Book[] = [
     description: 'The Two Towers is the second volume of J. R. R. Tolkien´s high fantasy novel The Lord of the Rings.'
   },
   {
-    title: 'The Return of the King',
+    title: 'The Lord of the Rings: The Return of the King',
     author: 'J.R.R. Tolkien',
     publisher: 'George Allen & Unwin',
     ISBN: '978-0-618-25762-0',
@@ -82,17 +82,17 @@ const bookList: Book[] = [
     description: '1984 is a dystopian novel by George Orwell published in 1949. It follows the life of Winston Smith, a low-ranking member of the ruling Party, as he begins to resent the authoritarian regime of Big Brother and tries to rebel by falling in love with Julia.'
   },
   {
-    title: 'The Hitchhiker\'s Guide to the Galaxy',
-    author: 'Douglas Adams',
-    publisher: 'Pan Books',
-    ISBN: '978-1-84990-674-0',
-    numberOfBooks: '5',
-    releaseDate: new Date('1979-10-12'),
+    title: 'Jurassic Park',
+    author: 'Michael Crichton',
+    publisher: 'Alfred A. Knopf',
+    ISBN: '978-0-394-58816-3',
+    numberOfBooks: '2',
+    releaseDate: new Date('1990-11-20'),
     genre: 'Science Fiction',
     formats: ['pdf', 'epub', 'mobi'],
-    image: 'https://www.example.com/the-hitchhikers-guide-to-the-galaxy.jpg',
+    image: 'https://books.google.es/books/publisher/content?id=DNXYCQAAQBAJ&hl=es&pg=PP1&img=1&zoom=3&bul=1&sig=ACfU3U0w2fqgGlOIHn5pPttxWOdBIPIrKA&w=1280',
     pages: 345,
-    description: " Fue publicado por Pan Books en 1979 y es parte de una serie de cinco libros. La historia sigue las aventuras de Arthur Dent, un humano común que es arrastrado al espacio por su amigo extraterrestre Ford Prefect, justo antes de que la Tierra sea destruida para construir una autopista hiperespacial. El libro es una comedia satírica que explora temas como la filosofía, la tecnología y la cultura."
+    description: "Jurassic Park es una novela de ciencia ficción escrita por Michael Crichton. La historia se desarrolla en una isla donde un excéntrico empresario ha creado un parque temático lleno de dinosaurios clonados. Sin embargo, cuando el sistema de seguridad del parque falla, los dinosaurios escapan y comienzan a aterrorizar a los visitantes. La novela es conocida por su estilo de suspenso y su representación científica de los dinosaurios."
   },
   {
     title: 'Do Androids Dream of Electric Sheep?',
@@ -134,18 +134,19 @@ const bookList: Book[] = [
     description: "The Martian es una novela de ciencia ficción escrita por Andy Weir. La historia sigue a Mark Watney, un astronauta que es abandonado en Marte después de una misión espacial fallida. Con recursos limitados, Watney debe encontrar la manera de sobrevivir en el planeta y comunicarse con la Tierra para ser rescatado. La novela es conocida por su precisión científica y su estilo humorístico."
   },
   {
-    title: 'Jurassic Park',
-    author: 'Michael Crichton',
-    publisher: 'Alfred A. Knopf',
-    ISBN: '978-0-394-58816-3',
-    numberOfBooks: '2',
-    releaseDate: new Date('1990-11-20'),
+    title: 'The Hitchhiker\'s Guide to the Galaxy',
+    author: 'Douglas Adams',
+    publisher: 'Pan Books',
+    ISBN: '978-1-84990-674-0',
+    numberOfBooks: '5',
+    releaseDate: new Date('1979-10-12'),
     genre: 'Science Fiction',
     formats: ['pdf', 'epub', 'mobi'],
-    image: 'https://www.example.com/jurassic-park.jpg',
+    image: 'https://www.example.com/the-hitchhikers-guide-to-the-galaxy.jpg',
     pages: 345,
-    description: "Jurassic Park es una novela de ciencia ficción escrita por Michael Crichton. La historia se desarrolla en una isla donde un excéntrico empresario ha creado un parque temático lleno de dinosaurios clonados. Sin embargo, cuando el sistema de seguridad del parque falla, los dinosaurios escapan y comienzan a aterrorizar a los visitantes. La novela es conocida por su estilo de suspenso y su representación científica de los dinosaurios."
+    description: " Fue publicado por Pan Books en 1979 y es parte de una serie de cinco libros. La historia sigue las aventuras de Arthur Dent, un humano común que es arrastrado al espacio por su amigo extraterrestre Ford Prefect, justo antes de que la Tierra sea destruida para construir una autopista hiperespacial. El libro es una comedia satírica que explora temas como la filosofía, la tecnología y la cultura."
   },
+  
   {
     title: 'The Da Vinci Code',
     author: 'Dan Brown',

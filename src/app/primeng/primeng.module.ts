@@ -4,6 +4,9 @@ import { TabMenuModule } from 'primeng/tabmenu';
 import { AvatarModule } from 'primeng/avatar';
 import { InputTextModule } from 'primeng/inputtext';
 import { SplitButtonModule } from 'primeng/splitbutton';
+import { CarouselModule } from 'primeng/carousel';
+import { TagModule } from 'primeng/tag';
+import { CardModule } from 'primeng/card';
 
 @NgModule({
   declarations: [],
@@ -12,7 +15,10 @@ import { SplitButtonModule } from 'primeng/splitbutton';
     TabMenuModule,
     AvatarModule,
     InputTextModule,
-    SplitButtonModule
+    SplitButtonModule,
+    CarouselModule,
+    TagModule,
+    CardModule
   ]
 })
 export class PrimengModule { }
