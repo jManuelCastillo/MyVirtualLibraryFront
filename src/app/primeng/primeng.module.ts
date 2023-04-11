@@ -12,7 +12,8 @@ import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
 import {FileUploadModule} from 'primeng/fileupload';
 import {ChipsModule} from 'primeng/chips';
-
+import { DynamicDialogModule } from 'primeng/dynamicdialog';
+import { ToastModule } from 'primeng/toast';
 
 @NgModule({
   declarations: [],
@@ -29,7 +30,11 @@ import {ChipsModule} from 'primeng/chips';
     DropdownModule,
     CalendarModule,
     FileUploadModule,
-    ChipsModule
+    ChipsModule,
+    DynamicDialogModule,
+    ToastModule
   ]
 })
+
+
 export class PrimengModule { }

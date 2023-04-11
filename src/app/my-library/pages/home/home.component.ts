@@ -1,15 +1,19 @@
-import { Component } from '@angular/core';
-import { MenuItem,  } from 'primeng/api';
+import { Component, OnDestroy } from '@angular/core';
+import { MenuItem, MessageService, } from 'primeng/api';
 import { LibraryService } from '../../service/library.service';
 import { Book } from '../../interfaces/book.interface';
 import { FormBuilder, FormControl } from '@angular/forms';
+import { NgxExtendedPdfViewerModule, NgxExtendedPdfViewerService, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
+import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ExamplePdfViewerComponent } from '../../components/example-pdf-viewer/example-pdf-viewer.component';
 
 @Component({
     selector: 'app-home',
     templateUrl: './home.component.html',
-    styleUrls: ['./home.component.css']
+    styleUrls: ['./home.component.css'],
+    providers: [DialogService, MessageService]
 })
-export class HomeComponent {
+export class HomeComponent implements OnDestroy{
 
     showSearch: boolean = false;
     bookList: Book[] = this.libraryService.bookListService
@@ -19,9 +23,11 @@ export class HomeComponent {
     inputSearch: FormControl = this.formBuilder.control('')
     selectFilter: string = 'Título';
     filter: string = 'title';
+    fileInput: any;
+    ref!: DynamicDialogRef ;
 
-
-    constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,) {
+    constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
+        private pdfService: NgxExtendedPdfViewerService, public dialogService: DialogService, public messageService: MessageService) {
 
         this.searchItems = [
             {
@@ -71,15 +77,36 @@ export class HomeComponent {
                 }
             }
         ];
+        pdfDefaultOptions.assetsFolder = 'bleeding-edge';
+        pdfDefaultOptions.doubleTapZoomFactor = '150%'; // The default value is '200%'
+        pdfDefaultOptions.maxCanvasPixels = 4096 * 4096 * 5; // The default value is 4096 * 4096 pixels,
+    }
+    
+    ngOnDestroy() {
+        if (this.ref) {
+            this.ref.close();
+        }
+    }
+
+      show() {
+        this.ref = this.dialogService.open(ExamplePdfViewerComponent, {
+            header: 'Mira un pdf',
+            width: '70%',
+            contentStyle: { overflow: 'auto' },
+            baseZIndex: 10000,
+            maximizable: true
+        });
     }
 
     changeFilter(filter: string) {
         this.filter = filter;
     }
 
+   
+
     searchFilter() {
-        
-        
+
+
         if (this.inputSearch.value != '') {
             console.log(this.inputSearch.value);
             this.showSearch = true
@@ -97,7 +124,7 @@ export class HomeComponent {
                 this.filteredBooks = this.bookList.filter(book => (book.title.includes(this.inputSearch.value) && book.author.includes(this.inputSearch.value)));
             }
         } else {
-         this.showSearch = false;
+            this.showSearch = false;
         }
     }
 

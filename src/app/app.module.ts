@@ -7,9 +7,13 @@ import { AppComponent } from './app.component';
 import { PrimengModule } from './primeng/primeng.module';
 import { HttpClientModule } from '@angular/common/http';
 
+
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    
   ],
   imports: [
     BrowserModule,
@@ -17,7 +21,8 @@ import { HttpClientModule } from '@angular/common/http';
     HttpClientModule,
     AppRoutingModule,
     
-    PrimengModule
+    PrimengModule,
+    NgxExtendedPdfViewerModule
   ],
   providers: [],
   bootstrap: [AppComponent]

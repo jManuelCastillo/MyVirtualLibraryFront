@@ -11,7 +11,8 @@ import { CollectionComponent } from './pages/collection/collection.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { MyLibraryRoutingModule } from './my-library-routing.module';
 import { HomeComponent } from './pages/home/home.component';
-
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { ExamplePdfViewerComponent } from './components/example-pdf-viewer/example-pdf-viewer.component';
 
 
 @NgModule({
@@ -22,6 +23,8 @@ import { HomeComponent } from './pages/home/home.component';
     FooterComponent,
     ManageComponent,
     RegisterComponent,
+    ExamplePdfViewerComponent
+    
   
   ],
   imports: [
@@ -30,6 +33,7 @@ import { HomeComponent } from './pages/home/home.component';
     PrimengModule,
     HttpClientModule,
     ReactiveFormsModule,
+    NgxExtendedPdfViewerModule
   ]  ,
   providers:[]
 })

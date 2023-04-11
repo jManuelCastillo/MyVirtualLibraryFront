@@ -48,8 +48,8 @@
 
             <span class="p-input-icon-right border-round flex w-full mr-2">
                 <i class="pi pi-search"></i>
-                <input class="w-full" type="text" pInputText [formControl]="inputSearch" 
-                    (keyup)="searchFilter()" placeholder="Escribe un {{selectFilter}}" />
+                <input class="w-full" type="text" pInputText [formControl]="inputSearch" (keyup)="searchFilter()"
+                    placeholder="Escribe un {{selectFilter}}" />
             </span>
 
             <span class="p-input-icon-right flex">
@@ -103,20 +103,28 @@
 </div>
 
 
-<div class="grid w-full p-3 cusGrid surface-ground"  #emptySearch>
+<div class="grid w-full p-3 cusGrid surface-ground" #emptySearch>
     <div class="col-2"></div>
     <div class="col-7 grid bg-white fle flex-column align-items-center justify-content-center">
-        
+
         <div *ngIf="filteredBooks.length < 1 && !showSearch; else notfound">
             <p class="flex-wrap align-items-center justify-content-center">Escribe algo en el buscador</p>
             <img src="../../../../assets/images/searchIMG.jpg" alt="" style="max-width: 20rem;">
         </div>
-        <ng-template #notfound >
+        <ng-template #notfound>
             <p class="flex-wrap align-items-center justify-content-center">No se ha encontrado nada</p>
             <img src="../../../../assets/images/notFoundSearch.jpg" alt="" style="max-width: 20rem;">
         </ng-template>
 
     </div>
 </div>
+
+
+<div class="card flex justify-content-center">
+    <p-toast></p-toast>
+    <p-button (click)="show()" icon="pi pi-info-circle" label="Show"></p-button>
+</div>
+
+
 
 <app-footer></app-footer>
