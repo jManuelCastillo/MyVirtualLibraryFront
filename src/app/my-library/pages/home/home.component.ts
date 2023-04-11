@@ -1,7 +1,8 @@
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
-import { MenuItem, MessageService } from 'primeng/api';
+import { Component } from '@angular/core';
+import { MenuItem,  } from 'primeng/api';
 import { LibraryService } from '../../service/library.service';
-import { Book } from '../../interface/book.interface';
+import { Book } from '../../interfaces/book.interface';
+import { FormBuilder, FormControl } from '@angular/forms';
 
 @Component({
     selector: 'app-home',
@@ -15,12 +16,12 @@ export class HomeComponent {
     searchItems: MenuItem[] = [];
     filteredBooks: Book[] = [];
     optionsItems: MenuItem[] = [];
-    @ViewChild('inputSearch') inputSearch!: ElementRef<HTMLInputElement>
+    inputSearch: FormControl = this.formBuilder.control('')
     selectFilter: string = 'Título';
     filter: string = 'title';
 
 
-    constructor(private libraryService: LibraryService) {
+    constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,) {
 
         this.searchItems = [
             {
@@ -77,23 +78,23 @@ export class HomeComponent {
     }
 
     searchFilter() {
-
-
-        console.log(this.filter);
-        if (this.inputSearch.nativeElement.value != '') {
+        
+        
+        if (this.inputSearch.value != '') {
+            console.log(this.inputSearch.value);
             this.showSearch = true
             if (this.filter == 'title') {
-                this.filteredBooks = this.bookList.filter(book => book.title.toLocaleLowerCase().includes(this.inputSearch.nativeElement.value.toLocaleLowerCase()));
+                this.filteredBooks = this.bookList.filter(book => book.title.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
                 console.log(this.filteredBooks.length);
 
             }
             if (this.filter == 'author') {
                 console.log("entra en author");
-                console.log(this.inputSearch.nativeElement.value);
-                this.filteredBooks = this.bookList.filter(book => book.author.toLocaleLowerCase().includes(this.inputSearch.nativeElement.value.toLocaleLowerCase()));
+                console.log(this.inputSearch);
+                this.filteredBooks = this.bookList.filter(book => book.author.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
             }
             if (this.filter == 'authorTitle') {
-                this.filteredBooks = this.bookList.filter(book => (book.title.includes(this.inputSearch.nativeElement.value) && book.author.includes(this.inputSearch.nativeElement.value)));
+                this.filteredBooks = this.bookList.filter(book => (book.title.includes(this.inputSearch.value) && book.author.includes(this.inputSearch.value)));
             }
         } else {
          this.showSearch = false;

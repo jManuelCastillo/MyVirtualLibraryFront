@@ -7,6 +7,12 @@ import { SplitButtonModule } from 'primeng/splitbutton';
 import { CarouselModule } from 'primeng/carousel';
 import { TagModule } from 'primeng/tag';
 import { CardModule } from 'primeng/card';
+import { AccordionModule } from 'primeng/accordion';
+import { DropdownModule } from 'primeng/dropdown';
+import { CalendarModule } from 'primeng/calendar';
+import {FileUploadModule} from 'primeng/fileupload';
+import {ChipsModule} from 'primeng/chips';
+
 
 @NgModule({
   declarations: [],
@@ -18,7 +24,12 @@ import { CardModule } from 'primeng/card';
     SplitButtonModule,
     CarouselModule,
     TagModule,
-    CardModule
+    CardModule,
+    AccordionModule,
+    DropdownModule,
+    CalendarModule,
+    FileUploadModule,
+    ChipsModule
   ]
 })
 export class PrimengModule { }

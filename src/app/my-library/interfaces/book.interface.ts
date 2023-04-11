@@ -5,7 +5,7 @@ export interface Book {
   description: string
   ISBN: string;
   numberOfBooks: string;
-  releaseDate: Date;
+  publish_date: Date;
   genre: string;
   formats: string[];
   image: string;

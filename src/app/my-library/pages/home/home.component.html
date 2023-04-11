@@ -48,7 +48,7 @@
 
             <span class="p-input-icon-right border-round flex w-full mr-2">
                 <i class="pi pi-search"></i>
-                <input class="w-full" type="text" pInputText (ngModel)="inputSearch" #inputSearch
+                <input class="w-full" type="text" pInputText [formControl]="inputSearch" 
                     (keyup)="searchFilter()" placeholder="Escribe un {{selectFilter}}" />
             </span>
 
@@ -103,7 +103,7 @@
 </div>
 
 
-<div class="grid w-full p-3 cusGrid" style="background-color: rgb(240, 238, 237);" #emptySearch>
+<div class="grid w-full p-3 cusGrid surface-ground"  #emptySearch>
     <div class="col-2"></div>
     <div class="col-7 grid bg-white fle flex-column align-items-center justify-content-center">
         

@@ -14,8 +14,9 @@ export class NavbarComponent {
 
   ngOnInit() {
     this.items = [
-      { label: 'Inicio', icon: 'pi pi-fw pi-home', 'routerLink': "/home"},
-      { label: 'Colecciones', icon: 'pi pi-fw pi-book', 'routerLink': "/collection" }
+      { label: 'Inicio', icon: 'pi pi-home', 'routerLink': "/home"},
+      { label: 'Colecciones', icon: 'pi pi-book', 'routerLink': "/collection" },
+      { label: 'Administrar', icon: 'pi pi-wrench', 'routerLink': "/manage" }
     ];
 
     this.activeItem = this.items[0];

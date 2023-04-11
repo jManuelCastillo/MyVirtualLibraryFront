@@ -1,0 +1,255 @@
+<app-navbar></app-navbar>
+
+<!-- app stadistics -->
+
+<div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+    <div class="grid">
+        <div class="col-12 md:col-6 lg:col-3">
+            <div class="surface-card shadow-2 p-3 border-round">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Libros</span>
+                        <div class="text-900 font-medium text-xl">152</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
+                        style="width:2.5rem;height:2.5rem">
+                        <i class="pi pi-book text-blue-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-3">
+            <div class="surface-card shadow-2 p-3 border-round">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Libros Leidos</span>
+                        <div class="text-900 font-medium text-xl">214</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
+                        style="width:2.5rem;height:2.5rem">
+                        <i class="pi pi-check-circle text-orange-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-3">
+            <div class="surface-card shadow-2 p-3 border-round">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Libros Físicos</span>
+                        <div class="text-900 font-medium text-xl">63</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-cyan-100 border-round"
+                        style="width:2.5rem;height:2.5rem">
+                        <i class="pi pi-inbox text-cyan-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 md:col-6 lg:col-3">
+            <div class="surface-card shadow-2 p-3 border-round">
+                <div class="flex justify-content-between mb-3">
+                    <div>
+                        <span class="block text-500 font-medium mb-3">Libros Digitales</span>
+                        <div class="text-900 font-medium text-xl">80</div>
+                    </div>
+                    <div class="flex align-items-center justify-content-center bg-purple-100 border-round"
+                        style="width:2.5rem;height:2.5rem">
+                        <i class="pi pi-file text-purple-500 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- accion accoridion -->
+
+<div class="m-8">
+    <p-accordion class="w-full " [activeIndex]="0">
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center">
+                    <i class="pi pi-sign-in mr-2"></i>
+                    <span class="vertical-align-middle">Inserta un libro nuevo</span>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <!-- insert a book -->
+                <div class="surface-card p-4 shadow-2 border-round">
+                    <form autocomplete="off" [formGroup]="bookForm" (ngSubmit)="saveBook()">
+                        <div class="grid formgrid p-fluid flex">
+
+                            <div class="field mb-3 col-6">
+                                <label for="titleInput" class="font-medium">Titulo</label>
+                                <input id="titleInput" formControlName="titleInput" pinputtext
+                                    class="p-inputtext p-component p-element" type="text">
+                                <span style="color:red;" *ngIf="validField('titleInput')"> Debe de haber mas de 1 letra</span>
+                            </div>
+                            <div class="field mb-3 col-6">
+                                <label for="authorInput" class="font-medium">Autor</label>
+                                <input id="authorInput" formControlName="autorInput" pinputtext
+                                    class="p-inputtext p-component p-element" type="text">
+                            </div>
+                            <div class="field mb-3 col-6 ">
+                                <!--añadir formControlName="cities" -->
+
+                                <label for="genreInput" class="font-medium">Género</label>
+                                <p-chips id="genreInput" separator="," formArrayName="genreInput" [max]=5
+                                    [allowDuplicate]=false placeholder="Fantasia, Romance, etc"></p-chips>
+                                   
+                               
+                            </div>
+                            <div class="field mb-3 col-6">
+                                <label for="seriesNumberInput" class="font-medium">Número de libros</label>
+                                <input id="seriesNumberInput" formControlName="booksNumberInput" pinputtext
+                                    class="p-inputtext p-component p-element" type="number">
+                                    <span style="color:red;" *ngIf="validField('booksNumberInput')"> Tiene que ser un numero mayor a 0</span>
+                            </div>
+                            <div class="field mb-3 col-6">
+                                <label for="dateInput" class="font-medium">Fecha de salida</label>
+                                <p-calendar formControlName="publishDateInput"></p-calendar>
+                                <!-- [(ngModel)]="date" -->
+                            </div>
+                            <div class="field mb-3 col-6">
+                                <label for="seriesNumberInput" class="font-medium">Número de páginas</label>
+                                <input id="seriesNumberInput" formControlName="pagesNumberInput" pinputtext
+                                    class="p-inputtext p-component p-element" type="number">
+                                    <span style="color:red;" *ngIf="validField('pagesNumberInput')">Tiene que ser un numero mayor a 0</span>
+                            </div>
+                            <div class="field mb-4 col-12">
+                                <label for="imageInput" class="font-medium">Imagen</label>
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon">www</span>
+                                    <input id="imageInput" formControlName="imageInput" type="text" pinputtext
+                                        class="p-inputtext p-component p-element">
+                                </div>
+                            </div>
+                            <div class="surface-100 mb-3 col-12" style="height: 2px;">
+                            </div>
+                            <div class="field mb-4 col-12 md:col-6">
+                                <label for="publisher" class="font-medium">Editorial</label>
+                                <input id="publisher" formControlName="publisherInput" type="text" pinputtext
+                                    class="p-inputtext p-component p-element">
+                            </div>
+                            <div class="field mb-3 col-6">
+                                <label for="ISBNInput" class="font-medium">ISBN</label>
+                                <input id="ISBNInput" pinputtext formControlName="ISBNInput" class="p-inputtext p-component p-element" type="text">
+                            </div>
+
+                            <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
+
+                            <p-fileUpload class="field mb-4 col-12 md:col-12" name="myfile[]" url="./upload.php"
+                                chooseLabel="Añadir libro" cancelLabel="Cancelar" [showUploadButton]=false
+                                [multiple]=true
+                                accept="application/pdf, application/epub+zip, application/x-mobipocket-ebook">
+                                <ng-template pTemplate="content">
+                                    <ul *ngIf="uploadedFiles.length">
+                                        <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                                    </ul>
+                                </ng-template>
+
+                            </p-fileUpload>
+
+                            <div class="flex w-full justify-content-center">
+                                <button type="submit" class="flex" pripple="" label="Save Book"
+                                   (click)="saveBook()"  class=" w-auto mt-3 p-button p-component">Guardar
+                                    Libro</button>
+                            </div>
+
+
+                        </div>
+                    </form>
+                </div>
+                <!-- end insert a book -->
+            </ng-template>
+        </p-accordionTab>
+
+        <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center">
+                    <i class="pi pi-search mr-2"></i>
+                    <span class="vertical-align-middle">Buscar libros externos</span>
+                    <i class="pi pi-cog ml-2 ml-2"></i>
+                </div>
+
+            </ng-template>
+            <ng-template pTemplate="content">
+                <!-- search by api -->
+                <div class="surface-card p-4 shadow-2 border-round w-full">
+                    <div class="grid formgrid p-fluid w-full ">
+                        <div class="field ml-6 mb-4 col-10 md:col-9">
+                            <span class="p-input-icon-right border-round">
+                                <i class="pi pi-search"></i>
+                                <input class="w-full" type="text" pInputText (ngModel)="inputSearch" #inputSearch
+                                    (keyup)="searchFilter()" placeholder="Escribe un {{selectFilter}}" />
+                            </span>
+                        </div>
+                        <div class="w-auto">
+                            <span class="p-input-icon-right flex">
+                                <p-splitButton [label]='selectFilter' (onchange)="search('info')"
+                                    [model]="searchItems"></p-splitButton>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="surface-card p-4 shadow-2 border-round" *ngIf="foundBooks.data != undefined">
+
+                    <div class="bg-white flex">
+
+                        <div class="flex bg-cover bg-center flex-wrap my-5 mx-1"
+                            style="width: 150px; height: 200px;  background-image: url('{{foundBooks.data.cover.large}}')">
+                        </div>
+                        <div class="flex-1 flex h-full font-bold m-2 ">
+                            <div class="flex flex-column justify-content-around flex-wrap">
+                                <div class="flex align-items-center ">{{foundBooks.data.title}}</div>
+                                <div class="flex align-items-center font-light">{{foundBooks.data.excerpts[0].text}}
+                                </div>
+                                <div class="flex align-items-center font-light">{{foundBooks.data.authors[0].name}}
+                                </div>
+                                <div class="flex flex-row justify-content-between">
+                                    <span class="flex align-items-center ">{{foundBooks.data.publishers[0].name}}</span>
+                                    <span *ngIf="foundBooks.data.number_of_pages != undefined"
+                                        class="flex align-items-start text-white bg-gray-500 px-3 font-light">{{foundBooks.data.number_of_pages}}
+                                        pág.</span>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="flex flex-column m-2">
+                            <!-- <p-splitButton class="flex justify-content-end" label="Gestionar" [model]="this.optionsItems"
+                            (onClick)="options('info')"
+                            styleClass="p-button-outlined p-button-warning mr-2 mb-2"></p-splitButton> -->
+
+                            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star"
+                                styleClass="p-button-rounded p-button-warning"></p-button>
+
+                        </div>
+                    </div>
+                </div>
+            </ng-template>
+        </p-accordionTab>
+        <!-- <p-accordionTab>
+            <ng-template pTemplate="header">
+                <div class="flex align-items-center">
+                    <i class="pi pi-user mr-2"></i>
+                    <span class="vertical-align-middle">Header III</span>
+                    <i class="pi pi-cog ml-2 ml-2"></i>
+                </div>
+            </ng-template>
+            <ng-template pTemplate="content">
+                <p class="m-0">
+                   asdfffffffffffffffffffffffffffffffffffffffffffffffffffffd
+                </p>
+            </ng-template>
+        </p-accordionTab> -->
+    </p-accordion>
+</div>
+
+
+<app-footer></app-footer>

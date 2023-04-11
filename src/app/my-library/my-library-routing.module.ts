@@ -3,6 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './pages/home/home.component';
 import { CollectionComponent } from './pages/collection/collection.component';
+import { ManageComponent } from './pages/manage/manage.component';
+import { RegisterComponent } from './pages/register/register.component';
 
 
 const routes: Routes = [
@@ -12,6 +14,10 @@ const routes: Routes = [
       { path: 'home', component: HomeComponent },
 
       { path: 'collection', component: CollectionComponent },
+
+      { path: 'manage', component: ManageComponent },
+
+      { path: 'register', component: RegisterComponent },
 
       { path: '**', redirectTo: 'home' }
     ]

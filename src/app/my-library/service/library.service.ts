@@ -1,27 +1,38 @@
 import { Injectable } from '@angular/core';
-import { Book } from '../interface/book.interface';
+import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Book } from '../interfaces/book.interface';
+import { APIBook } from '../interfaces/apiBook.interface';
 
 @Injectable({
   providedIn: 'root'
 })
 export class LibraryService {
 
-  constructor() { }
+
+  constructor(private http: HttpClient) { }
+
+  private url: string = "https://openlibrary.org/api/books?bibkeys=title:Harry Potter Y La Piedra Filosofal&jscmd=data&format=json";
 
   bookListService: Book[] = bookList;
+  tempBooks!: APIBook;
 
+  getBookFromApi(): Observable<APIBook> {    
 
+    return this.http.get<APIBook>(`${this.url}`);
+
+  }
 }
 
 const bookList: Book[] = [
-  
+
   {
     title: 'The Name of the Wind',
     author: 'Patrick Rothfuss',
     publisher: 'DAW Books',
     ISBN: '978-0-7564-0407-9',
     numberOfBooks: '2',
-    releaseDate: new Date('2007-03-27'),
+    publish_date: new Date('2007-03-27'),
     genre: 'Fantasy',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://th.bing.com/th/id/OIP.48swydL7qvLqq5zQjgnBawAAAA?pid=ImgDet&rs=1',
@@ -35,7 +46,7 @@ const bookList: Book[] = [
     publisher: 'DAW Books',
     ISBN: '978-0-7564-0571-7',
     numberOfBooks: '2',
-    releaseDate: new Date('2011-03-01'),
+    publish_date: new Date('2011-03-01'),
     genre: 'Fantasy',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://books.google.es/books/content?id=2euKXB-3_aoC&hl=es&pg=PP1&img=1&zoom=3&bul=1&sig=ACfU3U3C2i6PaG6hc8GTlYKfJ6iUSIPi9g&w=1280',
@@ -48,7 +59,7 @@ const bookList: Book[] = [
     publisher: 'George Allen & Unwin',
     ISBN: '978-0-618-25761-3',
     numberOfBooks: '3',
-    releaseDate: new Date('1954-11-11'),
+    publish_date: new Date('1954-11-11'),
     genre: 'Fantasy',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://m.media-amazon.com/images/W/IMAGERENDERING_521856-T1/images/I/81HfbQ8F2UL.jpg',
@@ -61,7 +72,7 @@ const bookList: Book[] = [
     publisher: 'George Allen & Unwin',
     ISBN: '978-0-618-25762-0',
     numberOfBooks: '3',
-    releaseDate: new Date('1955-10-20'),
+    publish_date: new Date('1955-10-20'),
     genre: 'Fantasy',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://pictures.abebooks.com/isbn/9780007123803-es.jpg',
@@ -74,7 +85,7 @@ const bookList: Book[] = [
     publisher: 'Secker & Warburg',
     ISBN: '978-0-452-28423-4',
     numberOfBooks: '1',
-    releaseDate: new Date('1949-06-08'),
+    publish_date: new Date('1949-06-08'),
     genre: 'Dystopian',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://kbimages1-a.akamaihd.net/c9472126-7f96-402d-ba57-5ba4c0f4b238/353/569/90/False/nineteen-eighty-four-1984-george.jpg',
@@ -87,7 +98,7 @@ const bookList: Book[] = [
     publisher: 'Alfred A. Knopf',
     ISBN: '978-0-394-58816-3',
     numberOfBooks: '2',
-    releaseDate: new Date('1990-11-20'),
+    publish_date: new Date('1990-11-20'),
     genre: 'Science Fiction',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://books.google.es/books/publisher/content?id=DNXYCQAAQBAJ&hl=es&pg=PP1&img=1&zoom=3&bul=1&sig=ACfU3U0w2fqgGlOIHn5pPttxWOdBIPIrKA&w=1280',
@@ -100,7 +111,7 @@ const bookList: Book[] = [
     publisher: 'Doubleday',
     ISBN: '978-0-345-34199-8',
     numberOfBooks: '1',
-    releaseDate: new Date('1968-06-10'),
+    publish_date: new Date('1968-06-10'),
     genre: 'Science Fiction',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/do-androids-dream-of-electric-sheep.jpg',
@@ -113,7 +124,7 @@ const bookList: Book[] = [
     publisher: 'Tor Books',
     ISBN: '978-0-312-93208-4',
     numberOfBooks: '1',
-    releaseDate: new Date('1985-08-15'),
+    publish_date: new Date('1985-08-15'),
     genre: 'Science Fiction',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/enders-game.jpg',
@@ -126,7 +137,7 @@ const bookList: Book[] = [
     publisher: 'Crown Publishing Group',
     ISBN: '978-0-8041-3902-1',
     numberOfBooks: '1',
-    releaseDate: new Date('2011-09-27'),
+    publish_date: new Date('2011-09-27'),
     genre: 'Science Fiction',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/the-martian.jpg',
@@ -139,21 +150,21 @@ const bookList: Book[] = [
     publisher: 'Pan Books',
     ISBN: '978-1-84990-674-0',
     numberOfBooks: '5',
-    releaseDate: new Date('1979-10-12'),
+    publish_date: new Date('1979-10-12'),
     genre: 'Science Fiction',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/the-hitchhikers-guide-to-the-galaxy.jpg',
     pages: 345,
     description: " Fue publicado por Pan Books en 1979 y es parte de una serie de cinco libros. La historia sigue las aventuras de Arthur Dent, un humano común que es arrastrado al espacio por su amigo extraterrestre Ford Prefect, justo antes de que la Tierra sea destruida para construir una autopista hiperespacial. El libro es una comedia satírica que explora temas como la filosofía, la tecnología y la cultura."
   },
-  
+
   {
     title: 'The Da Vinci Code',
     author: 'Dan Brown',
     publisher: 'Doubleday',
     ISBN: '978-0-385-50420-8',
     numberOfBooks: '1',
-    releaseDate: new Date('2003-03-18'),
+    publish_date: new Date('2003-03-18'),
     genre: 'Mystery',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/the-da-vinci-code.jpg',
@@ -166,7 +177,7 @@ const bookList: Book[] = [
     publisher: 'Collins Crime Club',
     ISBN: '978-0-00-752750-2',
     numberOfBooks: '1',
-    releaseDate: new Date('1934-01-01'),
+    publish_date: new Date('1934-01-01'),
     genre: 'Mystery',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/murder-on-the-orient-express.jpg',
@@ -179,7 +190,7 @@ const bookList: Book[] = [
     publisher: 'George Allen & Unwin',
     ISBN: '978-0-00-712401-6',
     numberOfBooks: '3',
-    releaseDate: new Date('1954-07-29'),
+    publish_date: new Date('1954-07-29'),
     genre: 'Fantasy',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/the-lord-of-the-rings.jpg',
@@ -192,7 +203,7 @@ const bookList: Book[] = [
     publisher: 'DAW Books',
     ISBN: '978-0-7564-0407-9',
     numberOfBooks: '2',
-    releaseDate: new Date('2007-03-27'),
+    publish_date: new Date('2007-03-27'),
     genre: 'Fantasy',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/the-name-of-the-wind.jpg',
@@ -205,7 +216,7 @@ const bookList: Book[] = [
     publisher: 'Bloomsbury',
     ISBN: '978-1-4088-5612-8',
     numberOfBooks: '7',
-    releaseDate: new Date('1997-06-26'),
+    publish_date: new Date('1997-06-26'),
     genre: 'Fantasy',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/harry-potter-and-the-philosophers-stone.jpg',
@@ -219,7 +230,7 @@ const bookList: Book[] = [
     publisher: 'Scholastic',
     ISBN: '978-0-439-02348-1',
     numberOfBooks: '3',
-    releaseDate: new Date('2008-09-14'),
+    publish_date: new Date('2008-09-14'),
     genre: 'Young Adult',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/the-hunger-games.jpg',
@@ -233,7 +244,7 @@ const bookList: Book[] = [
     publisher: 'Katherine Tegen Books',
     ISBN: '978-0-06-202403-9',
     numberOfBooks: '3',
-    releaseDate: new Date('2011-04-25'),
+    publish_date: new Date('2011-04-25'),
     genre: 'Young Adult',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/divergent.jpg',
@@ -246,7 +257,7 @@ const bookList: Book[] = [
     publisher: 'J. B. Lippincott & Co.',
     ISBN: '978-0-446-31078-9',
     numberOfBooks: '1',
-    releaseDate: new Date('1960-07-11'),
+    publish_date: new Date('1960-07-11'),
     genre: 'Classic',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/to-kill-a-mockingbird.jpg',
@@ -259,7 +270,7 @@ const bookList: Book[] = [
     publisher: 'T. Egerton, Whitehall',
     ISBN: '978-1-85326-118-9',
     numberOfBooks: '1',
-    releaseDate: new Date('1813-01-28'),
+    publish_date: new Date('1813-01-28'),
     genre: 'Classic',
     formats: ['pdf', 'epub', 'mobi'],
     image: 'https://www.example.com/pride-and-prejudice.jpg',
