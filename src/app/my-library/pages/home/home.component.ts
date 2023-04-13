@@ -3,9 +3,9 @@ import { MenuItem, MessageService, } from 'primeng/api';
 import { LibraryService } from '../../service/library.service';
 import { Book } from '../../interfaces/book.interface';
 import { FormBuilder, FormControl } from '@angular/forms';
-import { NgxExtendedPdfViewerModule, NgxExtendedPdfViewerService, pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
+
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { ExamplePdfViewerComponent } from '../../components/example-pdf-viewer/example-pdf-viewer.component';
+import { PdfViewerComponent } from '../../components/pdf-viewer/pdf-viewer.component';
 
 @Component({
     selector: 'app-home',
@@ -13,7 +13,7 @@ import { ExamplePdfViewerComponent } from '../../components/example-pdf-viewer/e
     styleUrls: ['./home.component.css'],
     providers: [DialogService, MessageService]
 })
-export class HomeComponent implements OnDestroy{
+export class HomeComponent implements OnDestroy {
 
     showSearch: boolean = false;
     bookList: Book[] = this.libraryService.bookListService
@@ -24,10 +24,10 @@ export class HomeComponent implements OnDestroy{
     selectFilter: string = 'Título';
     filter: string = 'title';
     fileInput: any;
-    ref!: DynamicDialogRef ;
+    ref!: DynamicDialogRef;
 
     constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
-        private pdfService: NgxExtendedPdfViewerService, public dialogService: DialogService, public messageService: MessageService) {
+        public dialogService: DialogService, public messageService: MessageService) {
 
         this.searchItems = [
             {
@@ -77,43 +77,40 @@ export class HomeComponent implements OnDestroy{
                 }
             }
         ];
-        pdfDefaultOptions.assetsFolder = 'bleeding-edge';
-        pdfDefaultOptions.doubleTapZoomFactor = '150%'; // The default value is '200%'
-        pdfDefaultOptions.maxCanvasPixels = 4096 * 4096 * 5; // The default value is 4096 * 4096 pixels,
+
     }
-    
+
     ngOnDestroy() {
         if (this.ref) {
             this.ref.close();
         }
     }
 
-      show() {
-        this.ref = this.dialogService.open(ExamplePdfViewerComponent, {
+    showPdf(route: string) {
+        this.libraryService.currentPdf = route;
+        this.ref = this.dialogService.open(PdfViewerComponent, {
             header: 'Mira un pdf',
             width: '70%',
             contentStyle: { overflow: 'auto' },
             baseZIndex: 10000,
             maximizable: true
         });
+       
+        
     }
 
     changeFilter(filter: string) {
         this.filter = filter;
     }
 
-   
-
     searchFilter() {
-
-
+        
         if (this.inputSearch.value != '') {
             console.log(this.inputSearch.value);
             this.showSearch = true
             if (this.filter == 'title') {
                 this.filteredBooks = this.bookList.filter(book => book.title.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
                 console.log(this.filteredBooks.length);
-
             }
             if (this.filter == 'author') {
                 console.log("entra en author");
@@ -144,4 +141,31 @@ export class HomeComponent implements OnDestroy{
 
     }
 
+    download() {
+
+        const fileData = 'Contenido del archivo';
+        const fileName = 'archivo.txt';
+        const fileType = 'text/plain';
+
+        // Crear objeto Blob
+        const blob = new Blob([fileData], { type: fileType });
+
+        // Crear URL a partir del objeto Blob
+        const url = URL.createObjectURL(blob);
+
+        // Crear enlace de descarga
+        const link = document.createElement('a');
+        link.setAttribute('href', url);
+        link.setAttribute('download', fileName);
+        document.body.appendChild(link);
+
+        // Simular clic en el enlace
+        link.click();
+
+        // Eliminar enlace
+        document.body.removeChild(link);
+
+        // Liberar memoria de la URL creada
+        URL.revokeObjectURL(url);
+    }
 }

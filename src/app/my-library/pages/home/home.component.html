@@ -65,8 +65,7 @@
 
 <!-- search results -->
 <div *ngIf="showSearch">
-    <div class="grid w-full p-3 cusGrid " style="background-color: rgb(240, 238, 237);"
-        *ngFor="let book of filteredBooks; let j=index">
+    <div class="grid w-full p-3 cusGrid surface-ground" *ngFor="let book of filteredBooks; let j=index">
 
 
         <div class="col-2"></div>
@@ -80,9 +79,24 @@
                     <div class="flex align-items-center ">{{filteredBooks[j].title}}</div>
                     <div class="flex align-items-center font-light">{{filteredBooks[j].description}}</div>
                     <div class="flex flex-row justify-content-between">
-                        <span class="flex align-items-center ">{{filteredBooks[j].formats}}</span>
+                        <div class="flex">
+                            <span class="flex justify-content-start align-items-start flex-row"
+                                *ngFor="let file of filteredBooks[j].files">
+                                <!-- files -->
+                                <a *ngIf="file.format != 'pdf'" href="{{file.route}}" download>
+                                    <img style="width: 3rem; height: 3rem;"
+                                        src="../../../../assets/images/utils/icon{{file.format}}.svg"
+                                        alt="{{file.format}}  icon">
+                                </a>
+                                <a (click)="showPdf(file.route)" *ngIf="file.format == 'pdf'" class="cursor-pointer">
+                                    <img style="width: 3rem; height: 3rem;"
+                                        src="../../../../assets/images/utils/icon{{file.format}}.svg"
+                                        alt="{{file.format}}  icon">
+                                </a>
+                            </span>
+                        </div>
                         <span
-                            class="flex align-items-start text-white bg-gray-500 px-3 font-light">{{filteredBooks[j].pages}}
+                            class="flex align-items-start text-white bg-gray-500 my-4 px-3 font-light">{{filteredBooks[j].pages}}
                             pág.</span>
                     </div>
                 </div>
@@ -103,27 +117,31 @@
 </div>
 
 
-<div class="grid w-full p-3 cusGrid surface-ground" #emptySearch>
+<div class="grid w-full p-3 cusGrid surface-ground">
     <div class="col-2"></div>
     <div class="col-7 grid bg-white fle flex-column align-items-center justify-content-center">
 
-        <div *ngIf="filteredBooks.length < 1 && !showSearch; else notfound">
-            <p class="flex-wrap align-items-center justify-content-center">Escribe algo en el buscador</p>
-            <img src="../../../../assets/images/searchIMG.jpg" alt="" style="max-width: 20rem;">
-        </div>
-        <ng-template #notfound>
+
+        <ng-container *ngIf="showSearch && filteredBooks.length === 0">
             <p class="flex-wrap align-items-center justify-content-center">No se ha encontrado nada</p>
             <img src="../../../../assets/images/notFoundSearch.jpg" alt="" style="max-width: 20rem;">
-        </ng-template>
+        </ng-container>
+
+
+        <ng-container *ngIf="(!showSearch && filteredBooks.length === 0) || this.inputSearch.value === '' ">
+            <p class="flex-wrap align-items-center justify-content-center">Escribe algo en el buscador</p>
+            <img src="../../../../assets/images/searchIMG.jpg" alt="" style="max-width: 20rem;">
+        </ng-container>
 
     </div>
+    
 </div>
 
 
-<div class="card flex justify-content-center">
+<!-- <div class="card flex justify-content-center">
     <p-toast></p-toast>
     <p-button (click)="show()" icon="pi pi-info-circle" label="Show"></p-button>
-</div>
+</div> -->
 
 
 

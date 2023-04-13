@@ -1,4 +1,5 @@
 export interface Book {
+  id: string;
   title: string;
   author: string;
   publisher: string;
@@ -6,9 +7,13 @@ export interface Book {
   ISBN: string;
   numberOfBooks: string;
   publish_date: Date;
-  genre: string;
-  formats: string[];
+  genre: string[];
+  files: Files[];
   image: string;
   pages: Number;
 }
     
+export interface Files {
+  format: string,
+  route: string
+}

@@ -67,7 +67,7 @@
 <!-- accion accoridion -->
 
 <div class="m-8">
-    <p-accordion class="w-full " [activeIndex]="0">
+    <p-accordion class="w-full" [activeIndex]="activeIndex">
         <p-accordionTab>
             <ng-template pTemplate="header">
                 <div class="flex align-items-center">
@@ -85,7 +85,8 @@
                                 <label for="titleInput" class="font-medium">Titulo</label>
                                 <input id="titleInput" formControlName="titleInput" pinputtext
                                     class="p-inputtext p-component p-element" type="text">
-                                <span style="color:red;" *ngIf="validField('titleInput')"> Debe de haber mas de 1 letra</span>
+                                <span style="color:red;" *ngIf="validField('titleInput')"> Debe de haber mas de 1
+                                    letra</span>
                             </div>
                             <div class="field mb-3 col-6">
                                 <label for="authorInput" class="font-medium">Autor</label>
@@ -93,20 +94,22 @@
                                     class="p-inputtext p-component p-element" type="text">
                             </div>
                             <div class="field mb-3 col-6 ">
-                                <!--añadir formControlName="cities" -->
-
                                 <label for="genreInput" class="font-medium">Género</label>
-                                <p-chips id="genreInput" separator="," formArrayName="genreInput" [max]=5
+                                <p-chips id="genreInput" separator="," formControlName="genreInput" [max]=5
                                     [allowDuplicate]=false placeholder="Fantasia, Romance, etc"></p-chips>
-                                   
-                               
+                                <span style="color:red;" *ngIf="validField('genreInput')"> Debe haber almenos un
+                                    género</span>
                             </div>
+
                             <div class="field mb-3 col-6">
                                 <label for="seriesNumberInput" class="font-medium">Número de libros</label>
                                 <input id="seriesNumberInput" formControlName="booksNumberInput" pinputtext
                                     class="p-inputtext p-component p-element" type="number">
-                                    <span style="color:red;" *ngIf="validField('booksNumberInput')"> Tiene que ser un numero mayor a 0</span>
+                                <span style="color:red;" *ngIf="validField('booksNumberInput')"> Tiene que ser un numero
+                                    mayor a 0</span>
                             </div>
+
+                            <!-- añadir controlador de date -->
                             <div class="field mb-3 col-6">
                                 <label for="dateInput" class="font-medium">Fecha de salida</label>
                                 <p-calendar formControlName="publishDateInput"></p-calendar>
@@ -116,7 +119,8 @@
                                 <label for="seriesNumberInput" class="font-medium">Número de páginas</label>
                                 <input id="seriesNumberInput" formControlName="pagesNumberInput" pinputtext
                                     class="p-inputtext p-component p-element" type="number">
-                                    <span style="color:red;" *ngIf="validField('pagesNumberInput')">Tiene que ser un numero mayor a 0</span>
+                                <span style="color:red;" *ngIf="validField('pagesNumberInput')">Tiene que ser un numero
+                                    mayor a 0</span>
                             </div>
                             <div class="field mb-4 col-12">
                                 <label for="imageInput" class="font-medium">Imagen</label>
@@ -135,15 +139,22 @@
                             </div>
                             <div class="field mb-3 col-6">
                                 <label for="ISBNInput" class="font-medium">ISBN</label>
-                                <input id="ISBNInput" pinputtext formControlName="ISBNInput" class="p-inputtext p-component p-element" type="text">
+                                <input id="ISBNInput" pinputtext formControlName="ISBNInput"
+                                    class="p-inputtext p-component p-element" type="text">
                             </div>
-
+                            <div class="field mb-3 col-2"></div>
+                            <div class="field mb-3 col-8">
+                                <label for="descriptionInput" class="font-medium">Descripción</label>
+                                <textarea id="descriptionInput" pInputTextarea [autoResize]="true"
+                                    formControlName="descriptionInput">
+                                </textarea>
+                            </div>
+                            <div class="field mb-3 col-2"></div>
                             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
 
                             <p-fileUpload class="field mb-4 col-12 md:col-12" name="myfile[]" url="./upload.php"
                                 chooseLabel="Añadir libro" cancelLabel="Cancelar" [showUploadButton]=false
-                                [multiple]=true
-                                accept="application/pdf, application/epub+zip, application/x-mobipocket-ebook">
+                                [multiple]=true accept=".pdf, .epub, .mobi">
                                 <ng-template pTemplate="content">
                                     <ul *ngIf="uploadedFiles.length">
                                         <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
@@ -153,8 +164,8 @@
                             </p-fileUpload>
 
                             <div class="flex w-full justify-content-center">
-                                <button type="submit" class="flex" pripple="" label="Save Book"
-                                   (click)="saveBook()"  class=" w-auto mt-3 p-button p-component">Guardar
+                                <button type="submit" class="flex" pripple="" label="Save Book" (click)="saveBook()"
+                                    class=" w-auto mt-3 p-button p-component">Guardar
                                     Libro</button>
                             </div>
 
@@ -167,7 +178,7 @@
         </p-accordionTab>
 
         <p-accordionTab>
-            <ng-template pTemplate="header">
+            <ng-template pTemplate="header" (click)="activeIndex = 1">
                 <div class="flex align-items-center">
                     <i class="pi pi-search mr-2"></i>
                     <span class="vertical-align-middle">Buscar libros externos</span>
@@ -182,7 +193,7 @@
                         <div class="field ml-6 mb-4 col-10 md:col-9">
                             <span class="p-input-icon-right border-round">
                                 <i class="pi pi-search"></i>
-                                <input class="w-full" type="text" pInputText (ngModel)="inputSearch" #inputSearch
+                                <input class="w-full" type="text" pInputText [formControl]="inputSearch"
                                     (keyup)="searchFilter()" placeholder="Escribe un {{selectFilter}}" />
                             </span>
                         </div>
@@ -197,37 +208,45 @@
 
 
 
-                <div class="surface-card p-4 shadow-2 border-round" *ngIf="foundBooks.data != undefined">
+                <div class="surface-card p-4 shadow-2 border-round" *ngIf="foundBooks.data && foundBooks.data.cover">
 
                     <div class="bg-white flex">
 
-                        <div class="flex bg-cover bg-center flex-wrap my-5 mx-1"
-                            style="width: 150px; height: 200px;  background-image: url('{{foundBooks.data.cover.large}}')">
-                        </div>
-                        <div class="flex-1 flex h-full font-bold m-2 ">
+
+
+                        <img src="{{foundBooks.data.cover.large}}" alt=""
+                            class="flex bg-cover bg-center flex-wrap my-5 mx-1" style="width: 150px; height: 200px;">
+
+                        <div class="flex-1 flex h-full font-bold m-2 justify-content-between">
                             <div class="flex flex-column justify-content-around flex-wrap">
                                 <div class="flex align-items-center ">{{foundBooks.data.title}}</div>
-                                <div class="flex align-items-center font-light">{{foundBooks.data.excerpts[0].text}}
+                                <div class="flex align-items-center font-light" *ngIf="foundBooks.data.excerpts">
+                                    {{foundBooks.data.excerpts[0].text}}
                                 </div>
-                                <div class="flex align-items-center font-light">{{foundBooks.data.authors[0].name}}
+                                <div class="flex align-items-center font-light" *ngIf="foundBooks.data.authors">
+                                    {{foundBooks.data.authors[0].name}}
                                 </div>
-                                <div class="flex flex-row justify-content-between">
-                                    <span class="flex align-items-center ">{{foundBooks.data.publishers[0].name}}</span>
-                                    <span *ngIf="foundBooks.data.number_of_pages != undefined"
-                                        class="flex align-items-start text-white bg-gray-500 px-3 font-light">{{foundBooks.data.number_of_pages}}
-                                        pág.</span>
-                                </div>
-
+                                <div class="flex align-items-center font-light" *ngIf="foundBooks.data.publishers">
+                                    {{foundBooks.data.publishers[0].name}} </div>
                             </div>
 
                         </div>
+                        <div class="flex">
+                            <div class="flex align-items-end justify-content-end">
+                                <span *ngIf="foundBooks.data.number_of_pages != undefined "
+                                    class="flex text-white bg-gray-500 my-4 px-3 font-light ">
+                                    {{foundBooks.data.number_of_pages}} pág.</span>
+                            </div>
+                        </div>
+
+
                         <div class="flex flex-column m-2">
                             <!-- <p-splitButton class="flex justify-content-end" label="Gestionar" [model]="this.optionsItems"
                             (onClick)="options('info')"
                             styleClass="p-button-outlined p-button-warning mr-2 mb-2"></p-splitButton> -->
 
-                            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star"
-                                styleClass="p-button-rounded p-button-warning"></p-button>
+                            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-save"
+                                styleClass="p-button-rounded p-button-warning" (onClick)="getBookData()"></p-button>
 
                         </div>
                     </div>

@@ -3,17 +3,19 @@ import { MenuItem, MessageService } from 'primeng/api';
 import { LibraryService } from '../../service/library.service';
 import { Book } from '../../interfaces/book.interface';
 import { APIBook, Data } from '../../interfaces/apiBook.interface';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { TitleCasePipe } from '@angular/common';
 
 
 @Component({
   selector: 'app-manage',
   templateUrl: './manage.component.html',
   styleUrls: ['./manage.component.css'],
-  providers: [MessageService]
+  providers: [MessageService, TitleCasePipe]
 })
-export class ManageComponent implements OnInit {
+export class ManageComponent {
 
+  activeIndex!: number;
   genresInput!: string[]
   uploadedFiles: any[] = [];
   data!: Data;
@@ -24,44 +26,48 @@ export class ManageComponent implements OnInit {
   showSearch: boolean = false;
   filteredBooks: Book[] = [];
   optionsItems: MenuItem[] = [];
-  @ViewChild('inputSearch') inputSearch!: ElementRef<HTMLInputElement>
+  inputSearch: FormControl = this.formBuilder.control('')
 
 
   bookForm: FormGroup = this.formBuilder.group({
     titleInput: [, [Validators.required, Validators.minLength(1), Validators.max(40)]],
     autorInput: [],
-    genreInput: [this.formBuilder.array([])],
+    genreInput: [['asdf'], Validators.required],
     booksNumberInput: [[], [Validators.required, Validators.min(1)]],
     publishDateInput: [],
     pagesNumberInput: [, [Validators.required, Validators.min(1)]],
     imageInput: [],
     publisherInput: [],
     ISBNInput: [],
+    descriptionInput: [, [Validators.minLength(0), Validators.max(200)]],
     /* publisherInput: new FormControl('Alma'), */
 
   })
 
 
   ngOnInit(): void {
+    this.activeIndex = 1
     this.bookForm.reset({
       titleInput: '',
       autorInput: '',
-      
+      genreInput: ['Fantasía'],
       booksNumberInput: 1,
       publishDateInput: '',
       pagesNumberInput: 1,
       imageInput: '',
       publisherInput: '',
-      ISBNInput: ''
+      ISBNInput: '',
+      descriptionInput: ''
     })
   }
 
   validField(field: string) {
+      
     return this.bookForm.controls[field].errors &&
       this.bookForm.controls[field].touched
   }
 
-  constructor(private libraryService: LibraryService,
+  constructor(private libraryService: LibraryService,  private titlecasePipe: TitleCasePipe,
     private formBuilder: FormBuilder,
     private messageService: MessageService) {
 
@@ -102,17 +108,19 @@ export class ManageComponent implements OnInit {
       this.bookForm.markAllAsTouched();
       return;
     }
-    console.log(this.bookForm.value);
+   
+    this.libraryService.postBook(this.foundBooks);
     this.bookForm.reset({
       titleInput: '',
       autorInput: '',
-      genreInput: 'asx',
+      genreInput: ['Fantasía'],
       booksNumberInput: 1,
       publishDateInput: '',
       pagesNumberInput: 1,
       imageInput: '',
       publisherInput: '',
       ISBNInput: '',
+      descriptionInput: ''
     });
   }
 
@@ -131,37 +139,38 @@ export class ManageComponent implements OnInit {
     this.filter = filter;
   }
 
+  getBookData(){ 
+  
+    this.bookForm.reset({
+      titleInput: this.foundBooks?.data?.title ?? '',
+      autorInput: this.foundBooks?.data?.authors[0]?.name ?? '',
+      genreInput: (this.foundBooks?.data?.subjects?.length > 5) ? this.foundBooks?.data?.subjects?.slice(0, 5)?.map(subj => subj.name) : this.foundBooks?.data?.subjects ?? [],
+      booksNumberInput: 1,
+      publishDateInput: this.foundBooks?.data?.publish_date ?? '',
+      pagesNumberInput: this.foundBooks?.data?.number_of_pages ?? 1,
+      imageInput: this.foundBooks?.data?.cover?.large ?? '',
+      publisherInput: this.foundBooks?.data?.publishers?.[0]?.name ?? '',
+      ISBNInput: this.foundBooks?.data?.identifiers?.isbn_10[0] ?? '',
+      descriptionInput: this.foundBooks?.data?.excerpts?.[0]?.text ?? ''
+      })
+     
+      this.activeIndex = 0; 
+      console.log(this.activeIndex);
+      
+      
+  }
+
   searchFilter() {
+    let dataBook: Data | undefined;
+    if (this.inputSearch.value) {
 
-    this.libraryService.getBookFromApi().subscribe((response) => {
-
-      let dataBook: Data | undefined;
-
-      dataBook = Object.values(response)[0]
-
-      this.foundBooks.data = dataBook!
-
-    })
-
-    /*  console.log(this.filter);
-     if (this.inputSearch.nativeElement.value != '') {
-         this.showSearch = true
-         if (this.filter == 'title') {
-             this.filteredBooks = this.foundBooks.filter(book => book.title.toLocaleLowerCase().includes(this.inputSearch.nativeElement.value.toLocaleLowerCase()));
-             console.log(this.filteredBooks.length);
-   
-         }
-         if (this.filter == 'author') {
-             console.log("entra en author");
-             console.log(this.inputSearch.nativeElement.value);
-             this.filteredBooks = this.foundBooks.filter(book => book.author.toLocaleLowerCase().includes(this.inputSearch.nativeElement.value.toLocaleLowerCase()));
-         }
-         if (this.filter == 'authorTitle') {
-             this.filteredBooks = this.foundBooks.filter(book => (book.title.includes(this.inputSearch.nativeElement.value) && book.author.includes(this.inputSearch.nativeElement.value)));
-         }
-     } else {
-      this.showSearch = false;
-     } */
+      this.libraryService.getBookFromApi(this.titlecasePipe.transform(this.inputSearch.value)).subscribe((response) => {
+        dataBook = Object.values(response)[0]
+        this.foundBooks.data = dataBook!
+      })
+    } else {
+      this.foundBooks.data = dataBook!;
+    }
   }
 
   search(severity: string) {

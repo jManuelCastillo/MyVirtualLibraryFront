@@ -10,15 +10,16 @@ import { CardModule } from 'primeng/card';
 import { AccordionModule } from 'primeng/accordion';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
-import {FileUploadModule} from 'primeng/fileupload';
-import {ChipsModule} from 'primeng/chips';
+import { FileUploadModule } from 'primeng/fileupload';
+import { ChipsModule } from 'primeng/chips';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ToastModule } from 'primeng/toast';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
   declarations: [],
   exports: [
-    ButtonModule, 
+    ButtonModule,
     TabMenuModule,
     AvatarModule,
     InputTextModule,
@@ -32,7 +33,8 @@ import { ToastModule } from 'primeng/toast';
     FileUploadModule,
     ChipsModule,
     DynamicDialogModule,
-    ToastModule
+    ToastModule,
+    InputTextareaModule
   ]
 })
 

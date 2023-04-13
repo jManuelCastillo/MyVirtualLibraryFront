@@ -12,7 +12,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { MyLibraryRoutingModule } from './my-library-routing.module';
 import { HomeComponent } from './pages/home/home.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
-import { ExamplePdfViewerComponent } from './components/example-pdf-viewer/example-pdf-viewer.component';
+import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
 
 
 @NgModule({
@@ -23,7 +23,7 @@ import { ExamplePdfViewerComponent } from './components/example-pdf-viewer/examp
     FooterComponent,
     ManageComponent,
     RegisterComponent,
-    ExamplePdfViewerComponent
+    PdfViewerComponent,
     
   
   ],

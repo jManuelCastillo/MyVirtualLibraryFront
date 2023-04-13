@@ -3,9 +3,9 @@ import { LibraryService } from '../../service/library.service';
 import { Book } from '../../interfaces/book.interface';
 
 @Component({
-  selector: 'app-collection',
-  templateUrl: './collection.component.html',
-  styleUrls: ['./collection.component.css']
+    selector: 'app-collection',
+    templateUrl: './collection.component.html',
+    styleUrls: ['./collection.component.css']
 })
 export class CollectionComponent implements OnInit {
 
@@ -16,15 +16,15 @@ export class CollectionComponent implements OnInit {
 
     responsiveOptions: any[] = [];
 
-    constructor(private productService: LibraryService) {}
+    constructor(private productService: LibraryService) { }
 
     ngOnInit() {
-        
-        this.fantasyBooks = this.bookslist.filter(book => book.genre.toLocaleLowerCase() === 'fantasy' || book.genre.toLocaleLowerCase() === 'Fantasía');
 
-        this.sci_FiBooks = this.bookslist.filter(book => book.genre.toLocaleLowerCase() === 'science fiction' || book.genre.toLocaleLowerCase() === 'sci-fi' || book.genre.toLocaleLowerCase() === 'ciencia ficción');
+        this.fantasyBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'fantasy' || 'fantasía'));
 
-        this.romanticBooks = this.bookslist.filter(book => book.genre.toLocaleLowerCase() === 'classic' || book.genre.toLocaleLowerCase() === 'románticas');
+        this.sci_FiBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'science fiction' || 'ciencia ficción'));
+
+        this.romanticBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'classic' || 'románticas'));
 
 
         this.responsiveOptions = [
@@ -46,5 +46,5 @@ export class CollectionComponent implements OnInit {
         ];
     }
 
-    
+
 }
