@@ -1,0 +1,122 @@
+<app-navbar></app-navbar>
+
+
+<!-- *ngFor="let book of filteredBooks; let j=index" -->
+<div class="grid w-full p-3 m-0">
+
+    <div class="col-1"></div>
+    <div class="col-9 grid bg-white flex ">
+        <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
+            class="flex bg-cover bg-center flex-wrap mx-1" style="width: 200px; height: 300px;">
+        <div class="flex-1 flex h-full font-bold m-2 pl-7">
+            <div class="flex flex-column flex-wrap">
+                <div class="flex align-items-center ">Ejemplo</div>
+                <div class="flex align-items-center font-light"> Ejemplo autor </div>
+                <div class="flex align-items-center font-light"> Ejemplo editorial + fecha</div>
+                <span class="flex align-items-center font-light">234 páginas</span>
+                <div class="flex flex-row justify-content-between">
+                    <!--   <div class="flex">
+                        <span class="flex justify-content-start align-items-start flex-row"
+                            *ngFor="let file of filteredBooks[j].files">
+                            
+                            <a *ngIf="file.format != 'pdf'" href="{{file.route}}" download>
+                                <img style="width: 3rem; height: 3rem;"
+                                    src="../../../../assets/images/utils/icon{{file.format}}.svg"
+                                    alt="{{file.format}}  icon">
+                            </a>
+                            (click)="showPdf(file.route)"
+                            <a  *ngIf="file.format == 'pdf'" class="cursor-pointer">
+                                <img style="width: 3rem; height: 3rem;"
+                                    src="../../../../assets/images/utils/icon{{file.format}}.svg"
+                                    alt="{{file.format}}  icon">
+                            </a>
+                        </span>
+                    </div> -->
+
+                </div>
+            </div>
+
+
+        </div>
+        <div class="flex flex-column m-2">
+            <!-- (onClick)="options('info')" -->
+            <!-- [model]="this.optionsItems" -->
+            <p-splitButton class="flex justify-content-end" label="Gestionar"
+                styleClass="p-button-outlined p-button-warning mr-2 mb-2"></p-splitButton>
+            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star"
+                styleClass="p-button-rounded p-button-warning"></p-button>
+        </div>
+
+    </div>
+    <div class="col-2"></div>
+</div>
+
+
+
+
+
+<div class="grid w-full px-3">
+    <div class="col-1"></div>
+    <div class="col-9 grid bg-white flex mx-4">
+        <div class="flex surface-100 w-full" style="height: 1px;"></div>
+        <P>Descripción</P>
+        <div class="flex align-items-center font-light">Lorem ipsum dolor sit amet consectetur
+            adipisicing elit. Nulla omnis numquam aperiam, esse voluptas, excepturi temporibus
+            sint reprehenderit odit magni quas, quasi consequuntur impedit tenetur beatae voluptate
+            ullam odio deleniti.
+        </div>
+        <div class="flex surface-100 w-full mt-3" style="height: 1px;"></div>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+<div class="grid w-full px-3">
+    <div class="col-1"></div>
+    <div class="col-9 grid bg-white flex mx-4">
+        <div class="flex-row">
+            <div class="flex flex-row align-items-center mb-3 ">
+                Autor
+            </div>
+            <div class="flex flex-column align-items-center">
+                <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
+                    class="flex bg-cover bg-center flex-wrap mx-1" style="width: 150px; height: 225px;">
+                <div class="flex p-2">Puto autor</div>
+            </div>
+        </div>
+        <div class="flex surface-100 w-full mt-3" style="height: 1px;"></div>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+<div class="grid w-full px-3 ">
+    <div class="col-1"></div>
+    <div class="col-9 grid bg-white flex mx-4">
+        <div class="flex-row">
+            <div class="flex flex-row align-items-center mb-3 ">
+                Más libros del autor
+            </div>
+            <div  class="flex flex-row justify-content-between">
+                <div class="flex flex-column align-items-center mr-2">
+                    <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
+                        class="flex bg-cover bg-center flex-wrap mx-1" style="width: 150px; height: 225px;">
+                    <div class="flex p-2">Puto autor</div>
+                </div>
+                <div class="flex flex-column align-items-center mr-2">
+                    <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
+                        class="flex bg-cover bg-center flex-wrap mx-1" style="width: 150px; height: 225px;">
+                    <div class="flex p-2">Puto autor</div>
+                </div>
+                <div class="flex flex-column align-items-center mr-2">
+                    <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
+                        class="flex bg-cover bg-center flex-wrap mx-1" style="width: 150px; height: 225px;">
+                    <div class="flex p-2">Puto autor</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-2"></div>
+
+</div>
+
+<app-footer></app-footer>

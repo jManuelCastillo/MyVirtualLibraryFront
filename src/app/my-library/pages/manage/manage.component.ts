@@ -37,6 +37,7 @@ export class ManageComponent {
     publishDateInput: [],
     pagesNumberInput: [, [Validators.required, Validators.min(1)]],
     imageInput: [],
+    imageAuthorInput: [],
     publisherInput: [],
     ISBNInput: [],
     descriptionInput: [, [Validators.minLength(0), Validators.max(200)]],
@@ -55,6 +56,7 @@ export class ManageComponent {
       publishDateInput: '',
       pagesNumberInput: 1,
       imageInput: '',
+      imageAuthorInput: '',
       publisherInput: '',
       ISBNInput: '',
       descriptionInput: ''
@@ -62,7 +64,6 @@ export class ManageComponent {
   }
 
   validField(field: string) {
-      
     return this.bookForm.controls[field].errors &&
       this.bookForm.controls[field].touched
   }
@@ -149,13 +150,13 @@ export class ManageComponent {
       publishDateInput: this.foundBooks?.data?.publish_date ?? '',
       pagesNumberInput: this.foundBooks?.data?.number_of_pages ?? 1,
       imageInput: this.foundBooks?.data?.cover?.large ?? '',
+      imageAuthorInput: this.foundBooks?.data?.cover?.large ?? '',
       publisherInput: this.foundBooks?.data?.publishers?.[0]?.name ?? '',
       ISBNInput: this.foundBooks?.data?.identifiers?.isbn_10[0] ?? '',
       descriptionInput: this.foundBooks?.data?.excerpts?.[0]?.text ?? ''
       })
      
       this.activeIndex = 0; 
-      console.log(this.activeIndex);
       
       
   }
@@ -163,7 +164,7 @@ export class ManageComponent {
   searchFilter() {
     let dataBook: Data | undefined;
     if (this.inputSearch.value) {
-
+      this.activeIndex = 1
       this.libraryService.getBookFromApi(this.titlecasePipe.transform(this.inputSearch.value)).subscribe((response) => {
         dataBook = Object.values(response)[0]
         this.foundBooks.data = dataBook!

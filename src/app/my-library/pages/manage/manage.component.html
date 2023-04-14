@@ -130,6 +130,14 @@
                                         class="p-inputtext p-component p-element">
                                 </div>
                             </div>
+                            <div class="field mb-4 col-12">
+                                <label for="imageAutorInput" class="font-medium">Imagen del autor</label>
+                                <div class="p-inputgroup">
+                                    <span class="p-inputgroup-addon">www</span>
+                                    <input id="imageAutorInput" formControlName="imageAuthorInput" type="text" pinputtext
+                                        class="p-inputtext p-component p-element">
+                                </div>
+                            </div>
                             <div class="surface-100 mb-3 col-12" style="height: 2px;">
                             </div>
                             <div class="field mb-4 col-12 md:col-6">
@@ -178,7 +186,7 @@
         </p-accordionTab>
 
         <p-accordionTab>
-            <ng-template pTemplate="header" (click)="activeIndex = 1">
+            <ng-template pTemplate="header" >
                 <div class="flex align-items-center">
                     <i class="pi pi-search mr-2"></i>
                     <span class="vertical-align-middle">Buscar libros externos</span>
@@ -186,7 +194,7 @@
                 </div>
 
             </ng-template>
-            <ng-template pTemplate="content">
+            <ng-template pTemplate="content" >
                 <!-- search by api -->
                 <div class="surface-card p-4 shadow-2 border-round w-full">
                     <div class="grid formgrid p-fluid w-full ">

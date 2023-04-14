@@ -13,6 +13,8 @@ import { MyLibraryRoutingModule } from './my-library-routing.module';
 import { HomeComponent } from './pages/home/home.component';
 import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
+import { BookInfoComponent } from './pages/book-info/book-info.component';
+import { LoginComponent } from './components/login/login.component';
 
 
 @NgModule({
@@ -24,6 +26,8 @@ import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component
     ManageComponent,
     RegisterComponent,
     PdfViewerComponent,
+    BookInfoComponent,
+    LoginComponent,
     
   
   ],

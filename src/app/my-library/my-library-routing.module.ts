@@ -5,6 +5,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { CollectionComponent } from './pages/collection/collection.component';
 import { ManageComponent } from './pages/manage/manage.component';
 import { RegisterComponent } from './pages/register/register.component';
+import { BookInfoComponent } from './pages/book-info/book-info.component';
 
 
 const routes: Routes = [
@@ -18,6 +19,8 @@ const routes: Routes = [
       { path: 'manage', component: ManageComponent },
 
       { path: 'register', component: RegisterComponent },
+
+      {path: 'bookinfo/:title', component: BookInfoComponent},
 
       { path: '**', redirectTo: 'home' }
     ]

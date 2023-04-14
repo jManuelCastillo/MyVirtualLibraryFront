@@ -10,7 +10,8 @@ export interface Book {
   genre: string[];
   files: Files[];
   image: string;
-  pages: Number;
+  authorImage: string;
+  pages: number;
 }
     
 export interface Files {
