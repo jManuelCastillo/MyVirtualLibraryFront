@@ -6,7 +6,7 @@ import { CollectionComponent } from './pages/collection/collection.component';
 import { ManageComponent } from './pages/manage/manage.component';
 import { RegisterComponent } from './pages/register/register.component';
 import { BookInfoComponent } from './pages/book-info/book-info.component';
-
+import { canActivate, redirectLoggedInTo, redirectUnauthorizedTo } from '@angular/fire/auth-guard';
 
 const routes: Routes = [
   {
@@ -20,7 +20,11 @@ const routes: Routes = [
 
       { path: 'register', component: RegisterComponent },
 
-      {path: 'bookinfo/:title', component: BookInfoComponent},
+      {
+        path: 'bookinfo/:id',
+        component: BookInfoComponent,
+        ...canActivate(() => redirectUnauthorizedTo(['/register']))
+      },
 
       { path: '**', redirectTo: 'home' }
     ]

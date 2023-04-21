@@ -3,6 +3,8 @@ import { MenuItem } from 'primeng/api';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LibraryService } from '../../service/library.service';
 import { LoginComponent } from '../login/login.component';
+import { User } from '../../interfaces/user.interface';
+import { UserService } from '../../service/user.service';
 
 @Component({
   selector: 'app-navbar',
@@ -16,29 +18,35 @@ export class NavbarComponent {
   activeItem: MenuItem = {};
   ref!: DynamicDialogRef;
   fileInput: any;
+  currentUser: User | undefined;
 
-  constructor(private libraryService: LibraryService, private dialogService: DialogService){}
+  constructor(
+    private libraryService: LibraryService,
+    private dialogService: DialogService,
+    private userService: UserService) { }
 
   showLogin() {
-   /*  this.libraryService.currentPdf = route; */
+    /*  this.libraryService.currentPdf = route; */
     this.ref = this.dialogService.open(LoginComponent, {
-       
-        width: '70%',
-        contentStyle: { overflow: 'auto' },
-        baseZIndex: 10000,
-        maximizable: true
+      width: '70%',
+      contentStyle: { overflow: 'auto' },
+      baseZIndex: 10000,
+      maximizable: true
     });
-   
-    
-}
+  }
 
 
   ngOnInit() {
+    this.currentUser = this.libraryService.currentUser ?? undefined;
+
     this.items = [
-      { label: 'Inicio', icon: 'pi pi-home', 'routerLink': "/home"},
+      { label: 'Inicio', icon: 'pi pi-home', 'routerLink': "/home" },
       { label: 'Colecciones', icon: 'pi pi-book', 'routerLink': "/collection" },
-      { label: 'Administrar', icon: 'pi pi-wrench', 'routerLink': "/manage" }
     ];
+    // if(this.currentUser !== undefined && this.currentUser.admin){
+    if (true) {
+      this.items.push({ label: 'Administrar', icon: 'pi pi-wrench', 'routerLink': "/manage" })
+    }
 
     this.activeItem = this.items[0];
   }
@@ -49,5 +57,9 @@ export class NavbarComponent {
 
   activateLast() {
     this.activeItem = this.items[this.items.length - 1];
+  }
+
+  logOut() {
+      this.userService.logout().catch(error => console.log(error));
   }
 }

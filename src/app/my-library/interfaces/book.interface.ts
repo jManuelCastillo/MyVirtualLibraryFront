@@ -5,13 +5,14 @@ export interface Book {
   publisher: string;
   description: string
   ISBN: string;
-  numberOfBooks: string;
-  publish_date: Date;
+  numberOfBooks: number;
+  publish_date: string;
   genre: string[];
   files: Files[];
   image: string;
   authorImage: string;
   pages: number;
+  taken: boolean;
 }
     
 export interface Files {

@@ -38,7 +38,7 @@ import { LoginComponent } from './components/login/login.component';
     HttpClientModule,
     ReactiveFormsModule,
     NgxExtendedPdfViewerModule
-  ]  ,
+  ],
   providers:[]
 })
 export class MyLibraryModule { }

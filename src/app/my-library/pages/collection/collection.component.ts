@@ -9,7 +9,7 @@ import { Book } from '../../interfaces/book.interface';
 })
 export class CollectionComponent implements OnInit {
 
-    bookslist: Book[] = this.productService.bookListService;
+    /* bookslist: Book[] = this.productService.bookListService; */
     fantasyBooks: Book[] = [];
     sci_FiBooks: Book[] = [];
     romanticBooks: Book[] = [];
@@ -20,12 +20,12 @@ export class CollectionComponent implements OnInit {
 
     ngOnInit() {
 
-        this.fantasyBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'fantasy' || 'fantasía'));
+        /* this.fantasyBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'fantasy' || 'fantasía'));
 
         this.sci_FiBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'science fiction' || 'ciencia ficción'));
 
         this.romanticBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'classic' || 'románticas'));
-
+ */
 
         this.responsiveOptions = [
             {

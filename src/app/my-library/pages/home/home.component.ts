@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MenuItem, MessageService, } from 'primeng/api';
 import { LibraryService } from '../../service/library.service';
 import { Book } from '../../interfaces/book.interface';
@@ -13,18 +13,19 @@ import { PdfViewerComponent } from '../../components/pdf-viewer/pdf-viewer.compo
     styleUrls: ['./home.component.css'],
     providers: [DialogService, MessageService]
 })
-export class HomeComponent implements OnDestroy {
+export class HomeComponent implements OnDestroy, OnInit {
 
     showSearch: boolean = false;
-    bookList: Book[] = this.libraryService.bookListService
     searchItems: MenuItem[] = [];
-    filteredBooks: Book[] = [];
+    filteredBooks: Book[] = [] ;
     optionsItems: MenuItem[] = [];
     inputSearch: FormControl = this.formBuilder.control('')
     selectFilter: string = 'Título';
     filter: string = 'title';
     fileInput: any;
     ref!: DynamicDialogRef;
+    bookList: Book[] = [ ];
+
 
     constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
         public dialogService: DialogService, public messageService: MessageService) {
@@ -80,6 +81,17 @@ export class HomeComponent implements OnDestroy {
 
     }
 
+    ngOnInit(): void {
+        this.libraryService.getBooks().subscribe((response: Book) => {
+
+            console.log( response);
+            
+            this.bookList.push(response);
+            console.log(this.bookList);
+            
+        })
+    }
+
     ngOnDestroy() {
         if (this.ref) {
             this.ref.close();
@@ -95,8 +107,8 @@ export class HomeComponent implements OnDestroy {
             baseZIndex: 10000,
             maximizable: true
         });
-       
-        
+
+
     }
 
     changeFilter(filter: string) {
@@ -104,21 +116,21 @@ export class HomeComponent implements OnDestroy {
     }
 
     searchFilter() {
-        
+
         if (this.inputSearch.value != '') {
             console.log(this.inputSearch.value);
             this.showSearch = true
             if (this.filter == 'title') {
-                this.filteredBooks = this.bookList.filter(book => book.title.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
+                this.filteredBooks = this.bookList.flat().filter(book => book.title.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
                 console.log(this.filteredBooks.length);
             }
             if (this.filter == 'author') {
                 console.log("entra en author");
                 console.log(this.inputSearch);
-                this.filteredBooks = this.bookList.filter(book => book.author.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
+                this.filteredBooks = this.bookList.flat().filter(book => book.author.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
             }
             if (this.filter == 'authorTitle') {
-                this.filteredBooks = this.bookList.filter(book => (book.title.includes(this.inputSearch.value) && book.author.includes(this.inputSearch.value)));
+                this.filteredBooks = this.bookList.flat().filter(book => (book.title.includes(this.inputSearch.value) && book.author.includes(this.inputSearch.value)));
             }
         } else {
             this.showSearch = false;

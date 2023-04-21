@@ -41,8 +41,7 @@ export class ManageComponent {
     publisherInput: [],
     ISBNInput: [],
     descriptionInput: [, [Validators.minLength(0), Validators.max(200)]],
-    /* publisherInput: new FormControl('Alma'), */
-
+    
   })
 
 
@@ -68,9 +67,8 @@ export class ManageComponent {
       this.bookForm.controls[field].touched
   }
 
-  constructor(private libraryService: LibraryService,  private titlecasePipe: TitleCasePipe,
-    private formBuilder: FormBuilder,
-    private messageService: MessageService) {
+  constructor(private libraryService: LibraryService, private formBuilder: FormBuilder, 
+    private titlecasePipe: TitleCasePipe,  private messageService: MessageService) {
 
 
     this.genresInput = [];
@@ -109,8 +107,27 @@ export class ManageComponent {
       this.bookForm.markAllAsTouched();
       return;
     }
+
    
-    this.libraryService.postBook(this.foundBooks);
+    let newBook: Book = {
+      id: '',
+      title: this.bookForm.value.titleInput ,
+      author: this.bookForm.value.autorInput,
+      publisher: this.bookForm.value.publisherInput,
+      description: this.bookForm.value.descriptionInput , 
+      ISBN: this.bookForm.value.ISBNInput, 
+      numberOfBooks: this.bookForm.value.booksNumberInput,
+      publish_date: "",
+      genre: this.bookForm.value.genreInput, 
+      files: [],
+      image: this.bookForm.value.imageInput,
+      authorImage: this.bookForm.value.imageAuthorInput, 
+      pages:this.bookForm.value.pagesNumberInput,
+      taken: false
+    }
+
+    this.libraryService.postBook(newBook);
+    
     this.bookForm.reset({
       titleInput: '',
       autorInput: '',
