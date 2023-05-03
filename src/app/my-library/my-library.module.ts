@@ -15,7 +15,8 @@ import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { PdfViewerComponent } from './components/pdf-viewer/pdf-viewer.component';
 import { BookInfoComponent } from './pages/book-info/book-info.component';
 import { LoginComponent } from './components/login/login.component';
-
+import { FileUploadModule } from "primeng/fileupload";
+import { UpdateBookComponent } from './pages/update-book/update-book.component';
 
 @NgModule({
   declarations: [
@@ -28,6 +29,8 @@ import { LoginComponent } from './components/login/login.component';
     PdfViewerComponent,
     BookInfoComponent,
     LoginComponent,
+    UpdateBookComponent,
+   
     
   
   ],
@@ -37,8 +40,9 @@ import { LoginComponent } from './components/login/login.component';
     PrimengModule,
     HttpClientModule,
     ReactiveFormsModule,
-    NgxExtendedPdfViewerModule
+    NgxExtendedPdfViewerModule,
+    FileUploadModule
   ],
-  providers:[]
+  
 })
 export class MyLibraryModule { }

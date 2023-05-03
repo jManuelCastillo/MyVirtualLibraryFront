@@ -21,14 +21,15 @@ export class RegisterComponent {
   })
 
   register() {
-    console.log('hola');
-
 
     if (this.registerForm.valid) {
       this.userService.register(this.registerForm.value.emailInput, this.registerForm.value.passwordInput)
         .then(response => {
           console.log(response);
-
+          this.userService.registerUserData(response.user.uid, this.registerForm.value.nameInput).then(response => {
+          console.log(response);         
+          })
+          .catch(error => console.log(error));
         })
         .catch(error => console.log(error));
     }

@@ -2,120 +2,125 @@
 
 
 <!-- *ngFor="let book of filteredBooks; let j=index" -->
-<div class="grid w-full p-3 m-0">
+<div class="grid w-full p-3 m-0 ">
 
-    <div class="col-1"></div>
-    <div class="col-9 grid bg-white flex ">
-        <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
-            class="flex bg-cover bg-center flex-wrap mx-1" style="width: 200px; height: 300px;">
-        <div class="flex-1 flex h-full font-bold m-2 pl-7">
+   
+    <div class="col-9 grid bg-white flex col-offset-1 ">
+        <img src="{{currentBook.image}}" alt="" class="flex bg-cover bg-center flex-wrap mx-1"
+            style="width: 200px; height: 300px;">
+        <div class="flex-1 flex h-full flex-column justify-content-between font-bold m-2 pl-7">
             <div class="flex flex-column flex-wrap">
-                <div class="flex align-items-center ">Ejemplo</div>
-                <div class="flex align-items-center font-light"> Ejemplo autor </div>
-                <div class="flex align-items-center font-light"> Ejemplo editorial + fecha</div>
-                <span class="flex align-items-center font-light">234 páginas</span>
-                <div class="flex flex-row justify-content-between">
-                    <!--   <div class="flex">
-                        <span class="flex justify-content-start align-items-start flex-row"
-                            *ngFor="let file of filteredBooks[j].files">
-                            
-                            <a *ngIf="file.format != 'pdf'" href="{{file.route}}" download>
-                                <img style="width: 3rem; height: 3rem;"
-                                    src="../../../../assets/images/utils/icon{{file.format}}.svg"
-                                    alt="{{file.format}}  icon">
-                            </a>
-                            (click)="showPdf(file.route)"
-                            <a  *ngIf="file.format == 'pdf'" class="cursor-pointer">
-                                <img style="width: 3rem; height: 3rem;"
-                                    src="../../../../assets/images/utils/icon{{file.format}}.svg"
-                                    alt="{{file.format}}  icon">
-                            </a>
-                        </span>
-                    </div> -->
-
-                </div>
+                <div class="flex align-items-center ">{{currentBook.title}}</div>
+                <div class="flex align-items-center font-light"> {{currentBook.author}} </div>
+                <div class="flex align-items-center font-light"> {{currentBook.publisher}}
+                    ({{currentBook.publish_date}})</div>
+                <span class="flex align-items-center font-light">{{currentBook.pages}} páginas</span>
+                
             </div>
+            <div class="flex flex-row justify-content-between">
+                <div class="flex h-full">
+                  <span class="flex justify-content-start align-items-start flex-row"
+                  *ngFor="let file of currentBook.files">
 
+                  <a  *ngIf="file.format != 'pdf'" (click)="uploadBook(file.route)" class="cursor-pointer" download>
+                    <img style="width: 3rem; height: 3rem;"
+                        src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
+                        alt="{{file.format}}  icon">
+                </a>
+                <a (click)="showPdf(file.route)" *ngIf="file.format == 'pdf'" class="cursor-pointer">
+                    <img style="width: 3rem; height: 3rem;"
+                        src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
+                        alt="{{file.format}} icon">
+                </a>
+              </span>
+              </div>
+
+          </div>
 
         </div>
         <div class="flex flex-column m-2">
             <!-- (onClick)="options('info')" -->
             <!-- [model]="this.optionsItems" -->
-            <p-splitButton class="flex justify-content-end" label="Gestionar"
-                styleClass="p-button-outlined p-button-warning mr-2 mb-2"></p-splitButton>
+            <p-overlayPanel #op class="p-0">
+                <div class="flex flex-column">
+                    <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"><i class="pi pi-replay"></i>
+                        Actualizar</div>
+                    <p-divider class="my-1"></p-divider>
+                    <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
+                        (click)="deleteBook(currentBook.id)"><i class="pi pi-trash"></i> Borrar</div>
+                    <p-divider></p-divider>
+                    <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"><i class="pi pi-times-circle"></i>
+                        Retirar para mi</div>
+                    <p-divider></p-divider>
+                    <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer">Retirar para un usuario
+                    </div>
+                    <p-divider></p-divider>
+                    <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer">Devolver de un usuario
+                    </div>
+                </div>
+            </p-overlayPanel>
+            <p-button (click)="op.toggle($event)" styleClass="p-button-outlined p-button-warning mr-2 mb-2"
+                label="Gestionar"></p-button>
             <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star"
                 styleClass="p-button-rounded p-button-warning"></p-button>
         </div>
 
     </div>
-    <div class="col-2"></div>
 </div>
 
+<div *ngIf="currentBook.description != ''">
+
+    <div class="mx-8"><p-divider class="my-1"></p-divider></div>
+
+    <div class="grid w-full px-3 col-offset-1 ">
+        <div class="col-9 grid bg-white flex mx-4">
 
 
+            <div class="flex align-items-center font-light">
+                <P>Descripción</P>
+                {{currentBook.description}}
+            </div>
 
-
-<div class="grid w-full px-3">
-    <div class="col-1"></div>
-    <div class="col-9 grid bg-white flex mx-4">
-        <div class="flex surface-100 w-full" style="height: 1px;"></div>
-        <P>Descripción</P>
-        <div class="flex align-items-center font-light">Lorem ipsum dolor sit amet consectetur
-            adipisicing elit. Nulla omnis numquam aperiam, esse voluptas, excepturi temporibus
-            sint reprehenderit odit magni quas, quasi consequuntur impedit tenetur beatae voluptate
-            ullam odio deleniti.
         </div>
-        <div class="flex surface-100 w-full mt-3" style="height: 1px;"></div>
     </div>
-    <div class="col-2"></div>
 </div>
 
-<div class="grid w-full px-3">
-    <div class="col-1"></div>
+<div class="mx-8"><p-divider class="my-1"></p-divider></div>
+
+<div class="grid w-full col-offset-1">
     <div class="col-9 grid bg-white flex mx-4">
         <div class="flex-row">
-            <div class="flex flex-row align-items-center mb-3 ">
+            <div class="flex flex-row align-items-center">
                 Autor
             </div>
             <div class="flex flex-column align-items-center">
-                <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
-                    class="flex bg-cover bg-center flex-wrap mx-1" style="width: 150px; height: 225px;">
-                <div class="flex p-2">Puto autor</div>
+                <img src="{{currentBook.authorImage}}" alt="Imangen {{currentBook.author}}" 
+                class="flex bg-cover bg-center flex-wrap mx-1" style="height: 225px">
+                <div class="flex p-2">{{currentBook.author}}</div>
             </div>
         </div>
-        <div class="flex surface-100 w-full mt-3" style="height: 1px;"></div>
+
     </div>
-    <div class="col-2"></div>
 </div>
 
-<div class="grid w-full px-3 ">
-    <div class="col-1"></div>
-    <div class="col-9 grid bg-white flex mx-4">
+
+<div class="mx-8"><p-divider class="my-1"></p-divider></div>
+<div class="grid w-full px-3 col-offset-1">
+    <div class="col-9 column-gap-1 grid bg-white flex mx-4">
         <div class="flex-row">
-            <div class="flex flex-row align-items-center mb-3 ">
+            <div class="flex flex-row align-items-center mb-3">
                 Más libros del autor
             </div>
-            <div  class="flex flex-row justify-content-between">
-                <div class="flex flex-column align-items-center mr-2">
-                    <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
-                        class="flex bg-cover bg-center flex-wrap mx-1" style="width: 150px; height: 225px;">
-                    <div class="flex p-2">Puto autor</div>
-                </div>
-                <div class="flex flex-column align-items-center mr-2">
-                    <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
-                        class="flex bg-cover bg-center flex-wrap mx-1" style="width: 150px; height: 225px;">
-                    <div class="flex p-2">Puto autor</div>
-                </div>
-                <div class="flex flex-column align-items-center mr-2">
-                    <img src="../../../../assets/images/covers/El psicoanalista.jpg" alt=""
-                        class="flex bg-cover bg-center flex-wrap mx-1" style="width: 150px; height: 225px;">
-                    <div class="flex p-2">Puto autor</div>
+            <div class="flex flex-row justify-content-between">
+                <div class="flex flex-column align-items-center mr-2" *ngFor="let book of this.authorBooks">
+                    <img src="{{book.image}}" alt="" class="flex bg-cover bg-center flex-wrap mx-1"
+                        style="width: 150px; height: 225px;">
+                    <div class="flex p-2">{{book.title}}</div>
                 </div>
             </div>
         </div>
-
     </div>
-    <div class="col-2"></div>
+
 
 </div>
 

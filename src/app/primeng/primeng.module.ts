@@ -15,6 +15,15 @@ import { ChipsModule } from 'primeng/chips';
 import { DynamicDialogModule } from 'primeng/dynamicdialog';
 import { ToastModule } from 'primeng/toast';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { SpeedDialModule } from 'primeng/speeddial';
+import { OverlayPanelModule } from 'primeng/overlaypanel';
+import { SidebarModule } from 'primeng/sidebar';
+import { DividerModule } from 'primeng/divider';
+import { MessagesModule } from "primeng/messages";
+import { MessageModule } from "primeng/message";
+import { SkeletonModule } from 'primeng/skeleton';
+import { DialogModule } from 'primeng/dialog';
+import { ConfirmPopupModule } from 'primeng/confirmpopup';
 
 @NgModule({
   declarations: [],
@@ -34,7 +43,16 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     ChipsModule,
     DynamicDialogModule,
     ToastModule,
-    InputTextareaModule
+    InputTextareaModule,
+    SpeedDialModule,
+    OverlayPanelModule,
+    DividerModule,
+    SidebarModule,
+    MessagesModule,
+    MessageModule,
+    SkeletonModule,
+    DialogModule,
+    ConfirmPopupModule
   ]
 })
 

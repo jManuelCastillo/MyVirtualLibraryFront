@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LibraryService } from '../../service/library.service';
 import { Book } from '../../interfaces/book.interface';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-collection',
@@ -9,23 +10,36 @@ import { Book } from '../../interfaces/book.interface';
 })
 export class CollectionComponent implements OnInit {
 
-    /* bookslist: Book[] = this.productService.bookListService; */
     fantasyBooks: Book[] = [];
-    sci_FiBooks: Book[] = [];
+    scifiBooks: Book[] = [];
     romanticBooks: Book[] = [];
 
     responsiveOptions: any[] = [];
 
-    constructor(private productService: LibraryService) { }
+    constructor(private libraryService: LibraryService, private router: Router) { }
 
-    ngOnInit() {
+    async ngOnInit() {
 
-        /* this.fantasyBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'fantasy' || 'fantasía'));
+        await this.libraryService.getFantasyBooks().then(Snapshot => Snapshot.forEach((doc) => {
+            const newFantasyBook = doc.data() as Book
+            newFantasyBook.id = doc.id
+            this.fantasyBooks.push(newFantasyBook)
+        })
+        )
 
-        this.sci_FiBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'science fiction' || 'ciencia ficción'));
+        await this.libraryService.getSciFiBooks().then(Snapshot => Snapshot.forEach((doc) => {
+            const newScifiBook = doc.data() as Book
+            newScifiBook.id = doc.id
+            this.scifiBooks.push(newScifiBook)
+        })
+        )
 
-        this.romanticBooks = this.bookslist.filter(book => book.genre.map((genre) => genre.toLocaleLowerCase() === 'classic' || 'románticas'));
- */
+        await this.libraryService.getRomanticBooks().then(Snapshot => Snapshot.forEach((doc) => {
+            const newRomanticBook = doc.data() as Book
+            newRomanticBook.id = doc.id
+            this.romanticBooks.push(newRomanticBook)
+        })
+        )
 
         this.responsiveOptions = [
             {
@@ -46,5 +60,7 @@ export class CollectionComponent implements OnInit {
         ];
     }
 
-
+    showInfo(id: string) {
+        this.router.navigate(['/bookinfo', id]);
+    }
 }

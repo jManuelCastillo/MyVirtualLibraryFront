@@ -2,7 +2,7 @@
     <!-- header title -->
     <div class="flex px-4 flex-row align-items-center just ">
         <img src="../../../../favicon.ico" class="pr-3" style="width: 3rem; height: 3rem;" alt="">
-        <p class="title"> My Virtual Library</p>
+        <p class="title"> My Virtual Library </p>
     </div>
     <div
         class="flex flex-wrap flex-auto xl:justify-content-end lg:justify-content-end md:justify-content-center sm:justify-content-between">
@@ -14,20 +14,40 @@
         </div>
         <!-- avatar column -->
         <div class="flex ">
+
             <div class="flex flex-column align-items-center py-2 px-6">
-                <ng-container *ngIf="true; else elseTemplate">
+                <ng-container *ngIf="getStateUser() == undefined; else elseTemplate">
                     <p-button label="Inicia Sesión" (click)="showLogin()" styleClass="p-button-secondary p-button-text"
-                        class="flex align-items-center justify-content-center mt-3"></p-button>
+                        class="flex align-items-center justify-content-center pt-3"></p-button>
                 </ng-container>
-                <ng-template #elseTemplate>
-                     <p-avatar class="flex align-items-center justify-content-center" icon="pi pi-user"
-                      size="xlarge" shape="circle" [style]="{ 'background-color': '#3F51B5', color: '#ffffff' }"></p-avatar>
-                <span class="flex align-items-center justify-content-center">Usuario</span>
+                <ng-template #elseTemplate class="flex flex-column">
+                    <span class="flex align-items-center justify-content-center ">{{currentUser?.fullName}}</span>
+                    <div class="flex pr-7">
+                        <p-speedDial [model]="items2" direction="down" showIcon="pi pi-user">
+                        </p-speedDial>
+                    </div>
+
                 </ng-template>
             </div>
-            <p-button label="Cerrar Sesión" (click)="logOut()" styleClass="p-button-secondary p-button-text"
-                        class="flex align-items-center justify-content-center mt-3"></p-button>
-        </div>
 
+        </div>
+        <p-sidebar [(visible)]="sidebarVisible2" position="right">
+            <h2>Libros Favoritos</h2>
+
+            <ng-container *ngIf="currentUser && currentUser.favouritesBooks && 
+                currentUser.favouritesBooks.length != 0; else NonFavorites">
+                <div *ngFor="let book of currentUser.favouritesBooks">
+                    
+                    <p>{{book}}</p>
+                    
+                </div>
+
+            </ng-container>
+            <ng-template #NonFavorites> 
+                    <p>Nada guardado en favoritos de momento</p>
+            </ng-template>
+
+
+        </p-sidebar>
     </div>
 </div>

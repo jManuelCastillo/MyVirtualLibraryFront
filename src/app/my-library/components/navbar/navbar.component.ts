@@ -1,8 +1,5 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { LibraryService } from '../../service/library.service';
-import { LoginComponent } from '../login/login.component';
 import { User } from '../../interfaces/user.interface';
 import { UserService } from '../../service/user.service';
 
@@ -10,45 +7,58 @@ import { UserService } from '../../service/user.service';
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
-  providers: [DialogService]
+  changeDetection: ChangeDetectionStrategy.OnPush
+
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
 
   items: MenuItem[] = [];
+  items2: MenuItem[] = [];
   activeItem: MenuItem = {};
-  ref!: DynamicDialogRef;
   fileInput: any;
-  currentUser: User | undefined;
+  currentUser?: User;
+  sidebarVisible2: boolean = false;
 
   constructor(
-    private libraryService: LibraryService,
-    private dialogService: DialogService,
-    private userService: UserService) { }
+    private userService: UserService, private cd: ChangeDetectorRef) { }
+
 
   showLogin() {
     /*  this.libraryService.currentPdf = route; */
-    this.ref = this.dialogService.open(LoginComponent, {
-      width: '70%',
-      contentStyle: { overflow: 'auto' },
-      baseZIndex: 10000,
-      maximizable: true
-    });
+    this.userService.show()
   }
 
+  getStateUser(){
+    return localStorage.getItem('user')
+  }
 
   ngOnInit() {
-    this.currentUser = this.libraryService.currentUser ?? undefined;
+    this.userService.getLocalUser()
+    if (localStorage.getItem('user')) {
+      this.currentUser = this.userService.currentUser ;
+      this.currentUser?.favouritesBooks?.length
+    }
+    
+    this.setItems()
 
+    this.items2 = [
+      { label: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => this.logOut() },
+      { label: 'Favoritos', icon: 'pi pi-star-fill', command: (event) => this.sidebarVisible2 = !this.sidebarVisible2 },
+      { label: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => this.logOut() },
+    ]
+
+    this.activeItem = this.items[0];
+  }
+
+  setItems(){
     this.items = [
       { label: 'Inicio', icon: 'pi pi-home', 'routerLink': "/home" },
       { label: 'Colecciones', icon: 'pi pi-book', 'routerLink': "/collection" },
     ];
-    // if(this.currentUser !== undefined && this.currentUser.admin){
-    if (true) {
+    
+    if ( this.currentUser != undefined && this.currentUser.admin) {
       this.items.push({ label: 'Administrar', icon: 'pi pi-wrench', 'routerLink': "/manage" })
     }
-
-    this.activeItem = this.items[0];
   }
 
   onActiveItemChange(event: MenuItem) {
@@ -60,6 +70,9 @@ export class NavbarComponent {
   }
 
   logOut() {
-      this.userService.logout().catch(error => console.log(error));
+    localStorage.clear()
+    this.currentUser = undefined;
+    this.setItems()
+    this.userService.logout().catch(error => console.log(error));
   }
 }

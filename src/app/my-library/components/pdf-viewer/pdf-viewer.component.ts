@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
 import { NgxExtendedPdfViewerService, pdfDefaultOptions, NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { LibraryService } from '../../service/library.service';
-
+import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 @Component({
   selector: 'app-pdf-viewer',
   templateUrl: './pdf-viewer.component.html',
@@ -17,14 +17,17 @@ export class PdfViewerComponent implements OnInit {
   currentPdf!: string;
   public pageLabel: string = "";
 
-  constructor(private pdfService: NgxExtendedPdfViewerService, private libraryService: LibraryService) {
+  constructor(private pdfService: NgxExtendedPdfViewerService,
+     private libraryService: LibraryService,
+     private storage: Storage) {
     pdfDefaultOptions.assetsFolder = 'bleeding-edge';
     pdfDefaultOptions.doubleTapZoomFactor = '150%';
     pdfDefaultOptions.maxCanvasPixels = 4096 * 4096 * 5;
   }
 
-  ngOnInit(): void {
-    this.currentPdf = this.libraryService.currentPdf;
+  async ngOnInit() {
+       this.currentPdf = this.libraryService.currentPdf    
+    
   }
 
 }

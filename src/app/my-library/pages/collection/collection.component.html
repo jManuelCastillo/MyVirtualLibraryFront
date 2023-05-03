@@ -2,22 +2,27 @@
 <div class="w-full pt-3 pl-8 font-bold text-2xl">Fantasía</div>
 <div class="grid">
     <div class="col-1"></div>
-    <p-carousel class="col-10 pt-4" [value]="fantasyBooks" [numVisible]="3" [numScroll]="1" [responsiveOptions]="responsiveOptions">
-        
+    <p-carousel class="col-10 pt-4" [value]="fantasyBooks" [numVisible]="3" [numScroll]="1"
+        [responsiveOptions]="responsiveOptions">
+
         <ng-template let-fantasyBook pTemplate="item">
             <p-card class="flex align-items-center justify-content-around p-1">
-                <div class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
-                        
-                        <img class="mb-3 shadow-6" src="{{fantasyBook.image}}"  onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
-                    
-                        
+                <div
+                    class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
+
+                    <img class="mb-3 shadow-6" src="{{fantasyBook.image}}"
+                        onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
+
+
                     <div class="flex-column flex align-items-center justify-content-center">
                         <h4 class="mb-1">{{ fantasyBook.title }}</h4>
-                        <h6 class="mt-0 mb-3" >({{ fantasyBook.author }})</h6>
-                       
+                        <h6 class="mt-0 mb-3">({{ fantasyBook.author }})</h6>
+
                         <div class="car-buttons mt-5">
-                            <p-button type="button" styleClass="p-button p-button-rounded mr-2" icon="pi pi-book"></p-button>
-                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2" icon="pi pi-star"></p-button>
+                            <p-button type="button" styleClass="p-button p-button-rounded mr-2"
+                                icon="pi pi-book" (click)="showInfo(fantasyBook.id)"></p-button>
+                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2"
+                                icon="pi pi-star"></p-button>
                         </div>
                     </div>
                 </div>
@@ -31,22 +36,27 @@
 <div class="w-full pl-8 font-bold text-2xl">Ciencia Ficción</div>
 <div class="grid">
     <div class="col-1"></div>
-    <p-carousel class="col-10 pt-4" [value]="sci_FiBooks" [numVisible]="3" [numScroll]="1" [responsiveOptions]="responsiveOptions">
-        
+    <p-carousel class="col-10 pt-4" [value]="scifiBooks" [numVisible]="3" [numScroll]="1"
+        [responsiveOptions]="responsiveOptions">
+
         <ng-template let-sciFiBook pTemplate="item">
             <p-card class="flex align-items-center justify-content-around p-1">
-                <div class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
-                        
-                        <img class="mb-3 shadow-6" src="{{sciFiBook.image}}"  onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
-                    
-                        
+                <div
+                    class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
+
+                    <img class="mb-3 shadow-6" src="{{sciFiBook.image}}"
+                        onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
+
+
                     <div class="flex-column flex align-items-center justify-content-center">
-                        <h4 class="mb-1">{{ sciFiBook.title }}</h4>
-                        <h6 class="mt-0 mb-3" >({{ sciFiBook.author }})</h6>
-                       
+                        <h4 class="mb-1">{{sciFiBook.title}}</h4>
+                        <h6 class="mt-0 mb-3">({{sciFiBook.author}})</h6>
+
                         <div class="car-buttons mt-5">
-                            <p-button type="button" styleClass="p-button p-button-rounded mr-2" icon="pi pi-book"></p-button>
-                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2" icon="pi pi-star"></p-button>
+                            <p-button type="button" styleClass="p-button p-button-rounded mr-2"
+                                icon="pi pi-book" (click)="showInfo(sciFiBook.id)"></p-button>
+                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2"
+                                icon="pi pi-star"></p-button>
                         </div>
                     </div>
                 </div>
@@ -60,22 +70,27 @@
 <div class="w-full pt-3 pl-8 font-bold text-2xl">Romántico</div>
 <div class="grid">
     <div class="col-1"></div>
-    <p-carousel class="col-10 pt-4" [value]="romanticBooks" [numVisible]="3" [numScroll]="1" [responsiveOptions]="responsiveOptions">
-        
+    <p-carousel class="col-10 pt-4" [value]="romanticBooks" [numVisible]="3" [numScroll]="1"
+        [responsiveOptions]="responsiveOptions">
+
         <ng-template let-romanticBook pTemplate="item">
             <p-card class="flex align-items-center justify-content-around p-1">
-                <div class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
-                        
-                        <img class="mb-3 shadow-6" src="{{romanticBook.image}}"  onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
-                    
-                        
+                <div
+                    class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
+
+                    <img class="mb-3 shadow-6" src="{{romanticBook.image}}"
+                        onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
+
+
                     <div class="flex-column flex align-items-center justify-content-center">
-                        <h4 class="mb-1">{{ romanticBook.title }}</h4>
-                        <h6 class="mt-0 mb-3" >({{ romanticBook.author }})</h6>
-                       
+                        <h4 class="mb-1">{{romanticBook.title}}</h4>
+                        <h6 class="mt-0 mb-3"> ({{romanticBook.author}})</h6>
+
                         <div class="car-buttons mt-5">
-                            <p-button type="button" styleClass="p-button p-button-rounded mr-2" icon="pi pi-book"></p-button>
-                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2" icon="pi pi-star"></p-button>
+                            <p-button type="button" styleClass="p-button p-button-rounded mr-2"
+                                icon="pi pi-book" (click)="showInfo(romanticBook.id)"></p-button>
+                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2"
+                                icon="pi pi-star"></p-button>
                         </div>
                     </div>
                 </div>

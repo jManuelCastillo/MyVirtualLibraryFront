@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 <!-- title -->
 <div class="grid p-align-center mt-2 w-full">
-    <div class="bg-cover bg-center border-round h-25rem w-full align-items-center justify-content-center flex flex-column h-full"
+    <div class="bg-cover bg-center border-round h-25rem w-full align-items-center justify-content-center flex flex-column h-full "
         style="background-image: url('../../../../assets/images/libraryIMG.png')">
         <span class="text-6xl text-50 flex ">VISÍTANOS</span>
         <span class="text-xl text-50 font-italic flex"> Busca un libro que necesitas </span>
@@ -18,13 +18,15 @@
 <div class="grid w-full p-6 ">
 
     <div class="col-1"></div>
-    <div class="col-10 grid flex align-items-center justify-content-between" >
-        
-        <div class="flex column-gap-3 row-gap-2 m-4 max-w-20rem min-w-20rem"
-            *ngFor="let book of bookList.flat().slice(0,6); let i=index">
-            <div class="flex align-items-center  justify-content-center bg-cover bg-center flex-wrap"
+    <div class="col-10 grid flex align-items-center justify-content-between">
+
+        <div class="flex column-gap-3 row-gap-2 m-4 max-w-20rem min-w-20rem cursor-pointer"
+            *ngFor="let book of bookList.flat().slice(0,6); let i=index" (click)="showInfo(book.id)">
+
+            <div class="flex align-items-center justify-content-center bg-cover bg-center flex-wrap "
                 style="min-width: 150px; min-height: 200px; max-width: 150px; max-height: 200px; background-image: url('{{book.image}}')">
             </div>
+
             <div class="flex flex-column font-bold text-gray-900">
                 <div class="flex align-items-center font-bold border-round ml-2 ">{{book.title}}</div>
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.author}}</div>
@@ -32,6 +34,7 @@
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.pages}} páginas</div>
 
             </div>
+
         </div>
     </div>
 
@@ -72,27 +75,28 @@
 
         <div class="col-2"></div>
         <div class="col-7 grid bg-white flex">
-
-            <img class="flex bg-cover bg-center flex-wrap my-5 mx-1" style="width: 150px; height: 200px;"
-                src="{{filteredBooks[j].image}}" alt="Imagen">
-
+            <div (click)="showInfo(book.id)">
+                <img class="flex bg-cover bg-center flex-wrap my-5 mx-1" style="width: 150px; height: 200px;"
+                    src="{{filteredBooks[j].image}}" alt="Imagen">
+            </div>
             <div class="flex-1 flex h-full font-bold m-2 ">
                 <div class="flex flex-column justify-content-around flex-wrap">
                     <div class="flex align-items-center ">{{filteredBooks[j].title}}</div>
-                    <div class="flex align-items-center font-light">{{filteredBooks[j].description}}</div>
+                    <div class="flex align-items-center font-light">{{filteredBooks[j].description | slice:0:300 }}
+                    </div>
                     <div class="flex flex-row justify-content-between">
                         <div class="flex">
                             <span class="flex justify-content-start align-items-start flex-row"
                                 *ngFor="let file of filteredBooks[j].files">
-                               
-                                <a *ngIf="file.format != 'pdf'" href="{{file.route}}" download>
+
+                                <a  *ngIf="file.format != 'pdf'" (click)="uploadBook(file.route)" class="cursor-pointer" download>
                                     <img style="width: 3rem; height: 3rem;"
-                                        src="../../../../assets/images/utils/icon{{file.format}}.svg"
+                                        src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
                                         alt="{{file.format}}  icon">
                                 </a>
-                                <a (click)="showPdf(file.route)" *ngIf="file.format == 'pdf'" class="cursor-pointer">
+                                <a (click)="showPdf(file.route,  filteredBooks[j].title)" *ngIf="file.format == 'pdf'" class="cursor-pointer">
                                     <img style="width: 3rem; height: 3rem;"
-                                        src="../../../../assets/images/utils/icon{{file.format}}.svg"
+                                        src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
                                         alt="{{file.format}} icon">
                                 </a>
                             </span>
@@ -106,11 +110,41 @@
 
             </div>
             <div class="flex flex-column m-2">
-                <p-splitButton class="flex justify-content-end" label="Gestionar" [model]="this.optionsItems"
-                    (onClick)="options('info')"
-                    styleClass="p-button-outlined p-button-warning mr-2 mb-2"></p-splitButton>
-                <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star"
-                    styleClass="p-button-rounded p-button-warning"></p-button>
+                <p-overlayPanel #op class="p-0">
+                    <div class="flex flex-column">
+                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer" (click)="updateBook(filteredBooks[j].id)"><i class="pi pi-replay"></i>
+                            Actualizar</div>
+                        <p-divider class="my-1"></p-divider>
+                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
+                            (click)="deleteBook(filteredBooks[j].id)"><i class="pi pi-trash"></i> Borrar</div>
+                        <p-divider></p-divider>
+                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"><i
+                                class="pi pi-times-circle"></i> Retirar para mi</div>
+                        <p-divider></p-divider>
+                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer">Retirar para un usuario
+                        </div>
+                        <p-divider></p-divider>
+                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer">Devolver de un usuario
+                        </div>
+                    </div>
+                </p-overlayPanel>
+                <p-button (click)="op.toggle($event)" styleClass="p-button-outlined p-button-warning mr-2 mb-2"
+                    label="Gestionar"></p-button>
+
+
+                <ng-container
+                    *ngIf=" this.currentUser?.favouritesBooks?.indexOf(filteredBooks[j].id) === -1; else elseTemplate">
+                    <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star-fill"
+                        styleClass="p-button-rounded p-button-warning"
+                        (onClick)="favButton(filteredBooks[j].id)"></p-button>
+                </ng-container>
+                <ng-template #elseTemplate>
+                    <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star"
+                        styleClass="p-button-rounded p-button-warning"
+                        (onClick)="favButton(filteredBooks[j].id)"></p-button>
+                </ng-template>
+
+
             </div>
         </div>
         <div class="col-3"></div>

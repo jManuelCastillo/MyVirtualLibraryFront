@@ -1,0 +1,129 @@
+<app-navbar></app-navbar>
+
+<!-- insert a book -->
+<div class="surface-card p-4 shadow-2 border-round m-8">
+    <form autocomplete="off" [formGroup]="bookForm" (ngSubmit)="saveBook()">
+        <div class="grid formgrid p-fluid flex">
+
+            <div class="field mb-3 col-6">
+                <label for="titleInput" class="font-medium">Titulo</label>
+                <input id="titleInput" formControlName="titleInput" pinputtext class="p-inputtext p-component p-element"
+                    type="text">
+                <p-message severity="error" text="Debe de haber entre 1
+                       y 50 caracteres" *ngIf="validField('titleInput')"></p-message>
+
+            </div>
+            <div class="field mb-3 col-6">
+                <label for="authorInput" class="font-medium">Autor</label>
+                <input id="authorInput" formControlName="autorInput" pinputtext
+                    class="p-inputtext p-component p-element" type="text">
+            </div>
+            <div class="field mb-3 col-6 ">
+                <label for="genreInput" class="font-medium">Género</label>
+                <p-chips id="genreInput" separator="," formControlName="genreInput" [max]=5 [allowDuplicate]=false
+                    placeholder="Fantasia, Romance, etc"></p-chips>
+                <p-message severity="error" text="Debe haber almenos un
+                    género" *ngIf="validField('genreInput')"></p-message>
+            </div>
+
+            <div class="field mb-3 col-6">
+                <label for="seriesNumberInput" class="font-medium">Número de libros</label>
+                <input id="seriesNumberInput" formControlName="booksNumberInput" pinputtext
+                    class="p-inputtext p-component p-element" type="number">
+                <p-message severity="error" text="Tiene que ser un numero
+                        mayor a 0" *ngIf="validField('booksNumberInput')"></p-message>
+            </div>
+
+            <!-- añadir controlador de date -->
+            <div class="field mb-3 col-6">
+                <label for="dateInput" class="font-medium">Fecha de salida</label>
+                <p-calendar formControlName="publishDateInput"></p-calendar>
+                <!-- [(ngModel)]="date" -->
+            </div>
+            <div class="field mb-3 col-6">
+                <label for="seriesNumberInput" class="font-medium">Número de páginas</label>
+                <input id="seriesNumberInput" formControlName="pagesNumberInput" pinputtext
+                    class="p-inputtext p-component p-element" type="number">
+                <p-message severity="error" text="Tiene que ser un numero
+                        mayor a 0" *ngIf="validField('pagesNumberInput')"></p-message>
+
+            </div>
+            <div class="field mb-4 col-12">
+                <label for="imageInput" class="font-medium">Imagen</label>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">www</span>
+                    <input id="imageInput" formControlName="imageInput" type="text" pinputtext
+                        class="p-inputtext p-component p-element">
+                </div>
+            </div>
+            <div class="field mb-4 col-12">
+                <label for="imageAutorInput" class="font-medium">Imagen del autor</label>
+                <div class="p-inputgroup">
+                    <span class="p-inputgroup-addon">www</span>
+                    <input id="imageAutorInput" formControlName="imageAuthorInput" type="text" pinputtext
+                        class="p-inputtext p-component p-element">
+                </div>
+            </div>
+            <div class="surface-100 mb-3 col-12" style="height: 2px;">
+            </div>
+            <div class="field mb-4 col-12 md:col-6">
+                <label for="publisher" class="font-medium">Editorial</label>
+                <input id="publisher" formControlName="publisherInput" type="text" pinputtext
+                    class="p-inputtext p-component p-element">
+            </div>
+            <div class="field mb-3 col-6">
+                <label for="ISBNInput" class="font-medium">ISBN</label>
+                <input id="ISBNInput" pinputtext formControlName="ISBNInput" class="p-inputtext p-component p-element"
+                    type="text">
+            </div>
+            <div class="field mb-3 col-2"></div>
+            <div class="field mb-3 col-8">
+                <label for="descriptionInput" class="font-medium">Descripción</label>
+                <textarea id="descriptionInput" pInputTextarea [autoResize]="true" formControlName="descriptionInput">
+                    </textarea>
+            </div>
+            <div class="field mb-3 col-2"></div>
+            <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
+
+            <div class="flex flex-row justify-content-between flex-wrap w-full flex-row">
+                <div *ngFor="let file of currentBook.files" class="flex" >
+                    
+                        <p-toast></p-toast>
+                        <p-confirmPopup></p-confirmPopup>
+                        <p-button (click)="confirm($event, file.route)" icon="pi pi-times">
+                            <img style="width: 3rem; height: 3rem;" class="mx-4"
+                                src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
+                                alt="{{file.format}} icon">
+                        </p-button>
+                    
+                </div>
+            </div>
+
+
+            <p-toast></p-toast>
+            <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true class="field mb-4 col-12 md:col-12"
+                chooseLabel="Añadir libro" uploadLabel="Actualizar" labe cancelLabel="Cancelar" [showUploadButton]=true
+                [multiple]=true accept=".pdf, .epub, .mobi">
+
+                <ng-template pTemplate="content">
+
+                    <ul *ngIf="uploadedFiles.length">
+                        <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes
+                        </li>
+                    </ul>
+                </ng-template>
+            </p-fileUpload>
+
+
+
+            <div class="flex w-full justify-content-center">
+                <button type="submit" class="flex" pripple="" label="Save Book"
+                    class=" w-auto mt-3 p-button p-component"> Guardar Libro </button>
+            </div>
+
+
+        </div>
+    </form>
+</div>
+<!-- end insert a book -->
+<app-footer></app-footer>

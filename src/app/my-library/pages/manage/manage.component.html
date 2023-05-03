@@ -85,8 +85,9 @@
                                 <label for="titleInput" class="font-medium">Titulo</label>
                                 <input id="titleInput" formControlName="titleInput" pinputtext
                                     class="p-inputtext p-component p-element" type="text">
-                                <span style="color:red;" *ngIf="validField('titleInput')"> Debe de haber mas de 1
-                                    letra</span>
+                                <p-message severity="error" text="Debe de haber entre 1
+                                   y 50 caracteres" *ngIf="validField('titleInput')"></p-message>
+
                             </div>
                             <div class="field mb-3 col-6">
                                 <label for="authorInput" class="font-medium">Autor</label>
@@ -97,16 +98,16 @@
                                 <label for="genreInput" class="font-medium">Género</label>
                                 <p-chips id="genreInput" separator="," formControlName="genreInput" [max]=5
                                     [allowDuplicate]=false placeholder="Fantasia, Romance, etc"></p-chips>
-                                <span style="color:red;" *ngIf="validField('genreInput')"> Debe haber almenos un
-                                    género</span>
+                                <p-message severity="error" text="Debe haber almenos un
+                                género" *ngIf="validField('genreInput')"></p-message>
                             </div>
 
                             <div class="field mb-3 col-6">
                                 <label for="seriesNumberInput" class="font-medium">Número de libros</label>
                                 <input id="seriesNumberInput" formControlName="booksNumberInput" pinputtext
                                     class="p-inputtext p-component p-element" type="number">
-                                <span style="color:red;" *ngIf="validField('booksNumberInput')"> Tiene que ser un numero
-                                    mayor a 0</span>
+                                <p-message severity="error" text="Tiene que ser un numero
+                                    mayor a 0" *ngIf="validField('booksNumberInput')"></p-message>
                             </div>
 
                             <!-- añadir controlador de date -->
@@ -119,8 +120,9 @@
                                 <label for="seriesNumberInput" class="font-medium">Número de páginas</label>
                                 <input id="seriesNumberInput" formControlName="pagesNumberInput" pinputtext
                                     class="p-inputtext p-component p-element" type="number">
-                                <span style="color:red;" *ngIf="validField('pagesNumberInput')">Tiene que ser un numero
-                                    mayor a 0</span>
+                                <p-message severity="error" text="Tiene que ser un numero
+                                    mayor a 0" *ngIf="validField('pagesNumberInput')"></p-message>
+
                             </div>
                             <div class="field mb-4 col-12">
                                 <label for="imageInput" class="font-medium">Imagen</label>
@@ -134,8 +136,8 @@
                                 <label for="imageAutorInput" class="font-medium">Imagen del autor</label>
                                 <div class="p-inputgroup">
                                     <span class="p-inputgroup-addon">www</span>
-                                    <input id="imageAutorInput" formControlName="imageAuthorInput" type="text" pinputtext
-                                        class="p-inputtext p-component p-element">
+                                    <input id="imageAutorInput" formControlName="imageAuthorInput" type="text"
+                                        pinputtext class="p-inputtext p-component p-element">
                                 </div>
                             </div>
                             <div class="surface-100 mb-3 col-12" style="height: 2px;">
@@ -159,20 +161,25 @@
                             </div>
                             <div class="field mb-3 col-2"></div>
                             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
+                            <p-toast></p-toast>
+                            <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true
+                                class="field mb-4 col-12 md:col-12" chooseLabel="Añadir libro" uploadLabel="Actualizar"
+                                labe cancelLabel="Cancelar" [showUploadButton]=true [multiple]=true
+                                accept=".pdf, .epub, .mobi">
 
-                            <p-fileUpload class="field mb-4 col-12 md:col-12" name="myfile[]" url="./upload.php"
-                                chooseLabel="Añadir libro" cancelLabel="Cancelar" [showUploadButton]=false
-                                [multiple]=true accept=".pdf, .epub, .mobi">
                                 <ng-template pTemplate="content">
+
                                     <ul *ngIf="uploadedFiles.length">
-                                        <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
+                                        <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes
+                                        </li>
                                     </ul>
                                 </ng-template>
-
                             </p-fileUpload>
 
+
+
                             <div class="flex w-full justify-content-center">
-                                <button type="submit" class="flex" pripple="" label="Save Book" (click)="saveBook()"
+                                <button type="submit" class="flex" pripple="" label="Save Book"
                                     class=" w-auto mt-3 p-button p-component"> Guardar Libro </button>
                             </div>
 
@@ -185,7 +192,7 @@
         </p-accordionTab>
 
         <p-accordionTab>
-            <ng-template pTemplate="header" >
+            <ng-template pTemplate="header">
                 <div class="flex align-items-center">
                     <i class="pi pi-search mr-2"></i>
                     <span class="vertical-align-middle">Buscar libros externos</span>
@@ -193,7 +200,7 @@
                 </div>
 
             </ng-template>
-            <ng-template pTemplate="content" >
+            <ng-template pTemplate="content">
                 <!-- search by api -->
                 <div class="surface-card p-4 shadow-2 border-round w-full">
                     <div class="grid formgrid p-fluid w-full ">

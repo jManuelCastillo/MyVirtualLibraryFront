@@ -1,13 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { CanActivateFn, CanMatchFn, Router } from '@angular/router';
 import { Observable, tap } from 'rxjs';
-import { LibraryService } from '../service/library.service';
-
-
+import { UserService } from '../service/user.service';
 
 
 const isAuthenticated = (): | boolean | Observable<boolean> | Promise<boolean> => {
-  const libraryService = inject(LibraryService);
+  const usersService = inject(UserService);
   const router = inject(Router);
   
  /*  return authService.verifcaAutentication().pipe(
@@ -18,19 +16,16 @@ const isAuthenticated = (): | boolean | Observable<boolean> | Promise<boolean> =
     }),
   ); */
 
-  if( libraryService.currentUser && libraryService.currentUser.id){
-    router.navigate(['./home']);
+  if( usersService.currentUser && usersService.currentUser.admin){
+ 
     return true;
     }
     return false;
 
 }
 
-
-
-
 const isloaded = (): | boolean | Observable<boolean>   => {
-   const libraryService = inject(LibraryService);
+   const userService = inject(UserService);
    const router = inject(Router);
 
 /*   return authService.verifcaAutentication().pipe(
@@ -41,12 +36,12 @@ const isloaded = (): | boolean | Observable<boolean>   => {
     }),
   ); */
 
-  if(libraryService.currentUser && libraryService.currentUser.id){
+  if(userService.currentUser && userService.currentUser.admin){
     return true
   }
   return false
 }
 
-export const canActivate: CanActivateFn = isAuthenticated;
+export const canActivateGuard: CanActivateFn = isAuthenticated;
 export const canMatch: CanMatchFn = isloaded;
 

@@ -6,6 +6,10 @@ import { FormBuilder, FormControl } from '@angular/forms';
 
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PdfViewerComponent } from '../../components/pdf-viewer/pdf-viewer.component';
+import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
+import { UserService } from '../../service/user.service';
+import { User } from '../../interfaces/user.interface';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-home',
@@ -14,28 +18,31 @@ import { PdfViewerComponent } from '../../components/pdf-viewer/pdf-viewer.compo
     providers: [DialogService, MessageService]
 })
 export class HomeComponent implements OnDestroy, OnInit {
-
+    items?: MenuItem[];
     showSearch: boolean = false;
     searchItems: MenuItem[] = [];
-    filteredBooks: Book[] = [] ;
+    filteredBooks: Book[] = [];
     optionsItems: MenuItem[] = [];
     inputSearch: FormControl = this.formBuilder.control('')
     selectFilter: string = 'Título';
+    option: string = 'gestionar'
     filter: string = 'title';
     fileInput: any;
     ref!: DynamicDialogRef;
-    bookList: Book[] = [ ];
+    bookList: Book[] = [];
+    currentUser?: User;
 
 
     constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
-        public dialogService: DialogService, public messageService: MessageService) {
+        public dialogService: DialogService, public messageService: MessageService,
+        private storage: Storage, private userService: UserService, private router: Router) {
 
         this.searchItems = [
             {
                 label: 'Título',
                 command: () => {
                     this.selectFilter = 'Título',
-                        this.changeFilter('title');
+                        this.changeButton('title');
                     this.searchFilter()
                 }
             },
@@ -43,53 +50,62 @@ export class HomeComponent implements OnDestroy, OnInit {
                 label: 'Autor',
                 command: () => {
                     this.selectFilter = 'Autor'
-                    this.changeFilter('author');
+                    this.changeButton('author');
                     this.searchFilter()
                 }
             },
             {
                 label: 'Titulo/autor', command: () => {
                     this.selectFilter = 'Titulo/Autor'
-                    this.changeFilter('authorTitle');
+                    this.changeButton('authorTitle');
                     this.searchFilter()
-                }
-            }
-        ];
-
-        this.optionsItems = [
-            {
-                label: 'Libro',
-                command: () => {
-                    this.selectFilter = 'Libro',
-                        this.searchByBookAuthor();
-                }
-            },
-            {
-                label: 'Autor',
-                command: () => {
-                    this.selectFilter = 'Autor'
-                    this.searchByAuthor();
-                }
-            },
-            {
-                label: 'Libro/autor', command: () => {
-                    this.selectFilter = 'Libro/Autor'
-                    this.searchByAuthor();
                 }
             }
         ];
 
     }
 
-    ngOnInit(): void {
-        this.libraryService.getBooks().subscribe((response: Book) => {
-
-            console.log( response);
-            
-            this.bookList.push(response);
-            console.log(this.bookList);
-            
+    async uploadBook(path: string) {
+        const bookRef = ref(this.storage, path);
+        await getDownloadURL(bookRef).then(urlBook => {
+            window.location.href = urlBook
         })
+    }
+
+
+    ngOnInit(): void {
+        this.libraryService.getMyBooks().subscribe({
+            next: books => this.bookList = books
+        })
+
+
+    }
+
+
+    showInfo(id: string) {
+        this.router.navigate(['/bookinfo', id]);
+    }
+
+    favButton(idBook: string) {
+        if (this.userService.currentUser?.favouritesBooks?.indexOf(idBook) === -1) {
+            this.userService.currentUser?.favouritesBooks?.push(idBook)
+            console.log(this.userService.currentUser);
+
+            // localStorage.setItem('user', JSON.stringify(this.currentUser));
+        } else {
+            const index = this.userService.currentUser?.favouritesBooks?.findIndex(id => id === idBook);
+            this.userService.currentUser?.favouritesBooks?.splice(index!, 1);
+            this.currentUser?.favouritesBooks?.splice(index!, 1);
+        }
+    }
+
+    deleteBook(id: string) {
+
+        this.libraryService.deleteBook(id);
+
+        const index = this.filteredBooks.findIndex(book => book.id === id);
+        this.filteredBooks.splice(index, 1);
+
     }
 
     ngOnDestroy() {
@@ -98,21 +114,30 @@ export class HomeComponent implements OnDestroy, OnInit {
         }
     }
 
-    showPdf(route: string) {
-        this.libraryService.currentPdf = route;
-        this.ref = this.dialogService.open(PdfViewerComponent, {
-            header: 'Mira un pdf',
-            width: '70%',
-            contentStyle: { overflow: 'auto' },
-            baseZIndex: 10000,
-            maximizable: true
-        });
+    async showPdf(route: string, title: string) {
+    
 
-
+        const bookRef =  ref(this.storage, route);
+        await getDownloadURL(bookRef).then(urlBook => {
+            this.libraryService.currentPdf = urlBook;
+            this.ref = this.dialogService.open(PdfViewerComponent, {
+                header: title,
+                width: '70%',
+                contentStyle: { overflow: 'auto' },
+                baseZIndex: 10000,
+                maximizable: true
+            });
+       })
+   
     }
 
-    changeFilter(filter: string) {
+    changeButton(filter: string) {
         this.filter = filter;
+    }
+
+    getBook(path: string) {
+        const book = ref(this.storage)
+
     }
 
     searchFilter() {
@@ -153,31 +178,8 @@ export class HomeComponent implements OnDestroy, OnInit {
 
     }
 
-    download() {
-
-        const fileData = 'Contenido del archivo';
-        const fileName = 'archivo.txt';
-        const fileType = 'text/plain';
-
-        // Crear objeto Blob
-        const blob = new Blob([fileData], { type: fileType });
-
-        // Crear URL a partir del objeto Blob
-        const url = URL.createObjectURL(blob);
-
-        // Crear enlace de descarga
-        const link = document.createElement('a');
-        link.setAttribute('href', url);
-        link.setAttribute('download', fileName);
-        document.body.appendChild(link);
-
-        // Simular clic en el enlace
-        link.click();
-
-        // Eliminar enlace
-        document.body.removeChild(link);
-
-        // Liberar memoria de la URL creada
-        URL.revokeObjectURL(url);
+    updateBook(id: string) {
+        this.router.navigate(['/updateBook', id]);
     }
+
 }

@@ -2,6 +2,6 @@ export interface User {
     id: string;
     fullName: string;
     email:string;
-    FavouritesBooks?: string[];
+    favouritesBooks?: string[];
     admin?: boolean;
 }

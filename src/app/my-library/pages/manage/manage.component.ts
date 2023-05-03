@@ -1,17 +1,18 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { MenuItem, MessageService } from 'primeng/api';
 import { LibraryService } from '../../service/library.service';
 import { Book } from '../../interfaces/book.interface';
 import { APIBook, Data } from '../../interfaces/apiBook.interface';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TitleCasePipe } from '@angular/common';
-
+import { Storage, ref, uploadBytes } from '@angular/fire/storage';
 
 @Component({
   selector: 'app-manage',
   templateUrl: './manage.component.html',
   styleUrls: ['./manage.component.css'],
-  providers: [MessageService, TitleCasePipe]
+  providers: [MessageService, TitleCasePipe,],
+
 })
 export class ManageComponent {
 
@@ -30,23 +31,23 @@ export class ManageComponent {
 
 
   bookForm: FormGroup = this.formBuilder.group({
-    titleInput: [, [Validators.required, Validators.minLength(1), Validators.max(40)]],
-    autorInput: [],
-    genreInput: [['asdf'], Validators.required],
+    titleInput: [, [Validators.required, Validators.maxLength(40)]],
+    autorInput: [,Validators.maxLength(60)],
+    genreInput: [['Fantasía'], Validators.required],
     booksNumberInput: [[], [Validators.required, Validators.min(1)]],
     publishDateInput: [],
     pagesNumberInput: [, [Validators.required, Validators.min(1)]],
     imageInput: [],
     imageAuthorInput: [],
-    publisherInput: [],
-    ISBNInput: [],
-    descriptionInput: [, [Validators.minLength(0), Validators.max(200)]],
-    
+    publisherInput: [, Validators.maxLength(60)],
+    ISBNInput: [, Validators.maxLength(15)],
+    descriptionInput: [, [Validators.minLength(0), Validators.maxLength(200)]],
+
   })
 
 
   ngOnInit(): void {
-    this.activeIndex = 1
+    this.activeIndex = 0
     this.bookForm.reset({
       titleInput: '',
       autorInput: '',
@@ -67,12 +68,10 @@ export class ManageComponent {
       this.bookForm.controls[field].touched
   }
 
-  constructor(private libraryService: LibraryService, private formBuilder: FormBuilder, 
-    private titlecasePipe: TitleCasePipe,  private messageService: MessageService) {
-
-
+  constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
+    private titlecasePipe: TitleCasePipe, private messageService: MessageService, private storage: Storage) {
     this.genresInput = [];
-
+    this.uploadedFiles = []
     this.searchItems = [
       {
         label: 'Título',
@@ -101,33 +100,58 @@ export class ManageComponent {
 
   }
 
-  saveBook() {
+  handleFileInput(files: FileList) {
+    files.item(0);
+  }
 
-    if (this.bookForm.invalid) {
+  async saveBook() {
+
+    if (this.bookForm.invalid || this.uploadedFiles.length == 0) {
       this.bookForm.markAllAsTouched();
       return;
     }
 
-   
     let newBook: Book = {
       id: '',
-      title: this.bookForm.value.titleInput ,
+      title: this.bookForm.value.titleInput,
       author: this.bookForm.value.autorInput,
       publisher: this.bookForm.value.publisherInput,
-      description: this.bookForm.value.descriptionInput , 
-      ISBN: this.bookForm.value.ISBNInput, 
+      description: this.bookForm.value.descriptionInput,
+      ISBN: this.bookForm.value.ISBNInput,
       numberOfBooks: this.bookForm.value.booksNumberInput,
       publish_date: "",
-      genre: this.bookForm.value.genreInput, 
+      genre: this.bookForm.value.genreInput,
       files: [],
       image: this.bookForm.value.imageInput,
-      authorImage: this.bookForm.value.imageAuthorInput, 
-      pages:this.bookForm.value.pagesNumberInput,
+      authorImage: this.bookForm.value.imageAuthorInput,
+      pages: this.bookForm.value.pagesNumberInput,
       taken: false
     }
 
-    this.libraryService.postBook(newBook);
-    
+    this.uploadedFiles.map(file => {
+      const filesRef = ref(this.storage, `BooksFiles/${file.name}`)
+
+      uploadBytes(filesRef, file)
+        .then(response => { console.log(response) })
+        .catch(error => console.log(error));
+
+      console.log(filesRef);
+
+      newBook.files.push({
+        format: file.name.split('.').slice(1),
+        route: `BooksFiles/${file.name}`
+      });
+    })
+
+    const book = await this.libraryService.postBook(newBook);
+    // enviado datos al storage
+    console.log(book);
+
+
+
+
+
+    this.uploadedFiles = []
     this.bookForm.reset({
       titleInput: '',
       autorInput: '',
@@ -138,44 +162,61 @@ export class ManageComponent {
       imageInput: '',
       publisherInput: '',
       ISBNInput: '',
-      descriptionInput: ''
+      descriptionInput: '',
+      fileInput: []
     });
   }
 
-  setGenre(event: { genre: string }) {
-  }
+  onUpload(event: any) {
+    this.uploadedFiles = []
 
-  onUpload(event: { files: any; }) {
     for (let file of event.files) {
-      this.uploadedFiles.push(file);
+
+      if (!this.uploadedFiles.some((upFile) => {
+        return upFile.type === file.type
+      })) {
+
+        this.uploadedFiles.push(file);
+
+      } else {
+        this.messageService.add({ severity: 'warn', summary: 'No se pueden repetir archivos con el mismo formato', detail: '' });
+      }
     }
 
-    this.messageService.add({ severity: 'info', summary: 'File Uploaded', detail: '' });
+    if (this.uploadedFiles.length > 1) {
+      this.messageService.add({ severity: 'info', summary: 'Archivos añadidos', detail: '' });
+    } else {
+      this.messageService.add({ severity: 'info', summary: 'Archivo añadido', detail: '' });
+    }
+
   }
 
   changeFilter(filter: string) {
     this.filter = filter;
   }
 
-  getBookData(){ 
-  
+  getBookData() {
+
     this.bookForm.reset({
       titleInput: this.foundBooks?.data?.title ?? '',
       autorInput: this.foundBooks?.data?.authors[0]?.name ?? '',
-      genreInput: (this.foundBooks?.data?.subjects?.length > 5) ? this.foundBooks?.data?.subjects?.slice(0, 5)?.map(subj => subj.name) : this.foundBooks?.data?.subjects ?? [],
+      genreInput: (this.foundBooks?.data?.subjects?.length > 5) ? this.foundBooks?.data?.subjects?.slice(0, 5)?.map(subj => subj.name) : this.foundBooks?.data?.subjects?.map(subj => subj.name) ?? [],
       booksNumberInput: 1,
       publishDateInput: this.foundBooks?.data?.publish_date ?? '',
       pagesNumberInput: this.foundBooks?.data?.number_of_pages ?? 1,
       imageInput: this.foundBooks?.data?.cover?.large ?? '',
-      imageAuthorInput: this.foundBooks?.data?.cover?.large ?? '',
+      imageAuthorInput: this.foundBooks?.data?.subject_people?.[0]?.url ?? '',
       publisherInput: this.foundBooks?.data?.publishers?.[0]?.name ?? '',
-      ISBNInput: this.foundBooks?.data?.identifiers?.isbn_10[0] ?? '',
+      ISBNInput: (this.foundBooks?.data?.identifiers?.isbn_10 && this.foundBooks.data.identifiers.isbn_10[0])
+        ?? (this.foundBooks?.data?.identifiers?.openlibrary && this.foundBooks.data.identifiers.openlibrary[0])
+        ?? (this.foundBooks?.data?.identifiers?.isbn_13 && this.foundBooks.data.identifiers.isbn_13[0])
+        ?? '',
       descriptionInput: this.foundBooks?.data?.excerpts?.[0]?.text ?? ''
-      })
-     
-      this.activeIndex = 0; 
-      
-      
+    })
+
+    this.activeIndex = 0;
+
+
   }
 
   searchFilter() {

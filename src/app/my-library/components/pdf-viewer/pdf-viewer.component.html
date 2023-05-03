@@ -1,7 +1,6 @@
 
 
 
-<ngx-extended-pdf-viewer [textLayer]="true" [showHandToolButton]="false" [src]="currentPdf" [height]="'100%'"
-  [useBrowserLocale]="true">
-
+<ngx-extended-pdf-viewer [listenToURL]="true" [textLayer]="true" [showHandToolButton]="false" [height]="'100%'"
+[(src)]="currentPdf" > 
 </ngx-extended-pdf-viewer>
