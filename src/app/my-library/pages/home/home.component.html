@@ -1,5 +1,6 @@
 <app-navbar></app-navbar>
 <!-- title -->
+<p-toast></p-toast>
 <div class="grid p-align-center mt-2 w-full">
     <div class="bg-cover bg-center border-round h-25rem w-full align-items-center justify-content-center flex flex-column h-full "
         style="background-image: url('../../../../assets/images/libraryIMG.png')">
@@ -77,10 +78,11 @@
         <div class="col-7 grid bg-white flex">
             <div (click)="showInfo(book.id)">
                 <img class="flex bg-cover bg-center flex-wrap my-5 mx-1" style="width: 150px; height: 200px;"
-                    src="{{filteredBooks[j].image}}" alt="Imagen">
+                    src="{{filteredBooks[j].image}}" onerror="this.src='../../../../assets/images/photoNotFound.png'"
+                    alt="Imagen">
             </div>
-            <div class="flex-1 flex h-full font-bold m-2 ">
-                <div class="flex flex-column justify-content-around flex-wrap">
+            <div class="flex-1 flex h-full font-bold m-2 w-full">
+                <div class="flex flex-column justify-content-around flex-wrap w-full">
                     <div class="flex align-items-center ">{{filteredBooks[j].title}}</div>
                     <div class="flex align-items-center font-light">{{filteredBooks[j].description | slice:0:300 }}
                     </div>
@@ -89,12 +91,14 @@
                             <span class="flex justify-content-start align-items-start flex-row"
                                 *ngFor="let file of filteredBooks[j].files">
 
-                                <a  *ngIf="file.format != 'pdf'" (click)="uploadBook(file.route)" class="cursor-pointer" download>
+                                <a *ngIf="file.format != 'pdf'" (click)="uploadBook(file.route)" class="cursor-pointer"
+                                    download>
                                     <img style="width: 3rem; height: 3rem;"
                                         src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
                                         alt="{{file.format}}  icon">
                                 </a>
-                                <a (click)="showPdf(file.route,  filteredBooks[j].title)" *ngIf="file.format == 'pdf'" class="cursor-pointer">
+                                <a (click)="showPdf(file.route, filteredBooks[j].title,filteredBooks[j].id)"
+                                    *ngIf="file.format == 'pdf'" class="cursor-pointer">
                                     <img style="width: 3rem; height: 3rem;"
                                         src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
                                         alt="{{file.format}} icon">
@@ -109,42 +113,75 @@
 
 
             </div>
-            <div class="flex flex-column m-2">
+            <div class="flex flex-column m-2" *ngIf="this.currentUser != undefined">
                 <p-overlayPanel #op class="p-0">
                     <div class="flex flex-column">
-                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer" (click)="updateBook(filteredBooks[j].id)"><i class="pi pi-replay"></i>
+                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
+                            (click)="updateBook(filteredBooks[j].id)"><i class="pi pi-replay"></i>
                             Actualizar</div>
                         <p-divider class="my-1"></p-divider>
                         <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
-                            (click)="deleteBook(filteredBooks[j].id)"><i class="pi pi-trash"></i> Borrar</div>
-                        <p-divider></p-divider>
-                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"><i
-                                class="pi pi-times-circle"></i> Retirar para mi</div>
-                        <p-divider></p-divider>
-                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer">Retirar para un usuario
+                            (click)="deleteBook(filteredBooks[j].id, filteredBooks[j].files)"><i
+                                class="pi pi-trash"></i> Borrar</div>
+                        <p-divider *ngIf=" filteredBooks[j].physicalBook && filteredBooks[j].isAvailable"></p-divider>
+                        <div *ngIf=" filteredBooks[j].physicalBook && filteredBooks[j].isAvailable"
+                            class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
+                            (click)="showWithdrawBook(filteredBooks[j])">Retirar
+                            para un usuario
                         </div>
-                        <p-divider></p-divider>
-                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer">Devolver de un usuario
+                        <p-divider *ngIf=" filteredBooks[j].physicalBook && !filteredBooks[j].isAvailable"></p-divider>
+                        <div *ngIf=" filteredBooks[j].physicalBook && !filteredBooks[j].isAvailable"
+                            class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
+                            (click)="showReturnBook(filteredBooks[j])">Devolver de un usuario
                         </div>
                     </div>
                 </p-overlayPanel>
-                <p-button (click)="op.toggle($event)" styleClass="p-button-outlined p-button-warning mr-2 mb-2"
-                    label="Gestionar"></p-button>
-
-
-                <ng-container
-                    *ngIf=" this.currentUser?.favouritesBooks?.indexOf(filteredBooks[j].id) === -1; else elseTemplate">
+                <p-button (click)="op.toggle($event)" *ngIf="currentUser.admin" ngif
+                    styleClass="p-button-outlined p-button-warning mr-2 mb-2" label="Gestionar"></p-button>
+                <ng-container *ngIf="isFav(filteredBooks[j].id); else favTemplate">
                     <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star-fill"
-                        styleClass="p-button-rounded p-button-warning"
-                        (onClick)="favButton(filteredBooks[j].id)"></p-button>
+                        styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                        (onClick)="favButton(filteredBooks[j].id, filteredBooks[j].title)"></p-button>
                 </ng-container>
-                <ng-template #elseTemplate>
+                <ng-template #favTemplate>
                     <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star"
-                        styleClass="p-button-rounded p-button-warning"
-                        (onClick)="favButton(filteredBooks[j].id)"></p-button>
+                        styleClass="p-button-rounded p-button-warning" title="Guardar en favoritos"
+                        (onClick)="favButton(filteredBooks[j].id, filteredBooks[j].title)"></p-button>
                 </ng-template>
 
+                <ng-container *ngIf="isFinised(filteredBooks[j].id); else finishedTemplate">
+                    <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye-slash"
+                        styleClass="p-button-rounded p-button-warning" title="Quitar de leidos"
+                        (onClick)="finisedButton(filteredBooks[j].id, filteredBooks[j].title)"></p-button>
+                </ng-container>
+                <ng-template #finishedTemplate>
+                    <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye"
+                        styleClass="p-button-rounded p-button-warning" title="Guardar en leidos"
+                        (onClick)="finisedButton(filteredBooks[j].id, filteredBooks[j].title)"></p-button>
+                </ng-template>
 
+                <div *ngIf="filteredBooks[j].physicalBook">
+                    <ng-container
+                        *ngIf="filteredBooks[j].isNotAvailableReason!.id == currentUser.id || filteredBooks[j].isAvailable; else bookIsTaken">
+                        <ng-container *ngIf="filteredBooks[j].isAvailable; else physicalTemplate">
+                            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eject"
+                                styleClass="p-button-rounded p-button-warning" title="Sacar libro"
+                                (onClick)="withdrawABook(filteredBooks[j])"></p-button>
+                        </ng-container>
+                        <ng-template #physicalTemplate>
+                            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eject"
+                                styleClass="p-button-rounded p-button-help" title="Devolver libro"
+                                (onClick)="withdrawABook(filteredBooks[j])"></p-button>
+                        </ng-template>
+                    </ng-container>
+                    <ng-template #bookIsTaken>
+                        <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eject"
+                            styleClass="p-button-rounded"
+                            title="Este libro lo tiene {{filteredBooks[j].isNotAvailableReason!.name}}"
+                            [disabled]=true></p-button>
+
+                    </ng-template>
+                </div>
             </div>
         </div>
         <div class="col-3"></div>
@@ -157,14 +194,12 @@
     <div class="col-2"></div>
     <div class="col-7 grid bg-white fle flex-column align-items-center justify-content-center">
 
-
         <ng-container *ngIf="showSearch && filteredBooks.length === 0">
             <p class="flex-wrap align-items-center justify-content-center">No se ha encontrado nada</p>
             <img src="../../../../assets/images/notFoundSearch.jpg" alt="" style="max-width: 20rem;">
         </ng-container>
 
-
-        <ng-container *ngIf="(!showSearch && filteredBooks.length === 0) || this.inputSearch.value === '' ">
+        <ng-container *ngIf="(!showSearch && filteredBooks.length === 0) || this.inputSearch.value === ''">
             <p class="flex-wrap align-items-center justify-content-center">Escribe algo en el buscador</p>
             <img src="../../../../assets/images/searchIMG.jpg" alt="" style="max-width: 20rem;">
         </ng-container>
@@ -172,13 +207,85 @@
     </div>
 
 </div>
+<!-- <p-dialog header="Header" [(visible)]="visible" [style]="{width: '50vw'}">
+   
+    <p-dropdown [options]="usersForHelp" (ngModel)="selectedUserId" optionLabel="name" formControlName="userhlp">
+    </p-dropdown>
 
+</p-dialog> -->
 
-<!-- <div class="card flex justify-content-center">
-    <p-toast></p-toast>
-    <p-button (click)="show()" icon="pi pi-info-circle" label="Show"></p-button>
-</div> -->
+<!-- <p-dialog header="Header" [(visible)]="visible" [style]="{width: '50vw'}">
+    <div [formGroup]="bookForm">
+ 
+    <p-dropdown [options]="usersForHelp" (ngModel)="selectedUserId" optionLabel="name" [filter]="true" 
+filterBy="name" [showClear]="true" placeholder="Select a Country" formControlName="searchUser">
+<ng-template pTemplate="selectedItem">
+    <div class="flex align-items-center gap-2" *ngIf="selectedUserId">
+        <div>{{ selectedUserId }}</div>
+    </div>
+</ng-template>
+<ng-template let-country pTemplate="item">
+    <div class="flex align-items-center gap-2">
+        <div>{{ country.name }}</div>
+    </div>
+</ng-template>
+</p-dropdown>
+</div>
+</p-dialog> -->
 
+<p-dialog [(visible)]="visible" #cd [style]="{width: '50vw', height:'50vh'}">
+    <ng-template pTemplate="header">
+        <h3>Retirar un libro para un usuario</h3>
+    </ng-template>
 
+    <div [formGroup]="bookForm">
+        <p-dropdown [options]="usersForHelp" (ngModelChange)="selectedUser=$event" optionLabel="fullName"
+            [filter]="true" filterBy="fullName" [showClear]="true" placeholder="Selecciona un usuario"
+            formControlName="searchUser">
+            <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="selectedUser">
+                    <div>{{ selectedUser.fullName }}</div>
+                </div>
+            </ng-template>
+            <ng-template let-user pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                    <div>{{ user.fullName }}</div>
+                </div>
+            </ng-template>
+
+        </p-dropdown>
+        <ng-template pTemplate="footer">
+            <h4>Retirar {{tempBook!.title}}</h4>
+        </ng-template>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="withdrawForUser(selectedUser!.fullName, selectedUser!.id, tempBook!)"
+            label="Confirm" styleClass="p-button-text">
+        </p-button>
+
+        <p-button icon="pi pi-times" (click)="cancel()" label="Reject">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="visible2" [style]="{width: '50vw', height:'35vh'}">
+    <ng-template pTemplate="header">
+        <h3>Devolver un libro </h3>
+    </ng-template>
+    <input id="disabled-input" type="text" class="w-full"  pInputText [disabled]="true"
+        value="{{tempBook?.isNotAvailableReason?.name}}" />
+
+    <ng-template pTemplate="footer">
+        <h4>¿ Quiéres devolver {{tempBook!.title}}?</h4>
+        <p-button icon="pi pi-check" (click)="returnBookForUser(tempBook!)"
+            label="Confirm" styleClass="p-button-text">
+        </p-button>
+
+        <p-button icon="pi pi-times" (click)="cancel()" label="Reject">
+        </p-button>
+    </ng-template>
+</p-dialog>
 
 <app-footer></app-footer>

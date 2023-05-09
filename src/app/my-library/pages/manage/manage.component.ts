@@ -1,21 +1,29 @@
 import { Component } from '@angular/core';
-import { MenuItem, MessageService } from 'primeng/api';
+
+import { MenuItem, MessageService, ConfirmationService } from 'primeng/api';
 import { LibraryService } from '../../service/library.service';
 import { Book } from '../../interfaces/book.interface';
 import { APIBook, Data } from '../../interfaces/apiBook.interface';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { TitleCasePipe } from '@angular/common';
 import { Storage, ref, uploadBytes } from '@angular/fire/storage';
+import { User } from '../../interfaces/user.interface';
+import { UserService } from '../../service/user.service';
 
 @Component({
   selector: 'app-manage',
   templateUrl: './manage.component.html',
   styleUrls: ['./manage.component.css'],
-  providers: [MessageService, TitleCasePipe,],
+  providers: [MessageService, TitleCasePipe, ConfirmationService,],
 
 })
 export class ManageComponent {
 
+  numberOfFinishedBooks?: number;
+  numberOfDigitalBooks?: number;
+  numberOfphysicalBooks?: number;
+  numOfBooks?: number;
+  stateOptions: any[] = [{ label: 'No', value: 'false' }, { label: 'Si', value: 'true' }];
   activeIndex!: number;
   genresInput!: string[]
   uploadedFiles: any[] = [];
@@ -27,49 +35,14 @@ export class ManageComponent {
   showSearch: boolean = false;
   filteredBooks: Book[] = [];
   optionsItems: MenuItem[] = [];
-  inputSearch: FormControl = this.formBuilder.control('')
+  inputSearch: FormControl = this.formBuilder.control('');
+  users: User[] = []
 
 
-  bookForm: FormGroup = this.formBuilder.group({
-    titleInput: [, [Validators.required, Validators.maxLength(40)]],
-    autorInput: [,Validators.maxLength(60)],
-    genreInput: [['Fantasía'], Validators.required],
-    booksNumberInput: [[], [Validators.required, Validators.min(1)]],
-    publishDateInput: [],
-    pagesNumberInput: [, [Validators.required, Validators.min(1)]],
-    imageInput: [],
-    imageAuthorInput: [],
-    publisherInput: [, Validators.maxLength(60)],
-    ISBNInput: [, Validators.maxLength(15)],
-    descriptionInput: [, [Validators.minLength(0), Validators.maxLength(200)]],
-
-  })
-
-
-  ngOnInit(): void {
-    this.activeIndex = 0
-    this.bookForm.reset({
-      titleInput: '',
-      autorInput: '',
-      genreInput: ['Fantasía'],
-      booksNumberInput: 1,
-      publishDateInput: '',
-      pagesNumberInput: 1,
-      imageInput: '',
-      imageAuthorInput: '',
-      publisherInput: '',
-      ISBNInput: '',
-      descriptionInput: ''
-    })
-  }
-
-  validField(field: string) {
-    return this.bookForm.controls[field].errors &&
-      this.bookForm.controls[field].touched
-  }
-
-  constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
-    private titlecasePipe: TitleCasePipe, private messageService: MessageService, private storage: Storage) {
+  constructor(private libraryService: LibraryService, private formBuilder: FormBuilder, 
+    private confirmationService: ConfirmationService, private usersService: UserService,
+    private titlecasePipe: TitleCasePipe, private messageService: MessageService, 
+    private storage: Storage) {
     this.genresInput = [];
     this.uploadedFiles = []
     this.searchItems = [
@@ -100,6 +73,57 @@ export class ManageComponent {
 
   }
 
+  bookForm: FormGroup = this.formBuilder.group({
+    titleInput: [, [Validators.required, Validators.maxLength(100)]],
+    autorInput: [, Validators.maxLength(60)],
+    genreInput: [['Fantasía'], Validators.required],
+    booksNumberInput: [[], [Validators.required, Validators.min(1)]],
+    publishDateInput: [],
+    pagesNumberInput: [, [Validators.required, Validators.min(1)]],
+    imageInput: [],
+    imageAuthorInput: [],
+    publisherInput: [, Validators.maxLength(60)],
+    ISBNInput: [, Validators.maxLength(15)],
+    descriptionInput: [, [Validators.minLength(0), Validators.maxLength(200)]],
+    physBooknput: ['false']
+  })
+
+
+  async ngOnInit() {
+    this.activeIndex = 0
+    this.bookForm.reset({
+      titleInput: '',
+      autorInput: '',
+      genreInput: ['Fantasía'],
+      booksNumberInput: 1,
+      publishDateInput: '',
+      pagesNumberInput: 1,
+      imageInput: '',
+      imageAuthorInput: '',
+      publisherInput: '',
+      ISBNInput: '',
+      descriptionInput: '',
+      physBooknput: 'false'
+    })
+
+    this.numOfBooks = await this.libraryService.getNumberOfBooks()
+
+    this.numberOfphysicalBooks = await this.libraryService.getNumberOfPhysicalBooks()
+
+    this.numberOfDigitalBooks = await this.libraryService.getNumberOfDigitalBooks()
+    
+    this.numberOfFinishedBooks = await this.libraryService.getNumberOfFinisedBooks()
+
+    this.users = await this.usersService.getAllUsers()
+  }
+
+  validField(field: string) {
+    return this.bookForm.controls[field].errors &&
+      this.bookForm.controls[field].touched
+  }
+
+  
+
   handleFileInput(files: FileList) {
     files.item(0);
   }
@@ -125,7 +149,9 @@ export class ManageComponent {
       image: this.bookForm.value.imageInput,
       authorImage: this.bookForm.value.imageAuthorInput,
       pages: this.bookForm.value.pagesNumberInput,
-      taken: false
+      physicalBook: (this.bookForm.value.physBooknput == 'true') ? true : false,
+      isAvailable: (this.bookForm.value.physBooknput == 'true') ? true : false,
+      isNotAvailableReason: {name: '', id:''}
     }
 
     this.uploadedFiles.map(file => {
@@ -135,8 +161,6 @@ export class ManageComponent {
         .then(response => { console.log(response) })
         .catch(error => console.log(error));
 
-      console.log(filesRef);
-
       newBook.files.push({
         format: file.name.split('.').slice(1),
         route: `BooksFiles/${file.name}`
@@ -145,11 +169,6 @@ export class ManageComponent {
 
     const book = await this.libraryService.postBook(newBook);
     // enviado datos al storage
-    console.log(book);
-
-
-
-
 
     this.uploadedFiles = []
     this.bookForm.reset({
@@ -163,7 +182,10 @@ export class ManageComponent {
       publisherInput: '',
       ISBNInput: '',
       descriptionInput: '',
-      fileInput: []
+      fileInput: [],
+      physBooknput: 'false',
+      isAvailable: 'false',
+      isNotAvailableReason: {name: '', id:''}
     });
   }
 
@@ -211,7 +233,10 @@ export class ManageComponent {
         ?? (this.foundBooks?.data?.identifiers?.openlibrary && this.foundBooks.data.identifiers.openlibrary[0])
         ?? (this.foundBooks?.data?.identifiers?.isbn_13 && this.foundBooks.data.identifiers.isbn_13[0])
         ?? '',
-      descriptionInput: this.foundBooks?.data?.excerpts?.[0]?.text ?? ''
+      descriptionInput: this.foundBooks?.data?.excerpts?.[0]?.text ?? '',
+      physBooknput: 'false',
+      isAvailable: false,
+      isNotAvailableReason: {name: '', id:''}
     })
 
     this.activeIndex = 0;
@@ -234,5 +259,19 @@ export class ManageComponent {
 
   search(severity: string) {
   }
+
+  confirm(event: Event, idUser: string) {
+    this.confirmationService.confirm({
+        target: event.target!,
+        message: '¿Estás seguro de que quieres borrar este usuario?',
+        icon: 'pi pi-exclamation-triangle',
+        accept: () => {
+            this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Has borrar este usuario correctamente =(' });
+        },
+        reject: () => {
+            this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la acción' });
+        }
+    });
+}
 
 }

@@ -23,7 +23,7 @@
                 <ng-template #elseTemplate class="flex flex-column">
                     <span class="flex align-items-center justify-content-center ">{{currentUser?.fullName}}</span>
                     <div class="flex pr-7">
-                        <p-speedDial [model]="items2" direction="down" showIcon="pi pi-user">
+                        <p-speedDial [model]="items2" direction="down" showIcon="pi pi-user" aria-label="Options">
                         </p-speedDial>
                     </div>
 
@@ -31,14 +31,14 @@
             </div>
 
         </div>
-        <p-sidebar [(visible)]="sidebarVisible2" position="right">
+        <p-sidebar [(visible)]="sidebarVisible1" position="right">
             <h2>Libros Favoritos</h2>
 
             <ng-container *ngIf="currentUser && currentUser.favouritesBooks && 
                 currentUser.favouritesBooks.length != 0; else NonFavorites">
                 <div *ngFor="let book of currentUser.favouritesBooks">
                     
-                    <p>{{book}}</p>
+                    <button pButton class="w-full mb-1" (click)="showInfo(book.idBook)">{{book.title}}</button>
                     
                 </div>
 
@@ -49,5 +49,25 @@
 
 
         </p-sidebar>
+
+        <p-sidebar [(visible)]="sidebarVisible2" position="right">
+            <h2>Libros Leidos</h2>
+
+            <ng-container *ngIf="currentUser && currentUser.finishedBooks && 
+                currentUser.finishedBooks.length != 0; else NonFinished">
+                <div *ngFor="let book of currentUser.finishedBooks">
+                    
+                    <button pButton class="w-full mb-1" (click)="showInfo(book.idBook)">{{book.title}}</button>
+                    
+                </div>
+
+            </ng-container>
+            <ng-template #NonFinished> 
+                    <p>Ningun libro leido de momento</p>
+            </ng-template>
+
+
+        </p-sidebar>
+
     </div>
 </div>

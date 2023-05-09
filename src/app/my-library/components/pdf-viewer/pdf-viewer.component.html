@@ -1,6 +1,6 @@
 
 
 
-<ngx-extended-pdf-viewer [listenToURL]="true" [textLayer]="true" [showHandToolButton]="false" [height]="'100%'"
-[(src)]="currentPdf" > 
+<ngx-extended-pdf-viewer [listenToURL]="true" [textLayer]="true" [showHandToolButton]="false" height='100%'showBookmarkButton="true" 
+[handTool]="true" [useBrowserLocale]="true" [(src)]="currentPdf" (pageChange)="onEvent($event)">  
 </ngx-extended-pdf-viewer>

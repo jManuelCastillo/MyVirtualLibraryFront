@@ -24,6 +24,11 @@ import { MessageModule } from "primeng/message";
 import { SkeletonModule } from 'primeng/skeleton';
 import { DialogModule } from 'primeng/dialog';
 import { ConfirmPopupModule } from 'primeng/confirmpopup';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { TableModule } from 'primeng/table';
+
+
 
 @NgModule({
   declarations: [],
@@ -52,7 +57,10 @@ import { ConfirmPopupModule } from 'primeng/confirmpopup';
     MessageModule,
     SkeletonModule,
     DialogModule,
-    ConfirmPopupModule
+    ConfirmPopupModule,
+    SelectButtonModule,
+    ConfirmDialogModule,
+    TableModule
   ]
 })
 

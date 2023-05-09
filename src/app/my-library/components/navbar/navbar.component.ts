@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges
 import { MenuItem } from 'primeng/api';
 import { User } from '../../interfaces/user.interface';
 import { UserService } from '../../service/user.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-navbar',
@@ -17,10 +18,12 @@ export class NavbarComponent implements OnInit {
   activeItem: MenuItem = {};
   fileInput: any;
   currentUser?: User;
+  sidebarVisible1: boolean = false;
   sidebarVisible2: boolean = false;
 
   constructor(
-    private userService: UserService, private cd: ChangeDetectorRef) { }
+    private userService: UserService, private cd: ChangeDetectorRef,
+    private router: Router) { }
 
 
   showLogin() {
@@ -42,9 +45,9 @@ export class NavbarComponent implements OnInit {
     this.setItems()
 
     this.items2 = [
-      { label: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => this.logOut() },
-      { label: 'Favoritos', icon: 'pi pi-star-fill', command: (event) => this.sidebarVisible2 = !this.sidebarVisible2 },
-      { label: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => this.logOut() },
+      { title: 'Favoritos', icon: 'pi pi-star-fill', command: (event) => this.sidebarVisible1 = !this.sidebarVisible1 },
+      { title: 'Leidos', icon: 'pi pi-eye-slash', command: (event) => this.sidebarVisible2 = !this.sidebarVisible2 },
+      { title: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => this.logOut() },
     ]
 
     this.activeItem = this.items[0];
@@ -75,4 +78,9 @@ export class NavbarComponent implements OnInit {
     this.setItems()
     this.userService.logout().catch(error => console.log(error));
   }
+
+  showInfo(bookId: string){
+    this.router.navigate(['/bookinfo', bookId]);
+  }
+
 }

@@ -12,9 +12,16 @@ export interface Book {
   image: string;
   authorImage: string;
   pages: number;
-  taken: boolean;
+  physicalBook: boolean;
+  isAvailable: boolean; 
+  isNotAvailableReason?: Data;
 }
     
+export interface Data {
+  name: string,
+  id: string
+}
+
 export interface Files {
   format: string,
   route: string

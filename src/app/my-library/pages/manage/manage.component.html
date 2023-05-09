@@ -9,7 +9,7 @@
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Libros</span>
-                        <div class="text-900 font-medium text-xl">152</div>
+                        <div class="text-900 font-medium text-xl">{{numOfBooks}}</div>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-blue-100 border-round"
                         style="width:2.5rem;height:2.5rem">
@@ -23,7 +23,7 @@
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Libros Leidos</span>
-                        <div class="text-900 font-medium text-xl">214</div>
+                        <div class="text-900 font-medium text-xl">{{numberOfFinishedBooks}}</div>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
                         style="width:2.5rem;height:2.5rem">
@@ -37,7 +37,7 @@
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Libros Físicos</span>
-                        <div class="text-900 font-medium text-xl">63</div>
+                        <div class="text-900 font-medium text-xl">{{numberOfphysicalBooks}}</div>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-cyan-100 border-round"
                         style="width:2.5rem;height:2.5rem">
@@ -51,7 +51,7 @@
                 <div class="flex justify-content-between mb-3">
                     <div>
                         <span class="block text-500 font-medium mb-3">Libros Digitales</span>
-                        <div class="text-900 font-medium text-xl">80</div>
+                        <div class="text-900 font-medium text-xl">{{numberOfDigitalBooks}}</div>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-purple-100 border-round"
                         style="width:2.5rem;height:2.5rem">
@@ -73,6 +73,7 @@
                 <div class="flex align-items-center">
                     <i class="pi pi-sign-in mr-2"></i>
                     <span class="vertical-align-middle">Inserta un libro nuevo</span>
+                    <i class="pi pi-cog ml-2 ml-2"></i>
                 </div>
             </ng-template>
             <ng-template pTemplate="content">
@@ -86,7 +87,7 @@
                                 <input id="titleInput" formControlName="titleInput" pinputtext
                                     class="p-inputtext p-component p-element" type="text">
                                 <p-message severity="error" text="Debe de haber entre 1
-                                   y 50 caracteres" *ngIf="validField('titleInput')"></p-message>
+                                   y 100 caracteres" *ngIf="validField('titleInput')"></p-message>
 
                             </div>
                             <div class="field mb-3 col-6">
@@ -152,18 +153,26 @@
                                 <input id="ISBNInput" pinputtext formControlName="ISBNInput"
                                     class="p-inputtext p-component p-element" type="text">
                             </div>
-                            <div class="field mb-3 col-2"></div>
+
                             <div class="field mb-3 col-8">
                                 <label for="descriptionInput" class="font-medium">Descripción</label>
                                 <textarea id="descriptionInput" pInputTextarea [autoResize]="true"
                                     formControlName="descriptionInput">
-                                </textarea>
+                                    </textarea>
+                            </div>
+                            <div class="field mb-3 col-4">
+                                <label class="pb-3" for="descriptionInput" class="font-medium">Libro en físico</label>
+
+                                <p-selectButton [options]="stateOptions" formControlName="physBooknput"
+                                    optionLabel="label" optionValue="physBooknput" optionLabel="label"
+                                    optionValue="value"></p-selectButton>
+
                             </div>
                             <div class="field mb-3 col-2"></div>
                             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
                             <p-toast></p-toast>
                             <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true
-                                class="field mb-4 col-12 md:col-12" chooseLabel="Añadir libro" uploadLabel="Actualizar"
+                                class="field mb-4 col-12 md:col-12" chooseLabel="Añadir libro" uploadLabel="Refrescar"
                                 labe cancelLabel="Cancelar" [showUploadButton]=true [multiple]=true
                                 accept=".pdf, .epub, .mobi">
 
@@ -196,7 +205,6 @@
                 <div class="flex align-items-center">
                     <i class="pi pi-search mr-2"></i>
                     <span class="vertical-align-middle">Buscar libros externos</span>
-                    <i class="pi pi-cog ml-2 ml-2"></i>
                 </div>
 
             </ng-template>
@@ -267,20 +275,47 @@
                 </div>
             </ng-template>
         </p-accordionTab>
-        <!-- <p-accordionTab>
+        <p-accordionTab>
             <ng-template pTemplate="header">
                 <div class="flex align-items-center">
                     <i class="pi pi-user mr-2"></i>
-                    <span class="vertical-align-middle">Header III</span>
+                    <span class="vertical-align-middle">Administrar usuarios</span>
                     <i class="pi pi-cog ml-2 ml-2"></i>
                 </div>
             </ng-template>
             <ng-template pTemplate="content">
                 <p class="m-0">
-                   asdfffffffffffffffffffffffffffffffffffffffffffffffffffffd
+                    <p-toast></p-toast>
+                    <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }">
+                        <ng-template pTemplate="header">
+                            <tr>
+                                <th>Email</th>
+                                <th>Name</th>
+                                <th>Admin</th>
+                                <th></th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-user>
+                            <tr>
+                                <td>{{ user.email }}</td>
+                                <td>{{ user.fullName }}</td>
+
+                                <td>
+                                    <ng-container *ngIf="(user.admin); else otherButton">
+                                        <p-button label='Si' styleClass='p-button-success'></p-button> </ng-container>
+                                    <ng-template #otherButton>
+                                        <p-button label='No' styleClass='p-button-text'></p-button>
+                                    </ng-template>
+                                </td>
+                                <td><p-confirmPopup></p-confirmPopup>
+                                    <p-button (click)="confirm($event, user.id )" icon="pi pi-trash"></p-button>
+                                </td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
                 </p>
             </ng-template>
-        </p-accordionTab> -->
+        </p-accordionTab>
     </p-accordion>
 </div>
 

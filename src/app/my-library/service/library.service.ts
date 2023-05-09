@@ -5,12 +5,12 @@ import { Book } from '../interfaces/book.interface';
 import { APIBook } from '../interfaces/apiBook.interface';
 import {
   Firestore, addDoc, collection, collectionData,
+  getCountFromServer,
   getDoc,
-  getDocs, query, where
+  getDocs, query, updateDoc, where,
 } from '@angular/fire/firestore';
-import { doc, deleteDoc } from "firebase/firestore";
-import { ref } from '@angular/fire/storage';
-
+import { doc, deleteDoc, } from "firebase/firestore";
+import { getStorage, ref, deleteObject } from "firebase/storage";
 
 @Injectable({
   providedIn: 'root'
@@ -20,24 +20,60 @@ export class LibraryService {
 
 
   currentPdf!: string;
-  constructor(
-    private http: HttpClient,
-    private firestore: Firestore
-  ) { }
+  currentPdfId!: string;
+
+  constructor(private http: HttpClient, private firestore: Firestore) { }
 
   private apiTitleBooksUrl: string = "https://openlibrary.org/api/books?bibkeys=title:";
-
 
   async deleteBook(id: string) {
     const bookRef = doc(this.firestore, `books/${id}`);
     await deleteDoc(bookRef);
   }
 
-  async BookByAuthor(author: string) {
+  async deleteFileBook(pathBooks: string[]) {
+
+    const storage = getStorage();
+    pathBooks.map(path => {
+
+      const bookRef = ref(storage, path);
+      // Delete the file
+      deleteObject(bookRef).then((d) => {
+        // File deleted successfully
+        console.log(d);
+      }).catch((error) => {
+        // Uh-oh, an error occurred!
+      });
+
+    })
+
+  }
+
+  async bookByAuthor(author: string) {
     const citiesRef = collection(this.firestore, "books");
-
     return await getDocs(query(citiesRef, where("author", "==", author)));
+  }
 
+  updateBook(book: Book) {
+    const bookRef = doc(this.firestore, `books/${book.id}`)
+    return updateDoc(bookRef, {
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      publisher: book.publisher,
+      description: book.description,
+      ISBN: book.ISBN,
+      numberOfBooks: book.numberOfBooks,
+      publish_date: book.publish_date,
+      genre: book.genre,
+      files: book.files,
+      image: book.image,
+      authorImage: book.authorImage,
+      pages: book.pages,
+      physicalBook: book.physicalBook,
+      isAvailable: book.isAvailable,
+      isNotAvailableReason: book.isNotAvailableReason
+    })
   }
 
   postBook(tempBook: Book) {
@@ -57,7 +93,7 @@ export class LibraryService {
 
   async getRomanticBooks() {
     const bookRef = collection(this.firestore, 'books')
-    return await getDocs(query(bookRef, where('genre', 'array-contains-any', ['Romántico', 'Romantic'])));
+    return await getDocs(query(bookRef, where('genre', 'array-contains-any', ['Romántico', 'Romantic, Romantico'])));
   }
 
   async getBookByID(id: string) {
@@ -73,5 +109,39 @@ export class LibraryService {
   getBookFromApi(title: string): Observable<APIBook> {
     return this.http.get<APIBook>(`${this.apiTitleBooksUrl}${title}&jscmd=data&format=json`);
   }
+
+  async getNumberOfBooks() {
+    const coll = collection(this.firestore, "books");
+    const snapshot = await getCountFromServer(coll);
+    return snapshot.data().count
+  }
+
+  async getNumberOfPhysicalBooks() {
+    const coll = collection(this.firestore, "books");
+    const q = query(coll, where("physicalBook", "==", true));
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count
+  }
+
+
+  async getNumberOfDigitalBooks() {
+    const coll = collection(this.firestore, "books");
+    const q = query(coll, where("files", "!=", []));
+    const snapshot = await getCountFromServer(q);
+    return snapshot.data().count
+  }
+
+  async getNumberOfFinisedBooks() {
+    let total = 0;
+    const querySnapshot = await getDocs(collection(this.firestore, "userData"));
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      const userData = doc.data();
+      total += userData['finishedBooks'].length
+    });
+    return total
+  }
+
+
 
 }

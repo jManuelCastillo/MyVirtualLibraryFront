@@ -27,6 +27,7 @@ export class CollectionComponent implements OnInit {
         })
         )
 
+       
         await this.libraryService.getSciFiBooks().then(Snapshot => Snapshot.forEach((doc) => {
             const newScifiBook = doc.data() as Book
             newScifiBook.id = doc.id

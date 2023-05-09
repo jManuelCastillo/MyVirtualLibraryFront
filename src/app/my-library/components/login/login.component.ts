@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../../service/user.service';
 import { DialogService } from 'primeng/dynamicdialog';
+import { BookmarkService } from '../../service/bookmark.service';
 
 
 @Component({
@@ -14,7 +15,7 @@ export class LoginComponent {
 
   constructor(
     private formBuilder: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
   ) { }
 
 
@@ -30,7 +31,7 @@ export class LoginComponent {
       await this.userService.getUser(this.loginForm.value.emailInput, this.loginForm.value.passwordInput)
       setTimeout(() => {
         location.reload();
-      }, 2000);
+      }, 500);
     }
   }
 

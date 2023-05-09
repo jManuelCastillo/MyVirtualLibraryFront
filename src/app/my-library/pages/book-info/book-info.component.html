@@ -6,8 +6,8 @@
 
    
     <div class="col-9 grid bg-white flex col-offset-1 ">
-        <img src="{{currentBook.image}}" alt="" class="flex bg-cover bg-center flex-wrap mx-1"
-            style="width: 200px; height: 300px;">
+        <img src="{{currentBook.image}}" class="flex bg-cover bg-center flex-wrap mx-1"
+            style="width: 200px; height: 300px;" >
         <div class="flex-1 flex h-full flex-column justify-content-between font-bold m-2 pl-7">
             <div class="flex flex-column flex-wrap">
                 <div class="flex align-items-center ">{{currentBook.title}}</div>
@@ -25,7 +25,7 @@
                   <a  *ngIf="file.format != 'pdf'" (click)="uploadBook(file.route)" class="cursor-pointer" download>
                     <img style="width: 3rem; height: 3rem;"
                         src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
-                        alt="{{file.format}}  icon">
+                        alt="{{file.format}} icon">
                 </a>
                 <a (click)="showPdf(file.route)" *ngIf="file.format == 'pdf'" class="cursor-pointer">
                     <img style="width: 3rem; height: 3rem;"
@@ -95,7 +95,7 @@
             </div>
             <div class="flex flex-column align-items-center">
                 <img src="{{currentBook.authorImage}}" alt="Imangen {{currentBook.author}}" 
-                class="flex bg-cover bg-center flex-wrap mx-1" style="height: 225px">
+                class="flex bg-cover bg-center flex-wrap mx-1" onerror="this.src='../../../../assets/images/photoNotFound.png'" style="height: 225px">
                 <div class="flex p-2">{{currentBook.author}}</div>
             </div>
         </div>
