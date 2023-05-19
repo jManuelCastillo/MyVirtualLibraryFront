@@ -4,11 +4,20 @@ import { MenuItem, MessageService, ConfirmationService } from 'primeng/api';
 import { LibraryService } from '../../service/library.service';
 import { Book } from '../../interfaces/book.interface';
 import { APIBook, Data } from '../../interfaces/apiBook.interface';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { TitleCasePipe } from '@angular/common';
 import { Storage, ref, uploadBytes } from '@angular/fire/storage';
-import { User } from '../../interfaces/user.interface';
 import { UserService } from '../../service/user.service';
+import { UserIt } from '../../interfaces/user.interface';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from 'pdfmake/build/vfs_fonts';
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+
+interface Genre {
+  id: number;
+  title: string;
+}
 
 @Component({
   selector: 'app-manage',
@@ -17,8 +26,11 @@ import { UserService } from '../../service/user.service';
   providers: [MessageService, TitleCasePipe, ConfirmationService,],
 
 })
-export class ManageComponent {
 
+
+export class ManageComponent {
+  emailExist: boolean = false;
+  showRegister: boolean = false;
   numberOfFinishedBooks?: number;
   numberOfDigitalBooks?: number;
   numberOfphysicalBooks?: number;
@@ -36,36 +48,28 @@ export class ManageComponent {
   filteredBooks: Book[] = [];
   optionsItems: MenuItem[] = [];
   inputSearch: FormControl = this.formBuilder.control('');
-  users: User[] = []
+  users: UserIt[] = []
+  genres: Genre[] = [];
+  selectedGenre: Genre[] = [];
+  mostReadGenre = undefined;
+  mostUsedGenre?: any;
+  bookMostRead: any;
+  mostFavBook: any;
 
 
-  constructor(private libraryService: LibraryService, private formBuilder: FormBuilder, 
+  constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
     private confirmationService: ConfirmationService, private usersService: UserService,
-    private titlecasePipe: TitleCasePipe, private messageService: MessageService, 
+    private titlecasePipe: TitleCasePipe, private messageService: MessageService,
     private storage: Storage) {
     this.genresInput = [];
     this.uploadedFiles = []
+
     this.searchItems = [
       {
         label: 'Título',
         command: () => {
           this.selectFilter = 'Título',
             this.changeFilter('title');
-          this.searchFilter()
-        }
-      },
-      {
-        label: 'Autor',
-        command: () => {
-          this.selectFilter = 'Autor'
-          this.changeFilter('author');
-          this.searchFilter()
-        }
-      },
-      {
-        label: 'Titulo/autor', command: () => {
-          this.selectFilter = 'Titulo/Autor'
-          this.changeFilter('authorTitle');
           this.searchFilter()
         }
       }
@@ -75,26 +79,53 @@ export class ManageComponent {
 
   bookForm: FormGroup = this.formBuilder.group({
     titleInput: [, [Validators.required, Validators.maxLength(100)]],
-    autorInput: [, Validators.maxLength(60)],
-    genreInput: [['Fantasía'], Validators.required],
+    authorInput: [, [Validators.required, Validators.maxLength(50)]],
+    genreInput: [[], Validators.required],
     booksNumberInput: [[], [Validators.required, Validators.min(1)]],
     publishDateInput: [],
     pagesNumberInput: [, [Validators.required, Validators.min(1)]],
     imageInput: [],
     imageAuthorInput: [],
-    publisherInput: [, Validators.maxLength(60)],
-    ISBNInput: [, Validators.maxLength(15)],
+    publisherInput: [, [Validators.required, Validators.maxLength(50)]],
+    ISBNInput: [, [Validators.maxLength(50)]],
     descriptionInput: [, [Validators.minLength(0), Validators.maxLength(200)]],
     physBooknput: ['false']
   })
 
+  currentDateValidator(control: AbstractControl): ValidationErrors | null {
+    const selectedDate = control.value;
+    const currentDate = new Date();
+    console.log(currentDate);
+
+    if (selectedDate && selectedDate < currentDate) {
+      return { invalidDate: true };
+    }
+    return null;
+  }
+
+  registerForm: FormGroup = this.formBuilder.group({
+    nameInput: [, [Validators.required, Validators.maxLength(50)]],
+    emailInput: [, [Validators.required, Validators.email]],
+    passwordInput: [, [Validators.required, Validators.minLength(6), Validators.maxLength(25), this.passwordValidator]],
+  })
+
+  passwordValidator(control: AbstractControl): { [key: string]: boolean } | null {
+    const hasUppercase = /[A-Z]/.test(control.value);
+    const hasNumber = /\d/.test(control.value);
+    const hasSymbol = /[$&+,:;=?@#|'<>.·^*()%!\-]/.test(control.value);
+    const valid = hasUppercase && hasNumber && hasSymbol;
+    return valid ? null : { invalidPassword: true };
+  }
 
   async ngOnInit() {
+
+    await this.mostFinishedBookGenre()
+
     this.activeIndex = 0
     this.bookForm.reset({
       titleInput: '',
-      autorInput: '',
-      genreInput: ['Fantasía'],
+      authorInput: '',
+      genreInput: [],
       booksNumberInput: 1,
       publishDateInput: '',
       pagesNumberInput: 1,
@@ -106,23 +137,61 @@ export class ManageComponent {
       physBooknput: 'false'
     })
 
+    this.genres = [
+      {
+        id: 1,
+        title: "Romántico",
+      },
+      {
+        id: 2,
+        title: "Ciencia Ficción",
+      },
+      {
+        id: 3,
+        title: "Fantasía"
+      },
+      {
+        id: 4,
+        title: "Poesía",
+      },
+      {
+        id: 5,
+        title: "Policíaca",
+      },
+      {
+        id: 6,
+        title: "Terror"
+      },
+      {
+        id: 7,
+        title: "Clásicos",
+      }
+    ];
+
     this.numOfBooks = await this.libraryService.getNumberOfBooks()
 
     this.numberOfphysicalBooks = await this.libraryService.getNumberOfPhysicalBooks()
 
     this.numberOfDigitalBooks = await this.libraryService.getNumberOfDigitalBooks()
-    
+
     this.numberOfFinishedBooks = await this.libraryService.getNumberOfFinisedBooks()
 
-    this.users = await this.usersService.getAllUsers()
+    const filteredUsers = await this.usersService.getAllUsers()
+    this.users = filteredUsers.filter(user => user.id !== this.usersService.currentUser.id);
+
+
+
   }
 
-  validField(field: string) {
+  validFieldBooks(field: string) {
     return this.bookForm.controls[field].errors &&
       this.bookForm.controls[field].touched
   }
 
-  
+  validFieldRegister(field: string) {
+    return this.registerForm.controls[field].errors &&
+      this.registerForm.controls[field].touched
+  }
 
   handleFileInput(files: FileList) {
     files.item(0);
@@ -130,28 +199,36 @@ export class ManageComponent {
 
   async saveBook() {
 
-    if (this.bookForm.invalid || this.uploadedFiles.length == 0) {
+    if (this.bookForm.invalid || (this.uploadedFiles.length == 0 && this.bookForm.value.physBooknput == 'false')) {
       this.bookForm.markAllAsTouched();
+      if (this.uploadedFiles.length == 0 && this.bookForm.value.physBooknput == 'false') {
+        this.messageService.add({ severity: 'warn', summary: 'Debe haber al menos un libro digital o que esté en físico', detail: '' });
+      }
       return;
     }
+
+    const selectedDate: Date = this.bookForm.value.publishDateInput;
+    const day: number = selectedDate.getDate();
+    const month: number = selectedDate.getMonth() + 1;
+    const year: number = selectedDate.getFullYear();
 
     let newBook: Book = {
       id: '',
       title: this.bookForm.value.titleInput,
-      author: this.bookForm.value.autorInput,
+      author: this.bookForm.value.authorInput,
       publisher: this.bookForm.value.publisherInput,
       description: this.bookForm.value.descriptionInput,
       ISBN: this.bookForm.value.ISBNInput,
       numberOfBooks: this.bookForm.value.booksNumberInput,
-      publish_date: "",
-      genre: this.bookForm.value.genreInput,
+      publish_date: `${day}/${month}/${year}`,
+      genre: this.bookForm.value.genreInput.map(genre => genre.title),
       files: [],
       image: this.bookForm.value.imageInput,
       authorImage: this.bookForm.value.imageAuthorInput,
       pages: this.bookForm.value.pagesNumberInput,
       physicalBook: (this.bookForm.value.physBooknput == 'true') ? true : false,
       isAvailable: (this.bookForm.value.physBooknput == 'true') ? true : false,
-      isNotAvailableReason: {name: '', id:''}
+      isNotAvailableReason: { name: '', id: '' }
     }
 
     this.uploadedFiles.map(file => {
@@ -168,13 +245,14 @@ export class ManageComponent {
     })
 
     const book = await this.libraryService.postBook(newBook);
+    this.messageService.add({ severity: 'success', summary: 'Nuevo libro agregado', detail: '' });
     // enviado datos al storage
 
     this.uploadedFiles = []
     this.bookForm.reset({
       titleInput: '',
-      autorInput: '',
-      genreInput: ['Fantasía'],
+      authorInput: '',
+      genreInput: [],
       booksNumberInput: 1,
       publishDateInput: '',
       pagesNumberInput: 1,
@@ -185,7 +263,7 @@ export class ManageComponent {
       fileInput: [],
       physBooknput: 'false',
       isAvailable: 'false',
-      isNotAvailableReason: {name: '', id:''}
+      isNotAvailableReason: { name: '', id: '' }
     });
   }
 
@@ -197,9 +275,7 @@ export class ManageComponent {
       if (!this.uploadedFiles.some((upFile) => {
         return upFile.type === file.type
       })) {
-
         this.uploadedFiles.push(file);
-
       } else {
         this.messageService.add({ severity: 'warn', summary: 'No se pueden repetir archivos con el mismo formato', detail: '' });
       }
@@ -221,10 +297,10 @@ export class ManageComponent {
 
     this.bookForm.reset({
       titleInput: this.foundBooks?.data?.title ?? '',
-      autorInput: this.foundBooks?.data?.authors[0]?.name ?? '',
-      genreInput: (this.foundBooks?.data?.subjects?.length > 5) ? this.foundBooks?.data?.subjects?.slice(0, 5)?.map(subj => subj.name) : this.foundBooks?.data?.subjects?.map(subj => subj.name) ?? [],
+      authorInput: this.foundBooks?.data?.authors[0]?.name ?? '',
+      genreInput: [],
       booksNumberInput: 1,
-      publishDateInput: this.foundBooks?.data?.publish_date ?? '',
+      publishDateInput: new Date(this.foundBooks?.data?.publish_date ?? ''),
       pagesNumberInput: this.foundBooks?.data?.number_of_pages ?? 1,
       imageInput: this.foundBooks?.data?.cover?.large ?? '',
       imageAuthorInput: this.foundBooks?.data?.subject_people?.[0]?.url ?? '',
@@ -236,7 +312,7 @@ export class ManageComponent {
       descriptionInput: this.foundBooks?.data?.excerpts?.[0]?.text ?? '',
       physBooknput: 'false',
       isAvailable: false,
-      isNotAvailableReason: {name: '', id:''}
+      isNotAvailableReason: { name: '', id: '' }
     })
 
     this.activeIndex = 0;
@@ -260,18 +336,177 @@ export class ManageComponent {
   search(severity: string) {
   }
 
-  confirm(event: Event, idUser: string) {
+  deleteUser(event: Event, idUser: string) {
     this.confirmationService.confirm({
-        target: event.target!,
-        message: '¿Estás seguro de que quieres borrar este usuario?',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => {
-            this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Has borrar este usuario correctamente =(' });
-        },
-        reject: () => {
-            this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la acción' });
-        }
+      target: event.target!,
+      message: '¿Estás seguro de que quieres borrar este usuario?',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.users.slice(1, 1)
+        const index = this.users.findIndex(user => user.id === idUser);
+        this.users.splice(index!, 1);
+        this.usersService.deleteUser(idUser)
+
+        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Has borrado este usuario correctamente =(' });
+      },
+      reject: () => {
+        this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la acción' });
+      }
     });
-}
+  }
+
+  letAdmin(user: UserIt) {
+    user.admin = !user.admin
+    this.usersService.updateUser(user)
+  }
+
+  showDialog() {
+    this.showRegister = true;
+  }
+
+  register() {
+
+    if (this.registerForm.valid) {
+      this.usersService.register(this.registerForm.value.emailInput, this.registerForm.value.passwordInput)
+        .then(response => {
+          this.usersService.registerUserData(response.user.uid, this.registerForm.value.nameInput, this.registerForm.value.emailInput
+          ).then(response => {
+            this.showRegister = false;
+            this.messageService.add({ severity: 'success', summary: 'Nuevo usuario agregado', detail: '' });
+
+          })
+            .catch(error => console.log(error));
+          this.users.push({ email: this.registerForm.value.emailInput, id: response.user.uid, fullName: this.registerForm.value.nameInput })
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          if (errorCode === 'auth/email-already-in-use') {
+            this.emailExist = true
+          }
+        });
+    }
+  }
+
+  downloadUsersData(users: UserIt[]) {
+
+    const bodyData = [['Nombre', 'Email', 'Admin', 'Libros Favoritos', 'Libros Leidos']];
+
+    users.forEach(user => {
+
+      let favBooks: string = user.favouritesBooks.map(favBook => favBook.title).join('\n');
+      let finishedBooks = user.finishedBooks.map(finishedBook => finishedBook.title).join('\n');
+      const rowData: any = [];
+      rowData.push(user.fullName);
+      rowData.push(user.email);
+      rowData.push((user.admin) ? 'Si' : 'No');
+      rowData.push(favBooks);
+      rowData.push(finishedBooks);
+      bodyData.push(rowData);
+    });
+
+    console.log(bodyData);
+
+    const documentDefinition: any = {
+      content: [
+        { text: 'Listado de usuarios', style: 'header' },
+        {
+          table: {
+            headerRows: 1,
+            widths: ['*', '*', '*', '*', '*'],
+            body: bodyData
+          }
+        }
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 0, 0, 10]
+        }
+      }
+    };
+
+    pdfMake.createPdf(documentDefinition).open();
+
+  }
+
+  async mostFinishedBookGenre() {
+    const users: UserIt[] = [];
+    const books: Book[] = [];
+    const genreFrequency: Record<string, number> = {};
+
+    await this.usersService.getAllUsers().then(tempUsers => users.push(...tempUsers));
+    await this.libraryService.getAllBooks().then(tempBooks => books.push(...tempBooks));
+
+    users.forEach((user) => {
+      user.finishedBooks?.forEach((finishedBook) => {
+        const book = books.find((book) => book.id === finishedBook.idBook);
+        if (book && book.genre) {
+          book.genre.forEach((genre) => {
+            genreFrequency[genre] = (genreFrequency[genre] || 0) + 1;
+          });
+        }
+      });
+    });
+
+    // Obtener el título y el número de veces que aparece cada libro en finishedBooks
+    const bookFrequency: Record<string, number> = {};
+
+    users.forEach((user) => {
+      user.finishedBooks?.forEach((finishedBook) => {
+        const book = books.find((book) => book.id === finishedBook.idBook);
+        if (book) {
+          const { title, idBook } = finishedBook;
+          const bookKey = `${title} (${idBook})`;
+          bookFrequency[bookKey] = (bookFrequency[bookKey] || 0) + 1;
+        }
+      });
+    });
+
+    // Encontrar el género más utilizado
+    this.mostUsedGenre = Object.keys(genreFrequency).reduce((a, b) =>
+      genreFrequency[a] > genreFrequency[b] ? a : b
+    );
+
+    const idBookFrequency: Record<string, number> = {};
+
+    users.forEach((user) => {
+      user.finishedBooks?.forEach((finishedBook) => {
+        const { idBook } = finishedBook;
+        idBookFrequency[idBook] = (idBookFrequency[idBook] || 0) + 1;
+      });
+    });
+
+    //find most read book
+    const mostRepeatedFinishedBook = Object.keys(idBookFrequency).reduce((a, b) =>
+      idBookFrequency[a] > idBookFrequency[b] ? a : b
+    );
+
+    this.bookMostRead = books.find((book) => book.id === mostRepeatedFinishedBook);
+
+    //find most book in fav
+
+    const bookCount = {};
+    users.forEach(user => {      
+      user.favouritesBooks.forEach(favBook => {
+        const bookId = favBook.idBook;
+        bookCount[bookId] = (bookCount[bookId] || 0) + 1;
+      });
+    });
+
+    let maxCount = 0;
+    let mostFrequentBookIds: string[] = [];
+    for (const bookId in bookCount) {
+      if (bookCount[bookId] > maxCount) {
+        maxCount = bookCount[bookId];
+        mostFrequentBookIds = [bookId];
+      } else if (bookCount[bookId] === maxCount) {
+        mostFrequentBookIds.push(bookId);
+      }
+    }
+    
+    this.mostFavBook = books.find((book) => book.id === Object.keys(bookCount)[0]);
+  }
+
 
 }

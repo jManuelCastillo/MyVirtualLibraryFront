@@ -15,17 +15,21 @@
             </div>
             <div class="field mb-3 col-6">
                 <label for="authorInput" class="font-medium">Autor</label>
-                <input id="authorInput" formControlName="autorInput" pinputtext
+                <input id="authorInput" formControlName="authorInput" pinputtext
                     class="p-inputtext p-component p-element" type="text">
             </div>
-            <div class="field mb-3 col-6 ">
+            <!-- <div class="field mb-3 col-6 ">
                 <label for="genreInput" class="font-medium">Género</label>
                 <p-chips id="genreInput" separator="," formControlName="genreInput" [max]=5 [allowDuplicate]=false
                     placeholder="Fantasia, Romance, etc"></p-chips>
                 <p-message severity="error" text="Debe haber almenos un
                     género" *ngIf="validField('genreInput')"></p-message>
+            </div> -->
+            <div class="field mb-3 col-6 ">
+                <label for="genreInput" class="font-medium">Género*</label>
+                <p-multiSelect [options]="genres" display="chip" optionLabel="title" formControlName="genreInput"></p-multiSelect>
+                <p-message severity="error" text="Debe haber al menos un género" *ngIf="validField('genreInput')"></p-message>
             </div>
-
             <div class="field mb-3 col-6">
                 <label for="seriesNumberInput" class="font-medium">Número de libros</label>
                 <input id="seriesNumberInput" formControlName="booksNumberInput" pinputtext
@@ -37,9 +41,9 @@
             <!-- añadir controlador de date -->
             <div class="field mb-3 col-6">
                 <label for="dateInput" class="font-medium">Fecha de salida</label>
-                <p-calendar formControlName="publishDateInput"></p-calendar>
-                <!-- [(ngModel)]="date" -->
+                <p-calendar id="dateInput"  dateFormat="dd/mm/yy" formControlName="publishDateInput" [showIcon]="true"></p-calendar>
             </div>
+            
             <div class="field mb-3 col-6">
                 <label for="seriesNumberInput" class="font-medium">Número de páginas</label>
                 <input id="seriesNumberInput" formControlName="pagesNumberInput" pinputtext
@@ -57,10 +61,10 @@
                 </div>
             </div>
             <div class="field mb-4 col-12">
-                <label for="imageAutorInput" class="font-medium">Imagen del autor</label>
+                <label for="imageAuthorInput" class="font-medium">Imagen del autor</label>
                 <div class="p-inputgroup">
                     <span class="p-inputgroup-addon">www</span>
-                    <input id="imageAutorInput" formControlName="imageAuthorInput" type="text" pinputtext
+                    <input id="imageAuthorInput" formControlName="imageAuthorInput" type="text" pinputtext
                         class="p-inputtext p-component p-element">
                 </div>
             </div>
@@ -90,7 +94,7 @@
             </div>
             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
 
-            <div class="flex flex-row justify-content-evenly flex-wrap w-full flex-row pb-3">
+            <div class="flex flex-row justify-content-evenly flex-wrap w-full flex-row pb-3" *ngIf="currentBook">
                 <div *ngFor="let file of currentBook.files" class="flex">
                     <p-confirmPopup></p-confirmPopup>
                     <a pButton (click)="confirmDelete($event, file.route)" icon="pi pi-times"
@@ -105,7 +109,7 @@
 
             <p-toast></p-toast>
             <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true class="field mb-4 col-12 md:col-12"
-                chooseLabel="Añadir libro" uploadLabel="Actualizar" labe cancelLabel="Cancelar" [showUploadButton]=true
+                chooseLabel="Añadir libro" uploadLabel="Refrescar" labe cancelLabel="Cancelar" [showUploadButton]=true
                 [multiple]=true accept=".pdf, .epub, .mobi">
 
                 <ng-template pTemplate="content">

@@ -7,7 +7,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { PdfViewerComponent } from '../../components/pdf-viewer/pdf-viewer.component';
 import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 import { UserService } from '../../service/user.service';
-import { User } from '../../interfaces/user.interface';
+import { UserIt } from '../../interfaces/user.interface';
 import { Router } from '@angular/router';
 
 
@@ -21,8 +21,8 @@ export class HomeComponent implements OnDestroy, OnInit {
     tempBook?: Book;
     visible: boolean = false;
     visible2: boolean = false;
-    selectedUser?: User;
-    usersForHelp: User[] = [];
+    selectedUser?: UserIt;
+    usersForHelp: UserIt[] = [];
     items?: MenuItem[];
     showSearch: boolean = false;
     searchItems: MenuItem[] = [];
@@ -35,20 +35,18 @@ export class HomeComponent implements OnDestroy, OnInit {
     fileInput: any;
     ref!: DynamicDialogRef;
     bookList: Book[] = [];
-    currentUser?: User;
+    currentUser?: UserIt;
     countries: any[] = [];
     selectedCountry?: string;
-
-
     bookForm: FormGroup = this.formBuilder.group({
-        searchUser: ['', ],
-      })
+        searchUser: ['',],
+    })
 
 
     constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
         public dialogService: DialogService, public messageService: MessageService,
         private storage: Storage, private userService: UserService, private router: Router,
-        private confirmationService: ConfirmationService, private fb: FormBuilder ) {
+        private confirmationService: ConfirmationService, private fb: FormBuilder) {
 
         this.searchItems = [
             {
@@ -68,9 +66,16 @@ export class HomeComponent implements OnDestroy, OnInit {
                 }
             },
             {
-                label: 'Titulo/autor', command: () => {
-                    this.selectFilter = 'Titulo/Autor'
-                    this.changeButton('authorTitle');
+                label: 'Género', command: () => {
+                    this.selectFilter = 'Género'
+                    this.changeButton('genre');
+                    this.searchFilter()
+                }
+            },
+            {
+                label: 'Editorial', command: () => {
+                    this.selectFilter = 'Editorial'
+                    this.changeButton('publisher');
                     this.searchFilter()
                 }
             }
@@ -90,23 +95,60 @@ export class HomeComponent implements OnDestroy, OnInit {
         this.libraryService.getMyBooks().subscribe({
             next: books => this.bookList = books
         })
-       
-        this.currentUser = JSON.parse(localStorage.getItem('user')!)  as User
-       
-        
+        this.currentUser = JSON.parse(localStorage.getItem('user')!) as UserIt
     }
 
-    
     showInfo(id: string) {
         this.router.navigate(['/bookinfo', id]);
     }
 
-    deleteBook(id: string, fileList: any[]) {
+    async deleteBook(event: Event, id: string, fileList: any[]) {
+        let tempUsers: UserIt[] = await this.userService.getAllUsers();
+        this.confirmationService.confirm({
+            target: event.target,
+            message: '¿Seguro que quieres borrar el libro?',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => {
+                this.libraryService.deleteBook(id);
+                this.libraryService.deleteFileBook(fileList.map(file => file.route));
+                const index = this.filteredBooks.findIndex(book => book.id === id);
+                this.filteredBooks.splice(index, 1);
 
-        this.libraryService.deleteBook(id);
-        this.libraryService.deleteFileBook(fileList.map(file => file.route));
-        const index = this.filteredBooks.findIndex(book => book.id === id);
-        this.filteredBooks.splice(index, 1);
+                tempUsers.forEach(user => {
+                    if (user.id != this.currentUser.id) {
+                        user.favouritesBooks = user.favouritesBooks.filter(
+                            (book) => book.idBook !== id
+                        );
+
+                        // Elimina los elementos con idBook coincidente de finishedBooks
+                        user.finishedBooks = user.finishedBooks.filter(
+                            (book) => book.idBook !== id
+                        );
+
+                        this.userService.updateUser(user)
+                    } else {
+
+                        this.userService.currentUser.favouritesBooks = this.userService.currentUser.favouritesBooks.filter(
+                            (book) => book.idBook !== id
+                        );
+
+                        // Elimina los elementos con idBook coincidente de finishedBooks
+                        this.userService.currentUser.finishedBooks = this.userService.currentUser.finishedBooks.filter(
+                            (book) => book.idBook !== id
+                        );
+
+                        this.userService.updateUser()
+                    }
+                });
+
+                this.messageService.add({ severity: 'info', summary: 'Confirmado', detail: 'Libro borrado' });
+            },
+            reject: () => {
+                this.messageService.add({ severity: 'error', summary: 'Cancelado', detail: 'Has cancelado la acción' });
+            }
+        });
+
+
 
     }
 
@@ -144,19 +186,28 @@ export class HomeComponent implements OnDestroy, OnInit {
     }
 
     searchFilter() {
-
         if (this.inputSearch.value != '') {
             this.showSearch = true
-            if (this.filter == 'title') {
-                this.filteredBooks = this.bookList.flat().filter(book => book.title.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
-            }
-            if (this.filter == 'author') {
-                console.log("entra en author");
-                console.log(this.inputSearch);
-                this.filteredBooks = this.bookList.flat().filter(book => book.author.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
-            }
-            if (this.filter == 'authorTitle') {
-                this.filteredBooks = this.bookList.flat().filter(book => (book.title.includes(this.inputSearch.value) && book.author.includes(this.inputSearch.value)));
+
+            switch (this.filter) {
+
+                case 'title':
+                    this.filteredBooks = this.bookList.flat().filter(book =>
+                        book.title.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
+                    break;
+                case 'author':
+                    this.filteredBooks = this.bookList.flat().filter(book =>
+                        book.author.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
+                    break;
+                case 'genre':
+                    this.filteredBooks = this.filteredBooks = this.bookList.flat().filter(book =>
+                        book.genre.some(genre => genre.toLowerCase().includes(this.inputSearch.value.toLowerCase())));
+                    break;
+                case 'publisher':
+                    this.filteredBooks = this.bookList.flat().filter(book =>
+                        book.publisher.toLocaleLowerCase().includes(this.inputSearch.value.toLocaleLowerCase()));
+                    break;
+                default:
             }
         } else {
             this.showSearch = false;
@@ -183,27 +234,25 @@ export class HomeComponent implements OnDestroy, OnInit {
         this.router.navigate(['/updateBook', id]);
     }
 
-    
+
     favButton(idBook: string, title: string) {
 
         this.currentUser = this.userService.currentUser;
-
-
         if (this.currentUser?.favouritesBooks?.findIndex(favBook => favBook.idBook === idBook) === -1) {
-            this.userService.currentUser?.favouritesBooks?.push({idBook, title})
+            this.userService.currentUser?.favouritesBooks?.push({ idBook, title })
 
         } else {
             const index = this.userService.currentUser?.favouritesBooks?.findIndex(favBook => favBook.idBook === idBook);
             this.userService.currentUser?.favouritesBooks?.splice(index!, 1);
-            this.currentUser?.favouritesBooks?.splice(index!, 1); 
+            this.currentUser?.favouritesBooks?.splice(index!, 1);
         }
-        
+
         this.userService.updateUser()
     }
 
-    isFav(idBook: string ) {
+    isFav(idBook: string) {
         this.currentUser = JSON.parse(localStorage.getItem('user')!)
-       return this.currentUser!.favouritesBooks != undefined && this.currentUser?.favouritesBooks?.some(favBook => favBook.idBook  == idBook)
+        return this.currentUser!.favouritesBooks != undefined && this.currentUser?.favouritesBooks?.some(favBook => favBook.idBook == idBook)
     }
 
     finisedButton(idBook: string, title: string) {
@@ -211,41 +260,41 @@ export class HomeComponent implements OnDestroy, OnInit {
         this.currentUser = this.userService.currentUser;
 
         if (this.currentUser?.finishedBooks?.findIndex(finishedBook => finishedBook.idBook === idBook) === -1) {
-            this.userService.currentUser?.finishedBooks?.push({idBook, title})
+            this.userService.currentUser?.finishedBooks?.push({ idBook, title })
 
         } else {
             const index = this.userService.currentUser?.finishedBooks?.findIndex(finishedBook => finishedBook.idBook === idBook);
             this.userService.currentUser?.finishedBooks?.splice(index!, 1);
-            this.currentUser?.finishedBooks?.splice(index!, 1); 
+            this.currentUser?.finishedBooks?.splice(index!, 1);
         }
-        
+
         this.userService.updateUser()
     }
 
-    isFinised(idBook: string ) {
+    isFinised(idBook: string) {
         this.currentUser = JSON.parse(localStorage.getItem('user')!)
-       return this.currentUser!.finishedBooks != undefined && this.currentUser?.finishedBooks?.some(finishedBook => finishedBook.idBook  == idBook)
+        return this.currentUser!.finishedBooks != undefined && this.currentUser?.finishedBooks?.some(finishedBook => finishedBook.idBook == idBook)
     }
 
-    withdrawABook(book: Book){
+    withdrawABook(book: Book) {
         this.currentUser = JSON.parse(localStorage.getItem('user')!)
 
-        if(book.isAvailable){
+        if (book.isAvailable) {
             book.isAvailable = false;
-            book.isNotAvailableReason = {name: this.currentUser!.fullName, id: this.currentUser!.id}
+            book.isNotAvailableReason = { name: this.currentUser!.fullName, id: this.currentUser!.id }
             this.libraryService.updateBook(book)
 
         } else {
             book.isAvailable = true;
-            book.isNotAvailableReason = {name: '', id: ''},
-            this.libraryService.updateBook(book)
+            book.isNotAvailableReason = { name: '', id: '' },
+                this.libraryService.updateBook(book)
         }
-        
+
     }
 
-   async showWithdrawBook(book: Book) {
+    async showWithdrawBook(book: Book) {
         this.visible = true;
-        this.usersForHelp =  await this.userService.getUsuario()
+        this.usersForHelp = await this.userService.getUsuario()
         this.tempBook = book
     }
 
@@ -254,23 +303,23 @@ export class HomeComponent implements OnDestroy, OnInit {
         this.tempBook = book
     }
 
-    returnBookForUser(book: Book){
+    returnBookForUser(book: Book) {
         book.isAvailable = true;
-        book.isNotAvailableReason = {name: '', id: ''}
+        book.isNotAvailableReason = { name: '', id: '' }
         this.libraryService.updateBook(book);
         this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: `Libro devuelto` });
         this.visible2 = false
     }
 
-    withdrawForUser(name: string, id: string, book: Book){
+    withdrawForUser(name: string, id: string, book: Book) {
         book.isAvailable = false;
-        book.isNotAvailableReason = {name: name, id: id}
+        book.isNotAvailableReason = { name: name, id: id }
         this.libraryService.updateBook(book);
-        this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: `Libro retirado para ${{name}}` });
+        this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: `Libro retirado para ${{ name }}` });
         this.visible = false
     }
-    
-    cancel(){
+
+    cancel() {
         this.messageService.add({ severity: 'error', summary: 'Cancelado', detail: 'Acción cancelada' });
         this.visible = false
         this.visible2 = false;

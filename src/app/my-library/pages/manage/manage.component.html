@@ -62,7 +62,40 @@
         </div>
     </div>
 </div>
-
+<div class="surface-ground px-4 pb-5 md:px-6 lg:px-8">
+    <div class="grid">
+        <div class="col-12 lg:col-4 p-3">
+            <div class="shadow-2 surface-card p-3 h-full" style="border-radius: 12px;">
+                <div class="flex align-items-center justify-content-between h-full">
+                    <div class="flex align-items-start flex-column">
+                        <span class="text-3xl text-900 font-bold flex">{{mostUsedGenre}}</span>
+                        <p class="mt-1 mb-0 text-600 text-xl flex">Género más leído</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-4 p-3">
+            <div class="shadow-2 surface-card p-3" style="border-radius: 12px;">
+                <div class="flex align-items-center justify-content-between h-full">
+                    <div class="flex align-items-start flex-column">
+                        <span class="text-3xl text-900 font-bold" *ngIf="bookMostRead">{{bookMostRead.title}}</span>
+                        <p class="mt-1 mb-0 text-600 text-xl">Libro más leído</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-4 p-3">
+            <div class="shadow-2 surface-card p-3 h-full" style="border-radius: 12px;">
+                <div class="flex align-items-center justify-content-between h-full">
+                    <div class="flex align-items-start flex-column">
+                        <span class="text-3xl text-900 font-bold" *ngIf="mostFavBook">{{mostFavBook.title}}</span>
+                        <p class="mt-1 mb-0 text-600 text-xl">El favorito</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- accion accoridion -->
 
@@ -83,24 +116,26 @@
                         <div class="grid formgrid p-fluid flex">
 
                             <div class="field mb-3 col-6">
-                                <label for="titleInput" class="font-medium">Titulo</label>
+                                <label for="titleInput" class="font-medium">Titulo*</label>
                                 <input id="titleInput" formControlName="titleInput" pinputtext
                                     class="p-inputtext p-component p-element" type="text">
                                 <p-message severity="error" text="Debe de haber entre 1
-                                   y 100 caracteres" *ngIf="validField('titleInput')"></p-message>
+                                   y 100 caracteres" *ngIf="validFieldBooks('titleInput')"></p-message>
 
                             </div>
                             <div class="field mb-3 col-6">
-                                <label for="authorInput" class="font-medium">Autor</label>
-                                <input id="authorInput" formControlName="autorInput" pinputtext
+                                <label for="authorInput" class="font-medium">Autor*</label>
+                                <input id="authorInput" formControlName="authorInput" pinputtext
                                     class="p-inputtext p-component p-element" type="text">
+                                <p-message severity="error" text="Debe de haber entre 1
+                                   y 50 caracteres" *ngIf="validFieldBooks('authorInput')"></p-message>
                             </div>
                             <div class="field mb-3 col-6 ">
-                                <label for="genreInput" class="font-medium">Género</label>
-                                <p-chips id="genreInput" separator="," formControlName="genreInput" [max]=5
-                                    [allowDuplicate]=false placeholder="Fantasia, Romance, etc"></p-chips>
-                                <p-message severity="error" text="Debe haber almenos un
-                                género" *ngIf="validField('genreInput')"></p-message>
+                                <label for="genreInput" class="font-medium">Género*</label>
+                                <p-multiSelect [options]="genres" display="chip" optionLabel="title"
+                                    formControlName="genreInput"></p-multiSelect>
+                                <p-message severity="error" text="Debe haber al menos un género"
+                                    *ngIf="validFieldBooks('genreInput')"></p-message>
                             </div>
 
                             <div class="field mb-3 col-6">
@@ -108,21 +143,21 @@
                                 <input id="seriesNumberInput" formControlName="booksNumberInput" pinputtext
                                     class="p-inputtext p-component p-element" type="number">
                                 <p-message severity="error" text="Tiene que ser un numero
-                                    mayor a 0" *ngIf="validField('booksNumberInput')"></p-message>
+                                    mayor a 0" *ngIf="validFieldBooks('booksNumberInput')"></p-message>
                             </div>
 
                             <!-- añadir controlador de date -->
                             <div class="field mb-3 col-6">
                                 <label for="dateInput" class="font-medium">Fecha de salida</label>
-                                <p-calendar formControlName="publishDateInput"></p-calendar>
-                                <!-- [(ngModel)]="date" -->
+                                <p-calendar id="dateInput" [firstDayOfWeek]="1" dateFormat="dd/mm/yy"
+                                    formControlName="publishDateInput" [showIcon]="true"></p-calendar>
                             </div>
                             <div class="field mb-3 col-6">
-                                <label for="seriesNumberInput" class="font-medium">Número de páginas</label>
-                                <input id="seriesNumberInput" formControlName="pagesNumberInput" pinputtext
+                                <label for="pagesNumberInput" class="font-medium">Número de páginas</label>
+                                <input id="pagesNumberInput" formControlName="pagesNumberInput" pinputtext
                                     class="p-inputtext p-component p-element" type="number">
                                 <p-message severity="error" text="Tiene que ser un numero
-                                    mayor a 0" *ngIf="validField('pagesNumberInput')"></p-message>
+                                    mayor a 0" *ngIf="validFieldBooks('pagesNumberInput')"></p-message>
 
                             </div>
                             <div class="field mb-4 col-12">
@@ -144,9 +179,11 @@
                             <div class="surface-100 mb-3 col-12" style="height: 2px;">
                             </div>
                             <div class="field mb-4 col-12 md:col-6">
-                                <label for="publisher" class="font-medium">Editorial</label>
+                                <label for="publisher" class="font-medium">Editorial*</label>
                                 <input id="publisher" formControlName="publisherInput" type="text" pinputtext
                                     class="p-inputtext p-component p-element">
+                                <p-message severity="error" text="Debe de haber entre 1
+                                    y 50 caracteres" *ngIf="validFieldBooks('publisherInput')"></p-message>
                             </div>
                             <div class="field mb-3 col-6">
                                 <label for="ISBNInput" class="font-medium">ISBN</label>
@@ -165,7 +202,8 @@
 
                                 <p-selectButton [options]="stateOptions" formControlName="physBooknput"
                                     optionLabel="label" optionValue="physBooknput" optionLabel="label"
-                                    optionValue="value"></p-selectButton>
+                                    optionValue="value">
+                                </p-selectButton>
 
                             </div>
                             <div class="field mb-3 col-2"></div>
@@ -284,40 +322,86 @@
                 </div>
             </ng-template>
             <ng-template pTemplate="content">
-                <p class="m-0">
-                    <p-toast></p-toast>
-                    <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }">
-                        <ng-template pTemplate="header">
-                            <tr>
-                                <th>Email</th>
-                                <th>Name</th>
-                                <th>Admin</th>
-                                <th></th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-user>
-                            <tr>
-                                <td>{{ user.email }}</td>
-                                <td>{{ user.fullName }}</td>
 
-                                <td>
-                                    <ng-container *ngIf="(user.admin); else otherButton">
-                                        <p-button label='Si' styleClass='p-button-success'></p-button> </ng-container>
-                                    <ng-template #otherButton>
-                                        <p-button label='No' styleClass='p-button-text'></p-button>
-                                    </ng-template>
-                                </td>
-                                <td><p-confirmPopup></p-confirmPopup>
-                                    <p-button (click)="confirm($event, user.id )" icon="pi pi-trash"></p-button>
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </p>
+                <div class="w-full flex justify-content-end ">
+                    <p-button styleClass='p-button-success' class="flex mr-2" (click)="downloadUsersData(users)"
+                        icon="pi pi-plus" label="Descargar datos de usuario"></p-button>
+                    <p-button styleClass='p-button-success' class="flex " (click)="showDialog()" icon="pi pi-plus"
+                        label="Nuevo usuario"></p-button>
+                </div>
+                <p-toast></p-toast>
+                <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="5">
+                    <ng-template pTemplate="header">
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Admin</th>
+                            <th></th>
+                        </tr>
+                    </ng-template>
+                    <ng-template pTemplate="body" let-user>
+                        <tr>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.fullName }}</td>
+
+                            <td>
+                                <ng-container *ngIf="(user.admin); else otherButton">
+                                    <p-button label='Si' styleClass="p-button-success p-button-text"
+                                        (click)="letAdmin(user)">
+                                    </p-button> </ng-container>
+                                <ng-template #otherButton>
+                                    <p-button label='No' styleClass='p-button-text' (click)="letAdmin(user)"></p-button>
+                                </ng-template>
+                            </td>
+                            <td><p-confirmPopup></p-confirmPopup>
+                                <p-button (click)="deleteUser($event, user.id )" icon="pi pi-trash"></p-button>
+                            </td>
+                        </tr>
+                    </ng-template>
+                </p-table>
             </ng-template>
         </p-accordionTab>
     </p-accordion>
 </div>
 
+
+<p-dialog header="Registar a un usuario" [(visible)]="showRegister" [modal]="true" [style]="{ width: '50vw' }"
+    [draggable]="false" [resizable]="false">
+    <form autocomplete="off" [formGroup]="registerForm" (ngSubmit)="register()">
+        <div class="surface-card p-4 shadow-2 border-round">
+            <div class="grid formgrid p-fluid mb-6">
+                <div class="field mb-4 col-12">
+                    <label for="fullname" class="font-medium">Nombre</label>
+                    <input id="fullname" pinputtext class="p-inputtext p-component p-element"
+                        formControlName="nameInput" type="text">
+                    <p-message severity="error" text="Debe de haber entre 1
+                    y 50 caracteres" *ngIf="validFieldRegister('nameInput')"></p-message>
+                </div>
+                <div class="surface-100 mb-3 col-12" style="height: 2px;">
+                </div>
+                <div class="field mb-4 col-12 md:col-6">
+                    <label for="email" class="font-medium">Email</label>
+                    <input id="email" type="text" pinputtext formControlName="emailInput"
+                        class="p-inputtext p-component p-element">
+                    <p-message severity="error" text="Tienes que poner un correo"
+                        *ngIf="validFieldRegister('emailInput')"></p-message>
+                    <p-message severity="error" text="Este correo ya existe" *ngIf="emailExist"></p-message>
+
+                </div>
+                <div class="field mb-4 col-12 md:col-6">
+                    <label for="password" class="font-medium">Contraseña</label>
+                    <p-password id="password" formControlName="passwordInput" [toggleMask]="true"></p-password>
+                    <p-message severity="error" text="Debe de tener entre 6
+                                   y 25 caracteres, signos, mayusculas y numeros"
+                        *ngIf="validFieldRegister('passwordInput')"></p-message>
+                </div>
+
+                <div class="col-12 flex align-items-center justify-content-center flex-column">
+                    <p-button class="mt-3 flex" type="submit">Registrar Usuario</p-button>
+                </div>
+            </div>
+        </div>
+    </form>
+</p-dialog>
 
 <app-footer></app-footer>

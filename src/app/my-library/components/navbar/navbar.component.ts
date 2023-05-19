@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { MenuItem } from 'primeng/api';
-import { User } from '../../interfaces/user.interface';
+import { UserIt } from '../../interfaces/user.interface';
 import { UserService } from '../../service/user.service';
 import { Router } from '@angular/router';
 
@@ -17,9 +17,10 @@ export class NavbarComponent implements OnInit {
   items2: MenuItem[] = [];
   activeItem: MenuItem = {};
   fileInput: any;
-  currentUser?: User;
+  currentUser?: UserIt;
   sidebarVisible1: boolean = false;
   sidebarVisible2: boolean = false;
+  visibleLogin: boolean = false;
 
   constructor(
     private userService: UserService, private cd: ChangeDetectorRef,
@@ -28,38 +29,44 @@ export class NavbarComponent implements OnInit {
 
   showLogin() {
     /*  this.libraryService.currentPdf = route; */
-    this.userService.show()
+    /* this.userService.show() */
+    this.visibleLogin = true
   }
 
-  getStateUser(){
+  getStateUser() {
     return localStorage.getItem('user')
   }
 
   ngOnInit() {
     this.userService.getLocalUser()
     if (localStorage.getItem('user')) {
-      this.currentUser = this.userService.currentUser ;
+      this.currentUser = this.userService.currentUser;
       this.currentUser?.favouritesBooks?.length
     }
-    
+
     this.setItems()
 
     this.items2 = [
       { title: 'Favoritos', icon: 'pi pi-star-fill', command: (event) => this.sidebarVisible1 = !this.sidebarVisible1 },
       { title: 'Leidos', icon: 'pi pi-eye-slash', command: (event) => this.sidebarVisible2 = !this.sidebarVisible2 },
-      { title: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => this.logOut() },
+      {
+        title: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => {
+          this.logOut()
+          this.router.navigate(['/home']);
+        }
+      },
     ]
 
     this.activeItem = this.items[0];
   }
 
-  setItems(){
+  setItems() {
     this.items = [
       { label: 'Inicio', icon: 'pi pi-home', 'routerLink': "/home" },
       { label: 'Colecciones', icon: 'pi pi-book', 'routerLink': "/collection" },
     ];
-    
-    if ( this.currentUser != undefined && this.currentUser.admin) {
+
+    if (this.currentUser != undefined && this.currentUser.admin) {
       this.items.push({ label: 'Administrar', icon: 'pi pi-wrench', 'routerLink': "/manage" })
     }
   }
@@ -79,7 +86,7 @@ export class NavbarComponent implements OnInit {
     this.userService.logout().catch(error => console.log(error));
   }
 
-  showInfo(bookId: string){
+  showInfo(bookId: string) {
     this.router.navigate(['/bookinfo', bookId]);
   }
 

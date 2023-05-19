@@ -1,10 +1,8 @@
 import { Component, ChangeDetectionStrategy, OnInit } from '@angular/core';
-import { NgxExtendedPdfViewerService, pdfDefaultOptions, NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
+import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 import { LibraryService } from '../../service/library.service';
-import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
 import { BookmarkService } from '../../service/bookmark.service';
 import { UserService } from '../../service/user.service';
-import { User } from '../../interfaces/user.interface';
 import { Bookmark } from '../../interfaces/bookmark.interface';
 
 @Component({

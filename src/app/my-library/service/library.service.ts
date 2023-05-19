@@ -55,6 +55,8 @@ export class LibraryService {
   }
 
   updateBook(book: Book) {
+    console.log(book);
+
     const bookRef = doc(this.firestore, `books/${book.id}`)
     return updateDoc(bookRef, {
       id: book.id,
@@ -88,12 +90,29 @@ export class LibraryService {
 
   async getSciFiBooks() {
     const bookRef = collection(this.firestore, 'books')
-    return await getDocs(query(bookRef, where('genre', 'array-contains-any', ['Ciencia Ficción'])));
+    return await getDocs(query(bookRef, where('genre', 'array-contains-any', ['Ciencia Ficción', 'Sci-Fi'])));
   }
 
   async getRomanticBooks() {
     const bookRef = collection(this.firestore, 'books')
-    return await getDocs(query(bookRef, where('genre', 'array-contains-any', ['Romántico', 'Romantic, Romantico'])));
+    return await getDocs(query(bookRef, where('genre', 'array-contains-any', ['Romántico', 'Romantic'])));
+  }
+
+  async getClassicBooks() {
+    const bookRef = collection(this.firestore, 'books')
+    return await getDocs(query(bookRef, where('genre', 'array-contains-any', ['Clásicos', 'Classic'])));
+  }
+
+  async getAllBooks() {
+
+    let books: Book[] = [];
+    const userRef = collection(this.firestore, 'books')
+    await getDocs(userRef).then(Snapshot => Snapshot.forEach((doc) => {
+      const tempBook = doc.data() as Book
+      books.push(tempBook)
+    })
+    );
+    return books
   }
 
   async getBookByID(id: string) {
@@ -123,7 +142,6 @@ export class LibraryService {
     return snapshot.data().count
   }
 
-
   async getNumberOfDigitalBooks() {
     const coll = collection(this.firestore, "books");
     const q = query(coll, where("files", "!=", []));
@@ -141,7 +159,4 @@ export class LibraryService {
     });
     return total
   }
-
-
-
 }

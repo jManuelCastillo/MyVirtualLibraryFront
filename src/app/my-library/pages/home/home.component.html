@@ -104,15 +104,37 @@
                                         alt="{{file.format}} icon">
                                 </a>
                             </span>
+                            <span class="flex justify-content-start align-items-start flex-row pt-1">
+                                <div *ngIf="filteredBooks[j].physicalBook">
+                                    <ng-container
+                                        *ngIf="filteredBooks[j].isNotAvailableReason!.id == currentUser.id || filteredBooks[j].isAvailable; else bookIsTaken">
+                                        <ng-container *ngIf="filteredBooks[j].isAvailable; else physicalTemplate">
+                                            <p-button label="Sacar libro" styleClass="p-button-raised p-button-text"
+                                                (onClick)="withdrawABook(filteredBooks[j])"></p-button>
+                                        </ng-container>
+                                        <ng-template #physicalTemplate>
+                                            <p-button label="Devolver libro" styleClass="p-button-raised p-button-text p-button-secondary"
+                                                (onClick)="withdrawABook(filteredBooks[j])"></p-button>
+                                        </ng-template>
+                                    </ng-container>
+                                    <ng-template #bookIsTaken>
+                                        <p-button label="Sacar libro"  styleClass="p-button-raised p-button-text"
+                                            title="Este libro lo tiene {{filteredBooks[j].isNotAvailableReason!.name}}"
+                                            [disabled]=true></p-button>
+                
+                                    </ng-template>
+                                </div>
+                            </span>
+                           
                         </div>
                         <span
                             class="flex align-items-start text-white bg-gray-500 my-4 px-3 font-light">{{filteredBooks[j].pages}}
                             pág.</span>
                     </div>
                 </div>
-
-
             </div>
+
+
             <div class="flex flex-column m-2" *ngIf="this.currentUser != undefined">
                 <p-overlayPanel #op class="p-0">
                     <div class="flex flex-column">
@@ -120,8 +142,9 @@
                             (click)="updateBook(filteredBooks[j].id)"><i class="pi pi-replay"></i>
                             Actualizar</div>
                         <p-divider class="my-1"></p-divider>
+
                         <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
-                            (click)="deleteBook(filteredBooks[j].id, filteredBooks[j].files)"><i
+                            (click)="deleteBook($event, filteredBooks[j].id, filteredBooks[j].files)"><i
                                 class="pi pi-trash"></i> Borrar</div>
                         <p-divider *ngIf=" filteredBooks[j].physicalBook && filteredBooks[j].isAvailable"></p-divider>
                         <div *ngIf=" filteredBooks[j].physicalBook && filteredBooks[j].isAvailable"
@@ -159,29 +182,6 @@
                         styleClass="p-button-rounded p-button-warning" title="Guardar en leidos"
                         (onClick)="finisedButton(filteredBooks[j].id, filteredBooks[j].title)"></p-button>
                 </ng-template>
-
-                <div *ngIf="filteredBooks[j].physicalBook">
-                    <ng-container
-                        *ngIf="filteredBooks[j].isNotAvailableReason!.id == currentUser.id || filteredBooks[j].isAvailable; else bookIsTaken">
-                        <ng-container *ngIf="filteredBooks[j].isAvailable; else physicalTemplate">
-                            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eject"
-                                styleClass="p-button-rounded p-button-warning" title="Sacar libro"
-                                (onClick)="withdrawABook(filteredBooks[j])"></p-button>
-                        </ng-container>
-                        <ng-template #physicalTemplate>
-                            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eject"
-                                styleClass="p-button-rounded p-button-help" title="Devolver libro"
-                                (onClick)="withdrawABook(filteredBooks[j])"></p-button>
-                        </ng-template>
-                    </ng-container>
-                    <ng-template #bookIsTaken>
-                        <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eject"
-                            styleClass="p-button-rounded"
-                            title="Este libro lo tiene {{filteredBooks[j].isNotAvailableReason!.name}}"
-                            [disabled]=true></p-button>
-
-                    </ng-template>
-                </div>
             </div>
         </div>
         <div class="col-3"></div>
@@ -189,6 +189,9 @@
     </div>
 </div>
 
+<p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle" acceptLabel="Sí" rejectLabel="No"
+    acceptButtonStyleClass="p-button-success" rejectButtonStyleClass="p-button-danger"
+    width="'400px'"></p-confirmDialog>
 
 <div class="grid w-full p-3 cusGrid surface-ground">
     <div class="col-2"></div>
@@ -207,31 +210,6 @@
     </div>
 
 </div>
-<!-- <p-dialog header="Header" [(visible)]="visible" [style]="{width: '50vw'}">
-   
-    <p-dropdown [options]="usersForHelp" (ngModel)="selectedUserId" optionLabel="name" formControlName="userhlp">
-    </p-dropdown>
-
-</p-dialog> -->
-
-<!-- <p-dialog header="Header" [(visible)]="visible" [style]="{width: '50vw'}">
-    <div [formGroup]="bookForm">
- 
-    <p-dropdown [options]="usersForHelp" (ngModel)="selectedUserId" optionLabel="name" [filter]="true" 
-filterBy="name" [showClear]="true" placeholder="Select a Country" formControlName="searchUser">
-<ng-template pTemplate="selectedItem">
-    <div class="flex align-items-center gap-2" *ngIf="selectedUserId">
-        <div>{{ selectedUserId }}</div>
-    </div>
-</ng-template>
-<ng-template let-country pTemplate="item">
-    <div class="flex align-items-center gap-2">
-        <div>{{ country.name }}</div>
-    </div>
-</ng-template>
-</p-dropdown>
-</div>
-</p-dialog> -->
 
 <p-dialog [(visible)]="visible" #cd [style]="{width: '50vw', height:'50vh'}">
     <ng-template pTemplate="header">
@@ -274,13 +252,12 @@ filterBy="name" [showClear]="true" placeholder="Select a Country" formControlNam
     <ng-template pTemplate="header">
         <h3>Devolver un libro </h3>
     </ng-template>
-    <input id="disabled-input" type="text" class="w-full"  pInputText [disabled]="true"
+    <input id="disabled-input" type="text" class="w-full" pInputText [disabled]="true"
         value="{{tempBook?.isNotAvailableReason?.name}}" />
 
     <ng-template pTemplate="footer">
         <h4>¿ Quiéres devolver {{tempBook!.title}}?</h4>
-        <p-button icon="pi pi-check" (click)="returnBookForUser(tempBook!)"
-            label="Confirm" styleClass="p-button-text">
+        <p-button icon="pi pi-check" (click)="returnBookForUser(tempBook!)" label="Confirm" styleClass="p-button-text">
         </p-button>
 
         <p-button icon="pi pi-times" (click)="cancel()" label="Reject">

@@ -13,6 +13,8 @@
                 (activeItemChange)="onActiveItemChange($event)"></p-tabMenu>
         </div>
         <!-- avatar column -->
+        
+
         <div class="flex ">
 
             <div class="flex flex-column align-items-center py-2 px-6">
@@ -68,6 +70,10 @@
 
 
         </p-sidebar>
-
+        <p-dialog [(visible)]="visibleLogin" [style]="{width: '70vw', height:'80vh'}">
+            
+                <app-login></app-login>
+           
+        </p-dialog>
     </div>
 </div>

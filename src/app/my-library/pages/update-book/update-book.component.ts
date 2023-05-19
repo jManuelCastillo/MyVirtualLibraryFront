@@ -7,6 +7,10 @@ import { Storage, ref, uploadBytes } from '@angular/fire/storage';
 import { LibraryService } from '../../service/library.service';
 import { ActivatedRoute } from '@angular/router';
 
+interface Genre {
+  id: number;
+  title: string;
+}
 
 @Component({
   selector: 'app-update-book',
@@ -21,6 +25,9 @@ export class UpdateBookComponent {
   genresInput!: string[]
   currentBook!: Book;
   filesToDelete: string[] = [];
+  genres: Genre[] = [];
+  selectedGenre: Genre[] = [];
+
   constructor(private formBuilder: FormBuilder, private titlecasePipe: TitleCasePipe, private route: ActivatedRoute,
     private messageService: MessageService, private storage: Storage, private libraryService: LibraryService,
     private confirmationService: ConfirmationService,) {
@@ -35,19 +42,32 @@ export class UpdateBookComponent {
         .then(book => {
           this.currentBook = book.data() as Book;
           this.currentBook.id = params['id'];
+          let date!: Date;
+          if (this.currentBook.publish_date != '') {
+            const fechaStr = this.currentBook.publish_date;
+            const [day, month, year] = fechaStr.split("/").map(Number);
+            date = new Date(year, month - 1, day)
+          }
+
           this.bookForm.reset({
             titleInput: this.currentBook?.title ?? '',
-            autorInput: this.currentBook?.author ?? '',
-            genreInput: this.currentBook?.genre ?? [],
+            authorInput: this.currentBook?.author ?? '',
+            genreInput: this.currentBook?.genre.map(title => {
+              const genre = this.genres.find(genre => genre.title === title);
+              return {
+                id: genre?.id,
+                title: genre?.title
+              };
+            }),
             booksNumberInput: this.currentBook?.numberOfBooks,
-            publishDateInput: this.currentBook?.publish_date ?? '',
+            publishDateInput: date ?? new Date(),
             pagesNumberInput: this.currentBook?.pages ?? 1,
             imageInput: this.currentBook?.image ?? '',
             imageAuthorInput: this.currentBook?.authorImage ?? '',
             publisherInput: this.currentBook?.publisher ?? '',
             ISBNInput: this.currentBook?.ISBN,
             descriptionInput: this.currentBook?.description ?? '',
-            physBooknput: (this.currentBook?.physicalBook)? 'true' : 'false',
+            physBooknput: (this.currentBook?.physicalBook) ? 'true' : 'false',
             isAvailable: this.currentBook?.isAvailable,
             isNotAvailableReason: this.currentBook?.isNotAvailableReason
           })
@@ -55,6 +75,37 @@ export class UpdateBookComponent {
         .catch(error => console.log(error))
     });
 
+
+    this.genres = [
+      {
+        id: 1,
+        title: "Romántico",
+      },
+      {
+        id: 2,
+        title: "Ciencia Ficción",
+      },
+      {
+        id: 3,
+        title: "Fantasía"
+      },
+      {
+        id: 4,
+        title: "Poesía",
+      },
+      {
+        id: 5,
+        title: "Policíaca",
+      },
+      {
+        id: 6,
+        title: "Terror"
+      },
+      {
+        id: 7,
+        title: "Clásicos",
+      }
+    ];
 
   }
 
@@ -75,20 +126,18 @@ export class UpdateBookComponent {
   }
 
   bookForm: FormGroup = this.formBuilder.group({
-    titleInput: [, [Validators.required, Validators.maxLength(40)]],
-    autorInput: [, Validators.maxLength(60)],
-    genreInput: [['Fantasía'], Validators.required],
+    titleInput: [, [Validators.required, Validators.maxLength(100)]],
+    authorInput: [, [Validators.required, Validators.maxLength(50)]],
+    genreInput: [[], Validators.required],
     booksNumberInput: [[], [Validators.required, Validators.min(1)]],
     publishDateInput: [],
     pagesNumberInput: [, [Validators.required, Validators.min(1)]],
     imageInput: [],
     imageAuthorInput: [],
-    publisherInput: [, Validators.maxLength(60)],
-    ISBNInput: [, Validators.maxLength(15)],
+    publisherInput: [, [Validators.required, Validators.maxLength(50)]],
+    ISBNInput: [, [Validators.maxLength(50)]],
     descriptionInput: [, [Validators.minLength(0), Validators.maxLength(200)]],
-    physBooknput: ['false'],
-    isAvailable: false,
-    isNotAvailableReason: {name: '', id:''}
+    physBooknput: ['false']
   })
 
   onUpload(event: any) {
@@ -100,13 +149,10 @@ export class UpdateBookComponent {
         return;
       }
 
-      console.log(this.currentBook.files);
-
       if (this.currentBook.files.some((currentFile) => file.type.includes(currentFile.format))) {
         this.messageService.add({ severity: 'warn', summary: 'No se pueden repetir archivos con el mismo formato', detail: '' });
         return;
       }
-
       this.uploadedFiles.push(file);
     }
 
@@ -125,47 +171,69 @@ export class UpdateBookComponent {
 
   async saveBook() {
 
-    if (this.bookForm.invalid || (this.uploadedFiles.length == 0 && this.currentBook.files.length == 0)) {
+    if (this.bookForm.invalid || ((this.uploadedFiles.length == 0 && this.currentBook.files.length == 0) && this.bookForm.value.physBooknput == 'false')) {
       this.bookForm.markAllAsTouched();
+
+      if ((this.uploadedFiles.length == 0 && this.currentBook.files.length == 0) && this.bookForm.value.physBooknput == 'false') {
+        this.messageService.add({ severity: 'warn', summary: 'Debe haber almenos un libro digital o que esté en físico', detail: '' });
+      }
       return;
     }
 
-    let newBook: Book = {
+
+    const selectedDate: Date = this.bookForm.value.publishDateInput;
+    const day: number = selectedDate.getDate();
+    const month: number = selectedDate.getMonth() + 1;
+    const year: number = selectedDate.getFullYear();
+
+
+    let updatedBook: Book = {
       id: this.currentBook.id,
       title: this.bookForm.value.titleInput,
-      author: this.bookForm.value.autorInput,
+      author: this.bookForm.value.authorInput,
       publisher: this.bookForm.value.publisherInput,
       description: this.bookForm.value.descriptionInput,
       ISBN: this.bookForm.value.ISBNInput,
       numberOfBooks: this.bookForm.value.booksNumberInput,
-      publish_date: "",
-      genre: this.bookForm.value.genreInput,
+      publish_date: `${day}/${month}/${year}`,
+      genre:  this.bookForm.value.genreInput.map(genre => genre.title ),
       files: this.currentBook.files,
       image: this.bookForm.value.imageInput,
       authorImage: this.bookForm.value.imageAuthorInput,
       pages: this.bookForm.value.pagesNumberInput,
-      physicalBook: (this.bookForm.value.physBooknput == "true") ? true : false,
-      isAvailable: (this.bookForm.value.physBooknput == 'true') ? true : false,
-      isNotAvailableReason:this.bookForm.value.isNotAvailableReason
+      physicalBook: (this.bookForm.value.physBooknput != "true") ? true : false,
+      isAvailable: (this.bookForm.value.physBooknput != 'true') ? true : false,
+      isNotAvailableReason: (this.bookForm.value.physBooknput != 'true' && this.bookForm.value.isNotAvailableReason) ? this.bookForm.value.isNotAvailableReason : { name: '', id: '' }
+
     }
 
     this.uploadedFiles.map(file => {
       const filesRef = ref(this.storage, `BooksFiles/${file.name}`)
 
       uploadBytes(filesRef, file)
-        .then(response => { console.log(response) })
+        .then(response => {
+          console.log(response)
+        })
         .catch(error => console.log(error));
 
-      newBook.files.push({
+      updatedBook.files.push({
         format: file.name.split('.').slice(1),
         route: `BooksFiles/${file.name}`
       });
     })
 
-    await this.libraryService.deleteFileBook(this.filesToDelete);
-    const book = await this.libraryService.updateBook(newBook);
-    // enviado datos al storage
 
+
+    await this.libraryService.deleteFileBook(this.filesToDelete).then(a => {
+      this.libraryService.updateBook(updatedBook)
+        .then(response => {
+          this.messageService.add({ severity: 'success', summary: 'Libro actualizado', detail: '' });
+        }).catch(error => {
+          this.messageService.add({ severity: 'warn', summary: 'Hubo un error al actualizar el libro', detail: '' });
+        });
+    });
   }
+
+
 
 }

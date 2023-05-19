@@ -31,8 +31,8 @@ const routes: Routes = [
 
       {
         path: 'updateBook/:id', component: UpdateBookComponent,
-       /*  canMatch: [canMatch],
-        canActivate: [canActivateGuard] */
+        canMatch: [canMatch],
+        canActivate: [canActivateGuard]
       },
 
       {
