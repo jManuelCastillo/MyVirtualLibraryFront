@@ -209,22 +209,20 @@
                             <div class="field mb-3 col-2"></div>
                             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
                             <p-toast></p-toast>
-                            <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true
-                                class="field mb-4 col-12 md:col-12" chooseLabel="Añadir libro" uploadLabel="Refrescar"
-                                labe cancelLabel="Cancelar" [showUploadButton]=true [multiple]=true
-                                accept=".pdf, .epub, .mobi">
-
+                            <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true skinSimple="true"
+                                class="w-full" chooseLabel="Añadir libro" uploadLabel="Refrescar" cancelLabel="Cancelar"
+                                [showUploadButton]=true [multiple]=true accept=".pdf, .epub, .mobi">
+                                <ng-template pTemplate="toolbar">
+                                    <div class="py-3">Arrastra y suelta. Permite un formato mobi, epub o pdf</div>
+                                </ng-template>
                                 <ng-template pTemplate="content">
-
-                                    <ul *ngIf="uploadedFiles.length">
-                                        <li *ngFor="let file of uploadedFiles">{{ file.name }} - {{ file.size }} bytes
+                                    <ul class="w-full" *ngIf="uploadedFiles.length">
+                                        <li class="w-full" *ngFor="let file of uploadedFiles">{{ file.name }} - {{
+                                            file.size }} bytes
                                         </li>
                                     </ul>
                                 </ng-template>
                             </p-fileUpload>
-
-
-
                             <div class="flex w-full justify-content-center">
                                 <button type="submit" class="flex" pripple="" label="Save Book"
                                     class=" w-auto mt-3 p-button p-component"> Guardar Libro </button>
@@ -250,17 +248,11 @@
                 <!-- search by api -->
                 <div class="surface-card p-4 shadow-2 border-round w-full">
                     <div class="grid formgrid p-fluid w-full ">
-                        <div class="field ml-6 mb-4 col-10 md:col-9">
+                        <div class="field mx-6 mb-4 col-11">
                             <span class="p-input-icon-right border-round">
                                 <i class="pi pi-search"></i>
                                 <input class="w-full" type="text" pInputText [formControl]="inputSearch"
                                     (keyup)="searchFilter()" placeholder="Escribe un {{selectFilter}}" />
-                            </span>
-                        </div>
-                        <div class="w-auto">
-                            <span class="p-input-icon-right flex">
-                                <p-splitButton [label]='selectFilter' (onchange)="search('info')"
-                                    [model]="searchItems"></p-splitButton>
                             </span>
                         </div>
                     </div>
@@ -271,9 +263,6 @@
                 <div class="surface-card p-4 shadow-2 border-round" *ngIf="foundBooks.data && foundBooks.data.cover">
 
                     <div class="bg-white flex">
-
-
-
                         <img src="{{foundBooks.data.cover.large}}" alt=""
                             class="flex bg-cover bg-center flex-wrap my-5 mx-1" style="width: 150px; height: 200px;">
 

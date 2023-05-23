@@ -200,6 +200,7 @@ export class ManageComponent {
   async saveBook() {
 
     if (this.bookForm.invalid || (this.uploadedFiles.length == 0 && this.bookForm.value.physBooknput == 'false')) {
+
       this.bookForm.markAllAsTouched();
       if (this.uploadedFiles.length == 0 && this.bookForm.value.physBooknput == 'false') {
         this.messageService.add({ severity: 'warn', summary: 'Debe haber al menos un libro digital o que esté en físico', detail: '' });
@@ -208,9 +209,15 @@ export class ManageComponent {
     }
 
     const selectedDate: Date = this.bookForm.value.publishDateInput;
-    const day: number = selectedDate.getDate();
-    const month: number = selectedDate.getMonth() + 1;
-    const year: number = selectedDate.getFullYear();
+
+    let day: number = 0;
+    let month: number = 0;
+    let year: number = 0;
+    if (this.bookForm.value.publishDateInput) {
+      day = selectedDate.getDate();
+      month = selectedDate.getMonth() + 1;
+      year = selectedDate.getFullYear();
+    }
 
     let newBook: Book = {
       id: '',
@@ -487,7 +494,7 @@ export class ManageComponent {
     //find most book in fav
 
     const bookCount = {};
-    users.forEach(user => {      
+    users.forEach(user => {
       user.favouritesBooks.forEach(favBook => {
         const bookId = favBook.idBook;
         bookCount[bookId] = (bookCount[bookId] || 0) + 1;
@@ -504,7 +511,7 @@ export class ManageComponent {
         mostFrequentBookIds.push(bookId);
       }
     }
-    
+
     this.mostFavBook = books.find((book) => book.id === Object.keys(bookCount)[0]);
   }
 

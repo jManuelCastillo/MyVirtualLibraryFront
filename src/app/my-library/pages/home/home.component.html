@@ -11,10 +11,10 @@
 
 
 <!-- recomended -->
-<div class="grid p-align-center mt-2 w-full flex-column">
-    <div class="flex justify-content-start ml-8">
-        <p class="text-2xl font-bold">Recomendaciones</p>
-    </div>
+<div class="w-full flex justify-content-between align-items-center">
+    <p class="flex pt-3 pl-8 font-bold text-2xl">Recomendaciones</p> <span class="flex mr-5"
+        *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' (click)="modifySuggestions()"
+            class="h-1 mr-2" icon="pi pi-cog" label="Modificar preferencias"></p-button></span>
 </div>
 <div class="grid w-full p-6 ">
 
@@ -22,26 +22,63 @@
     <div class="col-10 grid flex align-items-center justify-content-between">
 
         <div class="flex column-gap-3 row-gap-2 m-4 max-w-20rem min-w-20rem cursor-pointer"
-            *ngFor="let book of bookList.flat().slice(0,6); let i=index" (click)="showInfo(book.id)">
+            *ngFor="let book of suggestionBooks; let i=index" (click)="showInfo(book.id)">
 
-            <div class="flex align-items-center justify-content-center bg-cover bg-center flex-wrap "
+            <!-- <div class="flex align-items-center justify-content-center bg-cover bg-center flex-wrap "
                 style="min-width: 150px; min-height: 200px; max-width: 150px; max-height: 200px; background-image: url('{{book.image}}')">
-            </div>
+            </div> -->
+            <img class="flex bg-cover bg-center flex-wrap mx-1"
+                style="min-width: 150px; min-height: 200px; max-width: 150px; max-height: 200px;" src="{{book.image}}"
+                onerror="this.src='../../../../assets/images/photoNotFound.png'" alt="Imagen">
 
             <div class="flex flex-column font-bold text-gray-900">
-                <div class="flex align-items-center font-bold border-round ml-2 ">{{book.title}}</div>
+                <div class="flex align-items-center font-bold border-round ml-2 text-xl">{{book.title}}</div>
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.author}}</div>
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.publisher}}</div>
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.pages}} páginas</div>
-
             </div>
-
         </div>
     </div>
 
-
-
 </div>
+
+
+<div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+    <div class="grid">
+        <div class="col-12 lg:col-4 p-3">
+            <div class="shadow-2 surface-card p-3 h-full" style="border-radius: 12px;">
+                <div class="flex align-items-center justify-content-between h-full">
+                    <div class="flex align-items-start flex-column">
+                        <span class="text-3xl text-900 font-bold flex">{{mostUsedGenre}}</span>
+                        <p class="mt-1 mb-0 text-600 text-xl flex">Género más leído</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-4 p-3">
+            <div class="shadow-2 surface-card p-3" style="border-radius: 12px;">
+                <div class="flex align-items-center justify-content-between h-full">
+                    <div class="flex align-items-start flex-column">
+                        <span class="text-3xl text-900 font-bold" *ngIf="bookMostRead">{{bookMostRead.title}}</span>
+                        <p class="mt-1 mb-0 text-600 text-xl">Libro más leído</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 lg:col-4 p-3">
+            <div class="shadow-2 surface-card p-3 h-full" style="border-radius: 12px;">
+                <div class="flex align-items-center justify-content-between h-full">
+                    <div class="flex align-items-start flex-column">
+                        <span class="text-3xl text-900 font-bold" *ngIf="mostFavBook">{{mostFavBook.title}}</span>
+                        <p class="mt-1 mb-0 text-600 text-xl">El favorito</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- search -->
 <div class="grid mt-2 w-full cusGrid p-6" style="background-color: rgb(232, 213, 196);">
     <div class=" w-full align-items-center justify-content-center flex flex-column h-full">
@@ -77,17 +114,17 @@
         <div class="col-2"></div>
         <div class="col-7 grid bg-white flex">
             <div (click)="showInfo(book.id)">
-                <img class="flex bg-cover bg-center flex-wrap my-5 mx-1" style="width: 150px; height: 200px;"
+                <img class="flex bg-cover bg-center flex-wrap my-5 mx-1 cursor-pointer" style="width: 150px; height: 200px;"
                     src="{{filteredBooks[j].image}}" onerror="this.src='../../../../assets/images/photoNotFound.png'"
                     alt="Imagen">
             </div>
             <div class="flex-1 flex h-full font-bold m-2 w-full">
                 <div class="flex flex-column justify-content-around flex-wrap w-full">
-                    <div class="flex align-items-center ">{{filteredBooks[j].title}}</div>
+                    <div class="flex align-items-center text-xl">{{filteredBooks[j].title}}</div>
                     <div class="flex align-items-center font-light">{{filteredBooks[j].description | slice:0:300 }}
                     </div>
                     <div class="flex flex-row justify-content-between">
-                        <div class="flex">
+                        <div class="flex" *ngIf="currentUser">
                             <span class="flex justify-content-start align-items-start flex-row"
                                 *ngFor="let file of filteredBooks[j].files">
 
@@ -113,19 +150,20 @@
                                                 (onClick)="withdrawABook(filteredBooks[j])"></p-button>
                                         </ng-container>
                                         <ng-template #physicalTemplate>
-                                            <p-button label="Devolver libro" styleClass="p-button-raised p-button-text p-button-secondary"
+                                            <p-button label="Devolver libro"
+                                                styleClass="p-button-raised p-button-text p-button-secondary"
                                                 (onClick)="withdrawABook(filteredBooks[j])"></p-button>
                                         </ng-template>
                                     </ng-container>
                                     <ng-template #bookIsTaken>
-                                        <p-button label="Sacar libro"  styleClass="p-button-raised p-button-text"
+                                        <p-button label="Prestado" styleClass="p-button-raised p-button-text"
                                             title="Este libro lo tiene {{filteredBooks[j].isNotAvailableReason!.name}}"
                                             [disabled]=true></p-button>
-                
+
                                     </ng-template>
                                 </div>
                             </span>
-                           
+
                         </div>
                         <span
                             class="flex align-items-start text-white bg-gray-500 my-4 px-3 font-light">{{filteredBooks[j].pages}}
@@ -147,20 +185,35 @@
                             (click)="deleteBook($event, filteredBooks[j].id, filteredBooks[j].files)"><i
                                 class="pi pi-trash"></i> Borrar</div>
                         <p-divider *ngIf=" filteredBooks[j].physicalBook && filteredBooks[j].isAvailable"></p-divider>
+
                         <div *ngIf=" filteredBooks[j].physicalBook && filteredBooks[j].isAvailable"
                             class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
                             (click)="showWithdrawBook(filteredBooks[j])">Retirar
                             para un usuario
                         </div>
-                        <p-divider *ngIf=" filteredBooks[j].physicalBook && !filteredBooks[j].isAvailable"></p-divider>
-                        <div *ngIf=" filteredBooks[j].physicalBook && !filteredBooks[j].isAvailable"
+                        <p-divider
+                            *ngIf=" filteredBooks[j].physicalBook && !filteredBooks[j].isAvailable && filteredBooks[j].isNotAvailableReason.id != currentUser.id"></p-divider>
+
+                        <div *ngIf=" filteredBooks[j].physicalBook && !filteredBooks[j].isAvailable && filteredBooks[j].isNotAvailableReason.id != currentUser.id  "
                             class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
                             (click)="showReturnBook(filteredBooks[j])">Devolver de un usuario
                         </div>
+                        <p-divider></p-divider>
+
+                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
+                            (click)="showfinishedBook(filteredBooks[j])">Marcar leído a un usuario
+                        </div>
+                        <p-divider></p-divider>
+
+                        <div class="hover:surface-100 pRipple w-full py-2 cursor-pointer"
+                            (click)="showRemovefinishedBook(filteredBooks[j])">Marcar no leído a un usuario
+                        </div>
                     </div>
                 </p-overlayPanel>
-                <p-button (click)="op.toggle($event)" *ngIf="currentUser.admin" ngif
-                    styleClass="p-button-outlined p-button-warning mr-2 mb-2" label="Gestionar"></p-button>
+                <p-button (click)="op.toggle($event)" *ngIf="currentUser.admin"
+                    styleClass="p-button-outlined p-button-warning mr-2 mb-2" label="Gestionar">
+                </p-button>
+
                 <ng-container *ngIf="isFav(filteredBooks[j].id); else favTemplate">
                     <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star-fill"
                         styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
@@ -189,9 +242,8 @@
     </div>
 </div>
 
-<p-confirmDialog header="Confirmación" icon="pi pi-exclamation-triangle" acceptLabel="Sí" rejectLabel="No"
-    acceptButtonStyleClass="p-button-success" rejectButtonStyleClass="p-button-danger"
-    width="'400px'"></p-confirmDialog>
+<p-confirmDialog header="Confirmaciar" icon="pi pi-exclamation-triangle" acceptLabel="Sí" rejectLabel="No"
+    acceptButtonStyleClass="p-button-success" rejectButtonStyleClass="p-button-danger" width="400px"></p-confirmDialog>
 
 <div class="grid w-full p-3 cusGrid surface-ground">
     <div class="col-2"></div>
@@ -211,7 +263,82 @@
 
 </div>
 
-<p-dialog [(visible)]="visible" #cd [style]="{width: '50vw', height:'50vh'}">
+
+<p-dialog [(visible)]="showfinishedBookWindow" #cd [style]="{width: '25vw', height:'60vh'}">
+    <ng-template pTemplate="header">
+        <h3>Marcar libro leído para un usuario</h3>
+    </ng-template>
+
+    <div [formGroup]="bookForm">
+        <p-dropdown [options]="usersForHelp" (ngModelChange)="selectedUser=$event" optionLabel="fullName"
+            [filter]="true" filterBy="fullName" [showClear]="true" placeholder="Selecciona un usuario"
+            formControlName="searchUser">
+            <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="selectedUser">
+                    <div>{{ selectedUser.fullName }}</div>
+                </div>
+            </ng-template>
+            <ng-template let-user pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                    <div>{{ user.fullName }}</div>
+                </div>
+            </ng-template>
+
+        </p-dropdown>
+        <ng-template pTemplate="footer">
+            <h4>Marcar {{tempBook!.title}}</h4>
+        </ng-template>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="selectAsFinishedForUser(selectedUser!, tempBook!)"
+            label="Confirmar" styleClass="p-button-text">
+        </p-button>
+
+        <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="showRemovefinishedBookWindow" #cd [style]="{width: '25vw', height:'60vh'}">
+    <ng-template pTemplate="header">
+        <h3>Desmarcar libro como leído para un usuario</h3>
+    </ng-template>
+
+    <div [formGroup]="bookForm">
+        <p-dropdown [options]="usersForHelp" (ngModelChange)="selectedUser=$event" optionLabel="fullName"
+            [filter]="true" filterBy="fullName" [showClear]="true" placeholder="Selecciona un usuario"
+            formControlName="searchUser">
+            <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="selectedUser">
+                    <div>{{ selectedUser.fullName }}</div>
+                </div>
+            </ng-template>
+            <ng-template let-user pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                    <div>{{ user.fullName }}</div>
+                </div>
+            </ng-template>
+
+        </p-dropdown>
+        <ng-template pTemplate="footer">
+            <h4>Desmarcar {{tempBook!.title}}</h4>
+        </ng-template>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="deselectAsFinishedForUser(selectedUser!, tempBook!)"
+            label="Confirmar" styleClass="p-button-text">
+        </p-button>
+
+        <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog [(visible)]="visible" #cd [style]="{width: '25vw', height:'60vh'}">
     <ng-template pTemplate="header">
         <h3>Retirar un libro para un usuario</h3>
     </ng-template>
@@ -240,15 +367,16 @@
 
     <ng-template pTemplate="footer">
         <p-button icon="pi pi-check" (click)="withdrawForUser(selectedUser!.fullName, selectedUser!.id, tempBook!)"
-            label="Confirm" styleClass="p-button-text">
+            label="Confirmar" styleClass="p-button-text">
         </p-button>
 
-        <p-button icon="pi pi-times" (click)="cancel()" label="Reject">
+        <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
         </p-button>
     </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="visible2" [style]="{width: '50vw', height:'35vh'}">
+
+<p-dialog [(visible)]="visible2" [style]="{width: '50vw', height:'40vh'}">
     <ng-template pTemplate="header">
         <h3>Devolver un libro </h3>
     </ng-template>
@@ -257,12 +385,71 @@
 
     <ng-template pTemplate="footer">
         <h4>¿ Quiéres devolver {{tempBook!.title}}?</h4>
-        <p-button icon="pi pi-check" (click)="returnBookForUser(tempBook!)" label="Confirm" styleClass="p-button-text">
+        <p-button icon="pi pi-check" (click)="returnBookForUser(tempBook!)" label="Confirmar"
+            styleClass="p-button-text">
         </p-button>
 
-        <p-button icon="pi pi-times" (click)="cancel()" label="Reject">
+        <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
         </p-button>
     </ng-template>
 </p-dialog>
+
+
+
+<p-dialog [(visible)]="showModifySuggestion" #cd [style]="{width: '80vw', height:'80vh'}">
+    <ng-template pTemplate="header">
+        <h3>Modifica las preferencias</h3>
+    </ng-template>
+
+    <div>
+        <p-table [value]="bookList" dataKey="id" [tableStyle]="{ 'min-width': '75rem' }" [paginator]="true" [rows]="5"
+            [globalFilterFields]="['title', 'author', 'genre', 'publisher']">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="title">Título <p-sortIcon field="title"></p-sortIcon></th>
+                    <th pSortableColumn="author">Autor <p-sortIcon field="author"></p-sortIcon></th>
+                    <th pSortableColumn="genre">Género <p-sortIcon field="genre"></p-sortIcon></th>
+                    <th pSortableColumn="publisher">Editorial <p-sortIcon field="publisher"></p-sortIcon></th>
+                    <th style="width: 5rem"></th>
+                </tr>
+                <tr>
+                    <th>
+                        <p-columnFilter type="text" field="title"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter type="text" field="author"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter type="text" field="genre"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter type="text" field="publisher"></p-columnFilter>
+                    </th>
+                    <th style="width: 4rem">
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-book>
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.genre }}</td>
+                    <td>{{ book.publisher}}</td>
+                    <td>
+                        <ng-container *ngIf="!checkSuggestion(book); else elseTemplate">
+                            <button type="button" pButton pRipple icon="pi pi-plus" (click)="managePreferenceBooks(book)"></button>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            <button style="background-color: rgb(164, 34, 34);" type="button" pButton pRipple icon="pi pi-times" 
+                            (click)="managePreferenceBooks(book)"></button>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+</p-dialog>
+
 
 <app-footer></app-footer>

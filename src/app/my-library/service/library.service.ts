@@ -6,7 +6,7 @@ import { APIBook } from '../interfaces/apiBook.interface';
 import {
   Firestore, addDoc, collection, collectionData,
   getCountFromServer,
-  getDoc,
+  getDoc, setDoc,
   getDocs, query, updateDoc, where,
 } from '@angular/fire/firestore';
 import { doc, deleteDoc, } from "firebase/firestore";
@@ -55,9 +55,8 @@ export class LibraryService {
   }
 
   updateBook(book: Book) {
-    console.log(book);
-
     const bookRef = doc(this.firestore, `books/${book.id}`)
+    this.updateSuggestionBook(book)
     return updateDoc(bookRef, {
       id: book.id,
       title: book.title,
@@ -77,6 +76,8 @@ export class LibraryService {
       isNotAvailableReason: book.isNotAvailableReason
     })
   }
+
+
 
   postBook(tempBook: Book) {
     const bookRef = collection(this.firestore, 'books');
@@ -159,4 +160,63 @@ export class LibraryService {
     });
     return total
   }
+
+  async postBookSuggestions(book: Book) {
+    return await setDoc(doc(this.firestore, "booksSugestions", book.id),
+      {
+        id: book.id,
+        title: book.title,
+        author: book.author,
+        publisher: book.publisher,
+        description: book.description,
+        ISBN: book.ISBN,
+        numberOfBooks: book.numberOfBooks,
+        publish_date: book.publish_date,
+        genre: book.genre,
+        files: book.files,
+        image: book.image,
+        authorImage: book.authorImage,
+        pages: book.pages,
+        physicalBook: book.physicalBook,
+        isAvailable: book.isAvailable,
+        isNotAvailableReason: book.isNotAvailableReason
+      });
+  }
+
+  getAllBooksSuggestions(): Observable<Book[]> {
+    const bookRef = collection(this.firestore, 'booksSugestions')
+    return collectionData(bookRef, { idField: 'id' }) as Observable<Book[]>;
+
+  }
+
+  async deleteBookSuggestions(id: string) {
+    const bookRef = doc(this.firestore, `booksSugestions/${id}`);
+    await deleteDoc(bookRef);
+  }
+
+  updateSuggestionBook(book: Book) {
+    console.log('hola');
+    
+    const bookRef = doc(this.firestore, `booksSugestions/${book.id}`)
+    return updateDoc(bookRef, {
+      id: book.id,
+      title: book.title,
+      author: book.author,
+      publisher: book.publisher,
+      description: book.description,
+      ISBN: book.ISBN,
+      numberOfBooks: book.numberOfBooks,
+      publish_date: book.publish_date,
+      genre: book.genre,
+      files: book.files,
+      image: book.image,
+      authorImage: book.authorImage,
+      pages: book.pages,
+      physicalBook: book.physicalBook,
+      isAvailable: book.isAvailable,
+      isNotAvailableReason: book.isNotAvailableReason
+    })
+
+  }
+
 }

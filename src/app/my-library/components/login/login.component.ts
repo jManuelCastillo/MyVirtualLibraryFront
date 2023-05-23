@@ -36,22 +36,13 @@ export class LoginComponent {
           setTimeout(() => {
             location.reload();
           }, 2000);
+          
         } else {
           this.messageService.add({ severity: 'warn', summary: 'Usuario incorrecto', detail: `Los datos de usuario son incorrectos` });
         }
       })
 
     }
-  }
-
-
-
-
-  loginWithGoogle() {
-    this.userService.loginWithGoogle().then(response => {
-      console.log(response);
-    }).catch(error => console.log(error)
-    )
   }
 
 }

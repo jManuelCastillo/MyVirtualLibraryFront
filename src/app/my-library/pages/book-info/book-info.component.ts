@@ -34,6 +34,10 @@ export class BookInfoComponent {
     searchUser: ['',],
   })
   numberOfBooks: string;
+  showModifySuggestion: boolean = false;
+  showfinishedBookWindow: boolean = false;
+  showRemovefinishedBookWindow: boolean = false;
+
 
   constructor(private libraryService: LibraryService, private route: ActivatedRoute, private formBuilder: FormBuilder,
     private router: Router, public dialogService: DialogService, private userService: UserService,
@@ -114,7 +118,7 @@ export class BookInfoComponent {
       accept: () => {
         this.libraryService.deleteBook(id);
         this.libraryService.deleteFileBook(fileList.map(file => file.route));
-
+        this.libraryService.deleteBookSuggestions(id)
         tempUsers.forEach(user => {
           if (user.id != this.currentUser.id) {
             user.favouritesBooks = user.favouritesBooks.filter(
@@ -151,6 +155,46 @@ export class BookInfoComponent {
 
 
 
+  }
+
+
+  selectAsFinishedForUser(user: UserIt, book: Book) {
+
+    user?.finishedBooks?.push({ idBook: book.id, title: book.title })
+    this.userService.updateUser(user)
+    let name = user.fullName;
+    this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: 'Marcado como finalizado para ' + name });
+    this.showfinishedBookWindow = false
+  }
+
+  deselectAsFinishedForUser(user: UserIt, book: Book) {
+    const index = user.finishedBooks?.findIndex(finishedBook => finishedBook.idBook === book.id);
+
+    user.finishedBooks?.splice(index!, 1);
+
+    this.userService.updateUser(user)
+    let name = user.fullName;
+    this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: 'Desmarcar como finalizado para ' + name });
+    this.showRemovefinishedBookWindow = false;
+  }
+
+  async showfinishedBook(book: Book) {
+    this.showfinishedBookWindow = true;
+    const users = await this.userService.getAllUsers();
+
+    this.usersForHelp = users.filter(user =>
+      !user.finishedBooks || !user.finishedBooks.some(finishedBook => finishedBook.idBook === book.id)
+    );
+    this.tempBook = book
+  }
+
+  async showRemovefinishedBook(book: Book) {
+    this.showRemovefinishedBookWindow = true;
+    const users = await this.userService.getAllUsers();
+    this.usersForHelp = users.filter(user =>
+      user.finishedBooks && user.finishedBooks.some(finishedBook => finishedBook.idBook === book.id)
+    );
+    this.tempBook = book
   }
 
   async showWithdrawBook(book: Book) {
@@ -231,7 +275,8 @@ export class BookInfoComponent {
     book.isAvailable = false;
     book.isNotAvailableReason = { name: name, id: id }
     this.libraryService.updateBook(book);
-    this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: `Libro retirado para ${{ name }}` });
+
+    this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: `Libro retirado el libro` });
     this.visible = false
   }
 

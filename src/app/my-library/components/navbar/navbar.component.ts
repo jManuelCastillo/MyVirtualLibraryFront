@@ -84,6 +84,7 @@ export class NavbarComponent implements OnInit {
     this.currentUser = undefined;
     this.setItems()
     this.userService.logout().catch(error => console.log(error));
+    this.router.navigate(['/home']);
   }
 
   showInfo(bookId: string) {

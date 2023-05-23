@@ -20,7 +20,10 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnDestroy, OnInit {
     tempBook?: Book;
     visible: boolean = false;
-    visible2: boolean = false;
+    visible2: boolean = false; 
+    showModifySuggestion: boolean = false;
+    showfinishedBookWindow: boolean = false;
+    showRemovefinishedBookWindow: boolean = false;
     selectedUser?: UserIt;
     usersForHelp: UserIt[] = [];
     items?: MenuItem[];
@@ -41,7 +44,11 @@ export class HomeComponent implements OnDestroy, OnInit {
     bookForm: FormGroup = this.formBuilder.group({
         searchUser: ['',],
     })
-
+    suggestionBooks: Book[] = [];
+    mostReadGenre = undefined;
+    mostUsedGenre?: any;
+    bookMostRead: any;
+    mostFavBook: any;
 
     constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
         public dialogService: DialogService, public messageService: MessageService,
@@ -83,6 +90,23 @@ export class HomeComponent implements OnDestroy, OnInit {
 
     }
 
+
+
+    async ngOnInit() {
+
+        await this.mostFinishedBookGenre()
+
+        this.libraryService.getAllBooksSuggestions().subscribe({
+            next: books => this.suggestionBooks = books
+        })
+
+        this.libraryService.getMyBooks().subscribe({
+            next: books => this.bookList = books
+        })
+        this.currentUser = JSON.parse(localStorage.getItem('user')!) as UserIt
+
+    }
+
     async uploadBook(path: string) {
         const bookRef = ref(this.storage, path);
         await getDownloadURL(bookRef).then(urlBook => {
@@ -90,13 +114,6 @@ export class HomeComponent implements OnDestroy, OnInit {
         })
     }
 
-
-    ngOnInit(): void {
-        this.libraryService.getMyBooks().subscribe({
-            next: books => this.bookList = books
-        })
-        this.currentUser = JSON.parse(localStorage.getItem('user')!) as UserIt
-    }
 
     showInfo(id: string) {
         this.router.navigate(['/bookinfo', id]);
@@ -113,7 +130,9 @@ export class HomeComponent implements OnDestroy, OnInit {
                 this.libraryService.deleteFileBook(fileList.map(file => file.route));
                 const index = this.filteredBooks.findIndex(book => book.id === id);
                 this.filteredBooks.splice(index, 1);
-
+                let bookIndex = this.suggestionBooks.findIndex(book => book.id === id);
+                this.suggestionBooks.splice(bookIndex, 1)
+                this.libraryService.deleteBookSuggestions(id)
                 tempUsers.forEach(user => {
                     if (user.id != this.currentUser.id) {
                         user.favouritesBooks = user.favouritesBooks.filter(
@@ -255,6 +274,10 @@ export class HomeComponent implements OnDestroy, OnInit {
         return this.currentUser!.favouritesBooks != undefined && this.currentUser?.favouritesBooks?.some(favBook => favBook.idBook == idBook)
     }
 
+    userFinisedButton() {
+
+    }
+
     finisedButton(idBook: string, title: string) {
 
         this.currentUser = this.userService.currentUser;
@@ -298,10 +321,31 @@ export class HomeComponent implements OnDestroy, OnInit {
         this.tempBook = book
     }
 
+    async showfinishedBook(book: Book) {
+        this.showfinishedBookWindow = true;
+        const users = await this.userService.getAllUsers();
+
+        this.usersForHelp = users.filter(user =>
+            !user.finishedBooks || !user.finishedBooks.some(finishedBook => finishedBook.idBook === book.id)
+        );
+        this.tempBook = book
+    }
+
+    async showRemovefinishedBook(book: Book) {
+        this.showRemovefinishedBookWindow = true;
+        const users = await this.userService.getAllUsers();
+        this.usersForHelp = users.filter(user =>
+            user.finishedBooks && user.finishedBooks.some(finishedBook => finishedBook.idBook === book.id)
+        );
+        this.tempBook = book
+    }
+
     async showReturnBook(book: Book) {
         this.visible2 = true;
         this.tempBook = book
     }
+
+
 
     returnBookForUser(book: Book) {
         book.isAvailable = true;
@@ -311,18 +355,140 @@ export class HomeComponent implements OnDestroy, OnInit {
         this.visible2 = false
     }
 
+    modifySuggestions() {
+        this.showModifySuggestion = true;
+    }
+
+    async managePreferenceBooks(book: Book) {
+
+        if (this.checkSuggestion(book)) {
+            let bookIndex = this.suggestionBooks.indexOf(book)
+            this.suggestionBooks.splice(bookIndex, 1)
+            this.libraryService.deleteBookSuggestions(book.id)
+        } else {
+            this.suggestionBooks.push(book)
+            await this.libraryService.postBookSuggestions(book)
+        }
+    }
+
     withdrawForUser(name: string, id: string, book: Book) {
         book.isAvailable = false;
         book.isNotAvailableReason = { name: name, id: id }
         this.libraryService.updateBook(book);
-        this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: `Libro retirado para ${{ name }}` });
+        this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: `Libro retirado para ${ name }` });
         this.visible = false
     }
 
+    selectAsFinishedForUser(user: UserIt, book: Book) {
+
+        user?.finishedBooks?.push({ idBook: book.id, title: book.title })
+        this.userService.updateUser(user)
+        let name =  user.fullName;
+        this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: 'Marcado como finalizado para ' + name });
+        this.showfinishedBookWindow = false
+    }
+
+    deselectAsFinishedForUser(user: UserIt, book: Book) {
+        const index = user.finishedBooks?.findIndex(finishedBook => finishedBook.idBook === book.id);
+
+        user.finishedBooks?.splice(index!, 1);
+
+        this.userService.updateUser(user)
+        let name =  user.fullName;
+        this.messageService.add({ severity: 'success', summary: 'Confirmado', detail: 'Desmarcar como finalizado para ' + name});
+        this.showRemovefinishedBookWindow = false;
+    }
+
+
     cancel() {
         this.messageService.add({ severity: 'error', summary: 'Cancelado', detail: 'Acción cancelada' });
-        this.visible = false
+        this.visible = false;
         this.visible2 = false;
+        this.showModifySuggestion = false;
+        this.showfinishedBookWindow = false;
+        this.showRemovefinishedBookWindow = false;
+    }
+
+    checkSuggestion(book: Book) {
+        return this.suggestionBooks.some(tempBook => book.id === tempBook.id)
+    }
+
+    async mostFinishedBookGenre() {
+        const users: UserIt[] = [];
+        const books: Book[] = [];
+        const genreFrequency: Record<string, number> = {};
+
+        await this.userService.getAllUsers().then(tempUsers => users.push(...tempUsers));
+        await this.libraryService.getAllBooks().then(tempBooks => books.push(...tempBooks));
+
+        users.forEach((user) => {
+            user.finishedBooks?.forEach((finishedBook) => {
+                const book = books.find((book) => book.id === finishedBook.idBook);
+                if (book && book.genre) {
+                    book.genre.forEach((genre) => {
+                        genreFrequency[genre] = (genreFrequency[genre] || 0) + 1;
+                    });
+                }
+            });
+        });
+
+        // Obtener el título y el número de veces que aparece cada libro en finishedBooks
+        const bookFrequency: Record<string, number> = {};
+
+        users.forEach((user) => {
+            user.finishedBooks?.forEach((finishedBook) => {
+                const book = books.find((book) => book.id === finishedBook.idBook);
+                if (book) {
+                    const { title, idBook } = finishedBook;
+                    const bookKey = `${title} (${idBook})`;
+                    bookFrequency[bookKey] = (bookFrequency[bookKey] || 0) + 1;
+                }
+            });
+        });
+
+        // Encontrar el género más utilizado
+        this.mostUsedGenre = Object.keys(genreFrequency).reduce((a, b) =>
+            genreFrequency[a] > genreFrequency[b] ? a : b
+        );
+
+        const idBookFrequency: Record<string, number> = {};
+
+        users.forEach((user) => {
+            user.finishedBooks?.forEach((finishedBook) => {
+                const { idBook } = finishedBook;
+                idBookFrequency[idBook] = (idBookFrequency[idBook] || 0) + 1;
+            });
+        });
+
+        //find most read book
+        const mostRepeatedFinishedBook = Object.keys(idBookFrequency).reduce((a, b) =>
+            idBookFrequency[a] > idBookFrequency[b] ? a : b
+        );
+
+        this.bookMostRead = books.find((book) => book.id === mostRepeatedFinishedBook);
+
+        //find most book in fav
+
+        const bookCount = {};
+        users.forEach(user => {
+            user.favouritesBooks.forEach(favBook => {
+                const bookId = favBook.idBook;
+                bookCount[bookId] = (bookCount[bookId] || 0) + 1;
+            });
+        });
+
+        let maxCount = 0;
+        let mostFrequentBookIds: string[] = [];
+        for (const bookId in bookCount) {
+            if (bookCount[bookId] > maxCount) {
+                maxCount = bookCount[bookId];
+                mostFrequentBookIds = [bookId];
+            } else if (bookCount[bookId] === maxCount) {
+                mostFrequentBookIds.push(bookId);
+            }
+        }
+
+        this.mostFavBook = books.find((book) => book.id === Object.keys(bookCount)[0]);
     }
 
 }

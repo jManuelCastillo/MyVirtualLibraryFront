@@ -48,7 +48,8 @@ export class UpdateBookComponent {
             const [day, month, year] = fechaStr.split("/").map(Number);
             date = new Date(year, month - 1, day)
           }
-
+       
+          
           this.bookForm.reset({
             titleInput: this.currentBook?.title ?? '',
             authorInput: this.currentBook?.author ?? '',
@@ -60,7 +61,7 @@ export class UpdateBookComponent {
               };
             }),
             booksNumberInput: this.currentBook?.numberOfBooks,
-            publishDateInput: date ?? new Date(),
+            publishDateInput: date ?? '',
             pagesNumberInput: this.currentBook?.pages ?? 1,
             imageInput: this.currentBook?.image ?? '',
             imageAuthorInput: this.currentBook?.authorImage ?? '',
@@ -182,9 +183,14 @@ export class UpdateBookComponent {
 
 
     const selectedDate: Date = this.bookForm.value.publishDateInput;
-    const day: number = selectedDate.getDate();
-    const month: number = selectedDate.getMonth() + 1;
-    const year: number = selectedDate.getFullYear();
+    let day: number = 0;
+    let month: number = 0;
+    let year: number = 0;
+    if (this.bookForm.value.publishDateInput) {
+      day = selectedDate.getDate();
+      month = selectedDate.getMonth() + 1;
+      year = selectedDate.getFullYear();
+    }
 
 
     let updatedBook: Book = {
@@ -201,11 +207,12 @@ export class UpdateBookComponent {
       image: this.bookForm.value.imageInput,
       authorImage: this.bookForm.value.imageAuthorInput,
       pages: this.bookForm.value.pagesNumberInput,
-      physicalBook: (this.bookForm.value.physBooknput != "true") ? true : false,
-      isAvailable: (this.bookForm.value.physBooknput != 'true') ? true : false,
-      isNotAvailableReason: (this.bookForm.value.physBooknput != 'true' && this.bookForm.value.isNotAvailableReason) ? this.bookForm.value.isNotAvailableReason : { name: '', id: '' }
+      physicalBook: (this.bookForm.value.physBooknput == "true") ? true : false,
+      isAvailable: (this.bookForm.value.physBooknput == 'true') ? true : false,
+      isNotAvailableReason: (this.bookForm.value.physBooknput == 'true' && this.bookForm.value.isNotAvailableReason) ? this.bookForm.value.isNotAvailableReason : { name: '', id: '' }
 
     }
+
 
     this.uploadedFiles.map(file => {
       const filesRef = ref(this.storage, `BooksFiles/${file.name}`)

@@ -1,7 +1,9 @@
 <app-navbar></app-navbar>
 <div class="w-full flex justify-content-between align-items-center">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Fantasía</p> <span class="flex mr-5" *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' 
-        (click)="downloadBookData(fantasyBooks, 'Fantasía')" class="h-1 mr-2" icon="pi pi-plus" label="Descargar libros"></p-button></span>
+    <p class="flex pt-3 pl-8 font-bold text-2xl">Fantasía</p> <span class="flex mr-5"
+        *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success'
+            (click)="downloadBookData(fantasyBooks, 'Fantasía')" class="h-1 mr-2" icon="pi pi-plus"
+            label="Descargar libros"></p-button></span>
 </div>
 <div class="grid w-full">
     <div class="col-1"></div>
@@ -14,7 +16,8 @@
                     class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
 
                     <img class="mb-3 shadow-6" src="{{fantasyBook.image}}"
-                        onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
+                        onerror="this.src='../../../../assets/images/photoNotFound.png'"
+                        style="height: 15rem; width: 10rem;" />
 
 
                     <div class="flex-column flex align-items-center justify-content-center">
@@ -24,8 +27,26 @@
                         <div class="car-buttons mt-5">
                             <p-button type="button" styleClass="p-button p-button-rounded mr-2" icon="pi pi-book"
                                 (click)="showInfo(fantasyBook.id)"></p-button>
-                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2"
-                                icon="pi pi-star"></p-button>
+                            <ng-container
+                                *ngIf="currentUser && currentUser.favouritesBooks != undefined; else elseTemplate">
+                                <ng-container *ngIf="isFav(fantasyBook.id); else favTemplate">
+                                    <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star-fill"
+                                        styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                                        (onClick)="favButton(fantasyBook.id, fantasyBook.title)"></p-button>
+                                </ng-container>
+                                <ng-template #favTemplate>
+                                    <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star"
+                                        styleClass="p-button-rounded p-button-warning" title="Guardar en favoritos"
+                                        (onClick)="favButton(fantasyBook.id, fantasyBook.title)"></p-button>
+                                </ng-template>
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                                <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star"
+                                    styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                                    [disabled]="true"></p-button>
+                            </ng-template>
+
+
                         </div>
                     </div>
                 </div>
@@ -36,8 +57,10 @@
     <div class="col-1"></div>
 </div>
 <div class="w-full flex justify-content-between align-items-center">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Ciencia Ficción</p> <span class="flex mr-5" *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' 
-        (click)="downloadBookData(scifiBooks, 'Ciencia Ficción')" class="h-1 mr-2" icon="pi pi-plus" label="Descargar libros"></p-button></span>
+    <p class="flex pt-3 pl-8 font-bold text-2xl">Ciencia Ficción</p> <span class="flex mr-5"
+        *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success'
+            (click)="downloadBookData(scifiBooks, 'Ciencia Ficción')" class="h-1 mr-2" icon="pi pi-plus"
+            label="Descargar libros"></p-button></span>
 </div>
 <div class="grid w-full">
     <div class="col-1"></div>
@@ -50,7 +73,8 @@
                     class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
 
                     <img class="mb-3 shadow-6" src="{{sciFiBook.image}}"
-                        onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
+                        onerror="this.src='../../../../assets/images/photoNotFound.png'"
+                        style="height: 15rem; width: 10rem;" />
 
 
                     <div class="flex-column flex align-items-center justify-content-center">
@@ -60,8 +84,24 @@
                         <div class="car-buttons mt-5">
                             <p-button type="button" styleClass="p-button p-button-rounded mr-2" icon="pi pi-book"
                                 (click)="showInfo(sciFiBook.id)"></p-button>
-                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2"
-                                icon="pi pi-star"></p-button>
+                            <ng-container
+                                *ngIf="currentUser && currentUser.favouritesBooks != undefined; else elseTemplate">
+                                <ng-container *ngIf="isFav(sciFiBook.id); else favTemplate">
+                                    <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star-fill"
+                                        styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                                        (onClick)="favButton(sciFiBook.id, sciFiBook.title)"></p-button>
+                                </ng-container>
+                                <ng-template #favTemplate>
+                                    <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star"
+                                        styleClass="p-button-rounded p-button-warning" title="Guardar en favoritos"
+                                        (onClick)="favButton(sciFiBook.id, sciFiBook.title)"></p-button>
+                                </ng-template>
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                                <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star"
+                                    styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                                    [disabled]="true"></p-button>
+                            </ng-template>
                         </div>
                     </div>
                 </div>
@@ -73,8 +113,10 @@
 </div>
 
 <div class="w-full flex justify-content-between align-items-center">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Romántico</p> <span class="flex mr-5" *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' 
-        (click)="downloadBookData(romanticBooks, 'Romántico')" class="h-1 mr-2" icon="pi pi-plus" label="Descargar libros"></p-button> </span>
+    <p class="flex pt-3 pl-8 font-bold text-2xl">Romántico</p> <span class="flex mr-5"
+        *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success'
+            (click)="downloadBookData(romanticBooks, 'Romántico')" class="h-1 mr-2" icon="pi pi-plus"
+            label="Descargar libros"></p-button> </span>
 </div>
 <div class="grid w-full">
     <div class="col-1"></div>
@@ -87,7 +129,8 @@
                     class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
 
                     <img class="mb-3 shadow-6" src="{{romanticBook.image}}"
-                        onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
+                        onerror="this.src='../../../../assets/images/photoNotFound.png'"
+                        style="height: 15rem; width: 10rem;" />
 
 
                     <div class="flex-column flex align-items-center justify-content-center">
@@ -97,8 +140,25 @@
                         <div class="car-buttons mt-5">
                             <p-button type="button" styleClass="p-button p-button-rounded mr-2" icon="pi pi-book"
                                 (click)="showInfo(romanticBook.id)"></p-button>
-                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2"
-                                icon="pi pi-star"></p-button>
+
+                            <ng-container
+                                *ngIf="currentUser && currentUser.favouritesBooks != undefined; else elseTemplate">
+                                <ng-container *ngIf="isFav(romanticBook.id); else favTemplate">
+                                    <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star-fill"
+                                        styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                                        (onClick)="favButton(romanticBook.id, romanticBook.title)"></p-button>
+                                </ng-container>
+                                <ng-template #favTemplate>
+                                    <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star"
+                                        styleClass="p-button-rounded p-button-warning" title="Guardar en favoritos"
+                                        (onClick)="favButton(romanticBook.id, romanticBook.title)"></p-button>
+                                </ng-template>
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                                <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star"
+                                    styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                                    [disabled]="true"></p-button>
+                            </ng-template>
                         </div>
                     </div>
                 </div>
@@ -111,8 +171,10 @@
 
 
 <div class="w-full flex justify-content-between align-items-center">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Clásicos</p> <span class="flex mr-5" *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' 
-        (click)="downloadBookData(classicBooks, 'Clásicos')" class="h-1 mr-2" icon="pi pi-plus" label="Descargar libros"></p-button> </span>
+    <p class="flex pt-3 pl-8 font-bold text-2xl">Clásicos</p> <span class="flex mr-5"
+        *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success'
+            (click)="downloadBookData(classicBooks, 'Clásicos')" class="h-1 mr-2" icon="pi pi-plus"
+            label="Descargar libros"></p-button> </span>
 </div>
 <div class="grid w-full">
     <div class="col-1"></div>
@@ -125,8 +187,8 @@
                     class=" flex flex-column flex-grow-1 w-21rem h-25rem flex-shrink-1 flex align-items-center justify-content-around ">
 
                     <img class="mb-3 shadow-6" src="{{classicBook.image}}"
-                        onerror="this.src='../../../../assets/images/photoNotFound.png'" style="width: 10rem;" />
-
+                        onerror="this.src='../../../../assets/images/photoNotFound.png'"
+                        style="height: 15rem; width: 10rem;" />
 
                     <div class="flex-column flex align-items-center justify-content-center">
                         <h4 class="mb-1">{{classicBook.title}}</h4>
@@ -135,8 +197,25 @@
                         <div class="car-buttons mt-5">
                             <p-button type="button" styleClass="p-button p-button-rounded mr-2" icon="pi pi-book"
                                 (click)="showInfo(classicBook.id)"></p-button>
-                            <p-button type="button" styleClass="p-button-warning p-button-rounded mr-2"
-                                icon="pi pi-star"></p-button>
+                            <ng-container
+                                *ngIf="currentUser && currentUser.favouritesBooks != undefined; else elseTemplate">
+                                <ng-container *ngIf="isFav(classicBook.id); else favTemplate">
+                                    <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star-fill"
+                                        styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                                        (onClick)="favButton(classicBook.id, classicBook.title)"></p-button>
+                                </ng-container>
+                                <ng-template #favTemplate>
+                                    <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star"
+                                        styleClass="p-button-rounded p-button-warning" title="Guardar en favoritos"
+                                        (onClick)="favButton(classicBook.id, classicBook.title)"></p-button>
+                                </ng-template>
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                                <p-button styleClass="p-button p-button-rounded mr-2" icon="pi pi-star"
+                                    styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                                    [disabled]="true"></p-button>
+                            </ng-template>
+
                         </div>
                     </div>
                 </div>
