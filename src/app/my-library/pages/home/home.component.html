@@ -59,7 +59,7 @@
             <div class="shadow-2 surface-card p-3" style="border-radius: 12px;">
                 <div class="flex align-items-center justify-content-between h-full">
                     <div class="flex align-items-start flex-column">
-                        <span class="text-3xl text-900 font-bold" *ngIf="bookMostRead">{{bookMostRead.title}}</span>
+                        <span class="text-3xl text-900 font-bold" *ngIf="bookMostRead">{{bookMostRead}}</span>
                         <p class="mt-1 mb-0 text-600 text-xl">Libro más leído</p>
                     </div>
                 </div>
@@ -69,7 +69,7 @@
             <div class="shadow-2 surface-card p-3 h-full" style="border-radius: 12px;">
                 <div class="flex align-items-center justify-content-between h-full">
                     <div class="flex align-items-start flex-column">
-                        <span class="text-3xl text-900 font-bold" *ngIf="mostFavBook">{{mostFavBook.title}}</span>
+                        <span class="text-3xl text-900 font-bold" *ngIf="mostFavBook">{{mostFavBook}}</span>
                         <p class="mt-1 mb-0 text-600 text-xl">El favorito</p>
                     </div>
                 </div>
@@ -114,9 +114,9 @@
         <div class="col-2"></div>
         <div class="col-7 grid bg-white flex">
             <div (click)="showInfo(book.id)">
-                <img class="flex bg-cover bg-center flex-wrap my-5 mx-1 cursor-pointer" style="width: 150px; height: 200px;"
-                    src="{{filteredBooks[j].image}}" onerror="this.src='../../../../assets/images/photoNotFound.png'"
-                    alt="Imagen">
+                <img class="flex bg-cover bg-center flex-wrap my-5 mx-1 cursor-pointer"
+                    style="width: 150px; height: 200px;" src="{{filteredBooks[j].image}}"
+                    onerror="this.src='../../../../assets/images/photoNotFound.png'" alt="Imagen">
             </div>
             <div class="flex-1 flex h-full font-bold m-2 w-full">
                 <div class="flex flex-column justify-content-around flex-wrap w-full">
@@ -141,25 +141,32 @@
                                         alt="{{file.format}} icon">
                                 </a>
                             </span>
-                            <span class="flex justify-content-start align-items-start flex-row pt-1">
+                            <span class="flex justify-content-start align-items-start flex-row">
                                 <div *ngIf="filteredBooks[j].physicalBook">
                                     <ng-container
                                         *ngIf="filteredBooks[j].isNotAvailableReason!.id == currentUser.id || filteredBooks[j].isAvailable; else bookIsTaken">
                                         <ng-container *ngIf="filteredBooks[j].isAvailable; else physicalTemplate">
-                                            <p-button label="Sacar libro" styleClass="p-button-raised p-button-text"
-                                                (onClick)="withdrawABook(filteredBooks[j])"></p-button>
+                                            <a (click)="withdrawABook(filteredBooks[j])" class="cursor-pointer">
+                                                <img style="width: 3rem; height: 3rem;"
+                                                    src="../../../../assets/images/utils/iconapplication/iconGetBook.svg"
+                                                    alt="get book icon">
+                                            </a>
                                         </ng-container>
                                         <ng-template #physicalTemplate>
-                                            <p-button label="Devolver libro"
-                                                styleClass="p-button-raised p-button-text p-button-secondary"
-                                                (onClick)="withdrawABook(filteredBooks[j])"></p-button>
+                                            <a (click)="withdrawABook(filteredBooks[j])" class="cursor-pointer">
+                                                <img style="width: 3rem; height: 3rem;"
+                                                    src="../../../../assets/images/utils/iconapplication/iconReturnBook.svg"
+                                                    alt="get book icon">
+                                            </a>
                                         </ng-template>
                                     </ng-container>
                                     <ng-template #bookIsTaken>
-                                        <p-button label="Prestado" styleClass="p-button-raised p-button-text"
-                                            title="Este libro lo tiene {{filteredBooks[j].isNotAvailableReason!.name}}"
-                                            [disabled]=true></p-button>
-
+                                        <a>
+                                            <img style="width: 3rem; height: 3rem;" [ariaDisabled]="true"
+                                                src="../../../../assets/images/utils/iconapplication/iconNotAvailableBook.svg"
+                                                alt="get book icon"
+                                                title="Este libro lo tiene {{filteredBooks[j].isNotAvailableReason!.name}}">
+                                        </a>
                                     </ng-template>
                                 </div>
                             </span>
@@ -292,8 +299,8 @@
     </div>
 
     <ng-template pTemplate="footer">
-        <p-button icon="pi pi-check" (click)="selectAsFinishedForUser(selectedUser!, tempBook!)"
-            label="Confirmar" styleClass="p-button-text">
+        <p-button icon="pi pi-check" (click)="selectAsFinishedForUser(selectedUser!, tempBook!)" label="Confirmar"
+            styleClass="p-button-text">
         </p-button>
 
         <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
@@ -329,8 +336,8 @@
     </div>
 
     <ng-template pTemplate="footer">
-        <p-button icon="pi pi-check" (click)="deselectAsFinishedForUser(selectedUser!, tempBook!)"
-            label="Confirmar" styleClass="p-button-text">
+        <p-button icon="pi pi-check" (click)="deselectAsFinishedForUser(selectedUser!, tempBook!)" label="Confirmar"
+            styleClass="p-button-text">
         </p-button>
 
         <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
@@ -437,11 +444,12 @@
                     <td>{{ book.publisher}}</td>
                     <td>
                         <ng-container *ngIf="!checkSuggestion(book); else elseTemplate">
-                            <button type="button" pButton pRipple icon="pi pi-plus" (click)="managePreferenceBooks(book)"></button>
+                            <button type="button" pButton pRipple icon="pi pi-plus"
+                                (click)="managePreferenceBooks(book)"></button>
                         </ng-container>
                         <ng-template #elseTemplate>
-                            <button style="background-color: rgb(164, 34, 34);" type="button" pButton pRipple icon="pi pi-times" 
-                            (click)="managePreferenceBooks(book)"></button>
+                            <button style="background-color: rgb(164, 34, 34);" type="button" pButton pRipple
+                                icon="pi pi-times" (click)="managePreferenceBooks(book)"></button>
                         </ng-template>
                     </td>
                 </tr>
