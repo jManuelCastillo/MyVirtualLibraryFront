@@ -11,6 +11,8 @@ import { Observable, of } from 'rxjs';
 import { BookmarkService } from './bookmark.service';
 import { collection, query, where, getDocs, } from "firebase/firestore";
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
+
 
 @Injectable({
   providedIn: 'root'
@@ -184,7 +186,7 @@ export class UserService {
 
   async deleteUser(uid: string) {
 
-    this.http.get(`http://localhost:3000/delete-user/${uid}`).subscribe((response) => {
+    this.http.get(`${environment.deleteUser}/delete-user/${uid}`).subscribe((response) => {
       console.log(response);
     })
 
