@@ -12,7 +12,7 @@ export const environment = {
     authDomain: 'myvirtuallibraryback.firebaseapp.com',
     messagingSenderId: '711369452382',
   },
-  deleteUser: 'http://localhost:3000',
+  deleteUser: 'https://myvirtuallibraryback.onrender.com',
   production: false
 };
 
