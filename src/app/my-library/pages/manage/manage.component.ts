@@ -328,6 +328,8 @@ export class ManageComponent {
       this.libraryService.getBookFromApi(this.titlecasePipe.transform(this.inputSearch.value)).subscribe((response) => {
         dataBook = Object.values(response)[0]
         this.foundBooks.data = dataBook!
+        console.log( this.foundBooks.data === undefined && this.inputSearch.value !== '');
+        
       })
     } else {
       this.foundBooks.data = dataBook!;
@@ -378,6 +380,11 @@ export class ManageComponent {
           })
             .catch(error => console.log(error));
           this.users.push({ email: this.registerForm.value.emailInput, id: response.user.uid, fullName: this.registerForm.value.nameInput })
+          this.registerForm.reset({
+            nameInput: '',
+            emailInput: '',
+            passwordInput: ''
+          }) 
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -385,6 +392,8 @@ export class ManageComponent {
             this.emailExist = true
           }
         });
+
+
     }
   }
 
@@ -405,7 +414,6 @@ export class ManageComponent {
       bodyData.push(rowData);
     });
 
-    console.log(bodyData);
 
     const documentDefinition: any = {
       content: [
@@ -413,7 +421,7 @@ export class ManageComponent {
         {
           table: {
             headerRows: 1,
-            widths: ['*', '*', '*', '*', '*'],
+            widths: ['auto', 'auto', 'auto', 'auto', 'auto'],
             body: bodyData
           }
         }

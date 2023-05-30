@@ -85,7 +85,7 @@ export class CollectionComponent implements OnInit {
 
   downloadBookData(books: Book[], genre: string) {
 
-    const bodyData = [['Titulo', 'Autor', 'Género', 'Editorial', 'Páginas', 'Fecha de Salida']];
+    const bodyData = [['Título', 'Autor', 'Género', 'Editorial', 'Páginas', 'Fecha de Salida']];
 
     books.forEach(book => {
 
@@ -107,7 +107,7 @@ export class CollectionComponent implements OnInit {
         {
           table: {
             headerRows: 1,
-            widths: ['*', '*', '*', '*', '*', '*'],
+            widths: ['auto', 'auto', 'auto', 'auto', 'auto', 'auto'],
             body: bodyData
           }
         }

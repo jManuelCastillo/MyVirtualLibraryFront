@@ -1,6 +1,6 @@
 <div class="flex-wrap align-items-center flex justify-content-between w-full">
     <!-- header title -->
-    <div class="flex px-4 flex-row align-items-center just ">
+    <div class="flex px-4 flex-row align-items-center just cursor-pointer" routerLink="home">
         <img src="../../../../favicon.ico" class="pr-3" style="width: 3rem; height: 3rem;" alt="">
         <p class="title"> My Virtual Library </p>
     </div>
@@ -13,7 +13,7 @@
                 (activeItemChange)="onActiveItemChange($event)"></p-tabMenu>
         </div>
         <!-- avatar column -->
-        
+
 
         <div class="flex ">
 
@@ -39,41 +39,41 @@
             <ng-container *ngIf="currentUser && currentUser.favouritesBooks && 
                 currentUser.favouritesBooks.length != 0; else NonFavorites">
                 <div *ngFor="let book of currentUser.favouritesBooks">
-                    
+
                     <button pButton class="w-full mb-1" (click)="showInfo(book.idBook)">{{book.title}}</button>
-                    
+
                 </div>
 
             </ng-container>
-            <ng-template #NonFavorites> 
-                    <p>Nada guardado en favoritos de momento</p>
+            <ng-template #NonFavorites>
+                <p>Nada guardado en favoritos de momento</p>
             </ng-template>
 
 
         </p-sidebar>
 
         <p-sidebar [(visible)]="sidebarVisible2" position="right">
-            <h2>Libros Leidos</h2>
+            <h2>Libros Leídos</h2>
 
             <ng-container *ngIf="currentUser && currentUser.finishedBooks && 
                 currentUser.finishedBooks.length != 0; else NonFinished">
                 <div *ngFor="let book of currentUser.finishedBooks">
-                    
+
                     <button pButton class="w-full mb-1" (click)="showInfo(book.idBook)">{{book.title}}</button>
-                    
+
                 </div>
 
             </ng-container>
-            <ng-template #NonFinished> 
-                    <p>Ningun libro leido de momento</p>
+            <ng-template #NonFinished>
+                <p>Ningun libro leído de momento</p>
             </ng-template>
 
 
         </p-sidebar>
         <p-dialog [(visible)]="visibleLogin" [style]="{width: '70vw', height:'80vh'}">
-            
-                <app-login></app-login>
-           
+
+            <app-login></app-login>
+
         </p-dialog>
     </div>
 </div>

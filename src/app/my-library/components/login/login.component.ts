@@ -36,13 +36,19 @@ export class LoginComponent {
           setTimeout(() => {
             location.reload();
           }, 2000);
-          
+
         } else {
           this.messageService.add({ severity: 'warn', summary: 'Usuario incorrecto', detail: `Los datos de usuario son incorrectos` });
         }
       })
-
+    } else {
+      this.loginForm.markAllAsTouched();
     }
+  }
+
+  validField(field: string) {
+    return this.loginForm.controls[field].errors &&
+      this.loginForm.controls[field].touched
   }
 
 }

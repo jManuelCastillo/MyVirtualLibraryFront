@@ -37,25 +37,34 @@
                                 alt="{{file.format}} icon">
                         </a>
                     </span>
-                    <span class="flex justify-content-start align-items-start flex-row pt-1">
+                    <span class="flex justify-content-start align-items-start flex-row">
+
+
                         <div *ngIf="currentBook.physicalBook">
                             <ng-container
                                 *ngIf="currentBook.isNotAvailableReason!.id == currentUser.id || currentBook.isAvailable; else bookIsTaken">
                                 <ng-container *ngIf="currentBook.isAvailable; else physicalTemplate">
-                                    <p-button label="Sacar libro" styleClass="p-button-raised p-button-text"
-                                        (onClick)="withdrawABook(currentBook)"></p-button>
+                                    <a (click)="withdrawABook(currentBook)" class="cursor-pointer">
+                                        <img style="width: 3rem; height: 3rem;"
+                                            src="../../../../assets/images/utils/iconapplication/iconGetBook.svg"
+                                            alt="get book icon">
+                                    </a>
                                 </ng-container>
                                 <ng-template #physicalTemplate>
-                                    <p-button label="Devolver libro"
-                                        styleClass="p-button-raised p-button-text p-button-secondary"
-                                        (onClick)="withdrawABook(currentBook)"></p-button>
+                                    <a (click)="withdrawABook(currentBook)" class="cursor-pointer">
+                                        <img style="width: 3rem; height: 3rem;"
+                                            src="../../../../assets/images/utils/iconapplication/iconReturnBook.svg"
+                                            alt="get book icon">
+                                    </a>
                                 </ng-template>
                             </ng-container>
                             <ng-template #bookIsTaken>
-                                <p-button label="Sacar libro" styleClass="p-button-raised p-button-text"
-                                    title="Este libro lo tiene {{currentBook.isNotAvailableReason!.name}}"
-                                    [disabled]=true></p-button>
-
+                                <a>
+                                    <img style="width: 3rem; height: 3rem;" [ariaDisabled]="true"
+                                        src="../../../../assets/images/utils/iconapplication/iconNotAvailableBook.svg"
+                                        alt="get book icon"
+                                        title="Este libro lo tiene {{currentBook.isNotAvailableReason!.name}}">
+                                </a>
                             </ng-template>
                         </div>
                     </span>
@@ -113,12 +122,12 @@
             </ng-template>
 
             <ng-container *ngIf="isFinised(currentBook.id); else finishedTemplate">
-                <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye-slash"
+                <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye"
                     styleClass="p-button-rounded p-button-warning" title="Quitar de leidos"
                     (onClick)="finisedButton(currentBook.id, currentBook.title)"></p-button>
             </ng-container>
             <ng-template #finishedTemplate>
-                <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye"
+                <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye-slash"
                     styleClass="p-button-rounded p-button-warning" title="Guardar en leidos"
                     (onClick)="finisedButton(currentBook.id, currentBook.title)"></p-button>
             </ng-template>

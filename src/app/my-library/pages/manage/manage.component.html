@@ -22,7 +22,7 @@
             <div class="surface-card shadow-2 p-3 border-round">
                 <div class="flex justify-content-between mb-3">
                     <div>
-                        <span class="block text-500 font-medium mb-3">Libros Leidos</span>
+                        <span class="block text-500 font-medium mb-3">Libros Leídos</span>
                         <div class="text-900 font-medium text-xl">{{numberOfFinishedBooks}}</div>
                     </div>
                     <div class="flex align-items-center justify-content-center bg-orange-100 border-round"
@@ -226,45 +226,59 @@
 
 
 
-                <div class="surface-card p-4 shadow-2 border-round" *ngIf="foundBooks.data && foundBooks.data.cover">
-
+                <div class="surface-card p-4 shadow-2 border-round" *ngIf="inputSearch.value !== ''">
                     <div class="bg-white flex">
-                        <img src="{{foundBooks.data.cover.large}}" alt=""
-                            class="flex bg-cover bg-center flex-wrap my-5 mx-1" style="width: 150px; height: 200px;">
+                        <ng-container
+                            *ngIf="this.foundBooks.data !== undefined ; else notFound">
+                            <ng-container
+                                *ngIf="foundBooks.data.cover && foundBooks.data.cover.large !== undefined; else elseTemplate">
+                                <img src="{{foundBooks.data.cover.large}}" alt=""
+                                    class="flex bg-cover bg-center flex-wrap my-5 mx-1"
+                                    style="width: 150px; height: 200px;">
+                            </ng-container>
+                            <ng-template #elseTemplate>
+                                <img src="../../../../assets/images/photoNotFound.png" alt=""
+                                    class="flex bg-cover bg-center flex-wrap my-5 mx-1"
+                                    style="width: 150px; height: 200px;">
+                            </ng-template>
+                            <div class="flex-1 flex h-full font-bold m-2 justify-content-between">
+                                <div class="flex flex-column justify-content-around flex-wrap">
+                                    <div class="flex align-items-center ">{{foundBooks.data.title}}</div>
+                                    <div class="flex align-items-center font-light" *ngIf="foundBooks.data.excerpts">
+                                        {{foundBooks.data.excerpts[0].text}}
+                                    </div>
+                                    <div class="flex align-items-center font-light" *ngIf="foundBooks.data.authors">
+                                        {{foundBooks.data.authors[0].name}}
+                                    </div>
+                                    <div class="flex align-items-center font-light" *ngIf="foundBooks.data.publishers">
+                                        {{foundBooks.data.publishers[0].name}} </div>
+                                </div>
 
-                        <div class="flex-1 flex h-full font-bold m-2 justify-content-between">
-                            <div class="flex flex-column justify-content-around flex-wrap">
-                                <div class="flex align-items-center ">{{foundBooks.data.title}}</div>
-                                <div class="flex align-items-center font-light" *ngIf="foundBooks.data.excerpts">
-                                    {{foundBooks.data.excerpts[0].text}}
+                            </div>
+                            <div class="flex">
+                                <div class="flex align-items-end justify-content-end">
+                                    <span *ngIf="foundBooks.data.number_of_pages != undefined "
+                                        class="flex text-white bg-gray-500 my-4 px-3 font-light ">
+                                        {{foundBooks.data.number_of_pages}} pág.</span>
                                 </div>
-                                <div class="flex align-items-center font-light" *ngIf="foundBooks.data.authors">
-                                    {{foundBooks.data.authors[0].name}}
-                                </div>
-                                <div class="flex align-items-center font-light" *ngIf="foundBooks.data.publishers">
-                                    {{foundBooks.data.publishers[0].name}} </div>
                             </div>
 
-                        </div>
-                        <div class="flex">
-                            <div class="flex align-items-end justify-content-end">
-                                <span *ngIf="foundBooks.data.number_of_pages != undefined "
-                                    class="flex text-white bg-gray-500 my-4 px-3 font-light ">
-                                    {{foundBooks.data.number_of_pages}} pág.</span>
-                            </div>
-                        </div>
 
-
-                        <div class="flex flex-column m-2">
-                            <!-- <p-splitButton class="flex justify-content-end" label="Gestionar" [model]="this.optionsItems"
+                            <div class="flex flex-column m-2">
+                                <!-- <p-splitButton class="flex justify-content-end" label="Gestionar" [model]="this.optionsItems"
                             (onClick)="options('info')"
                             styleClass="p-button-outlined p-button-warning mr-2 mb-2"></p-splitButton> -->
 
-                            <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-save"
-                                styleClass="p-button-rounded p-button-warning" (onClick)="getBookData()"></p-button>
+                                <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-save"
+                                    styleClass="p-button-rounded p-button-warning" (onClick)="getBookData()"></p-button>
 
-                        </div>
+                            </div>
+                        </ng-container>
+                        <ng-template #notFound>
+                            <p>no se han encontrado coincidencias </p>
+                        </ng-template>
                     </div>
+
                 </div>
             </ng-template>
         </p-accordionTab>
