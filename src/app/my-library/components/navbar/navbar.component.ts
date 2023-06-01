@@ -3,6 +3,7 @@ import { MenuItem } from 'primeng/api';
 import { UserIt } from '../../interfaces/user.interface';
 import { UserService } from '../../service/user.service';
 import { Router } from '@angular/router';
+import { HostListener } from '@angular/core';
 
 @Component({
   selector: 'app-navbar',
@@ -21,6 +22,7 @@ export class NavbarComponent implements OnInit {
   sidebarVisible1: boolean = false;
   sidebarVisible2: boolean = false;
   visibleLogin: boolean = false;
+  isMobile = false;
 
   constructor(
     private userService: UserService, private cd: ChangeDetectorRef,
@@ -39,6 +41,9 @@ export class NavbarComponent implements OnInit {
 
   ngOnInit() {
     this.userService.getLocalUser()
+
+    this.onWindowResize();
+
     if (localStorage.getItem('user')) {
       this.currentUser = this.userService.currentUser;
       this.currentUser?.favouritesBooks?.length
@@ -48,7 +53,7 @@ export class NavbarComponent implements OnInit {
 
     this.items2 = [
       { title: 'Favoritos', icon: 'pi pi-star-fill', command: (event) => this.sidebarVisible1 = !this.sidebarVisible1 },
-      { title: 'Leidos', icon: 'pi pi-eye-slash', command: (event) => this.sidebarVisible2 = !this.sidebarVisible2 },
+      { title: 'Leidos', icon: 'pi pi-eye', command: (event) => this.sidebarVisible2 = !this.sidebarVisible2 },
       {
         title: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => {
           this.logOut()
@@ -69,6 +74,10 @@ export class NavbarComponent implements OnInit {
     if (this.currentUser != undefined && this.currentUser.admin) {
       this.items.push({ label: 'Administrar', icon: 'pi pi-wrench', 'routerLink': "/manage" })
     }
+  }
+
+  onWindowResize() {
+    this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
   }
 
   onActiveItemChange(event: MenuItem) {

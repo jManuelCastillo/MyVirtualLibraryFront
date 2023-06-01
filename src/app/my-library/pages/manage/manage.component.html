@@ -176,10 +176,11 @@
                             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
                             <p-toast></p-toast>
                             <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true skinSimple="true"
-                                class="w-full" chooseLabel="Añadir libro" uploadLabel="Refrescar" cancelLabel="Cancelar"
+                                class="w-full" chooseLabel="Subir libro" uploadLabel="Refrescar" cancelLabel="Cancelar"
                                 [showUploadButton]=true [multiple]=true accept=".pdf, .epub, .mobi">
                                 <ng-template pTemplate="toolbar">
-                                    <div class="py-3">Arrastra y suelta. Permite un formato mobi, epub o pdf</div>
+                                    <div class="py-3">1- Subir libro o arrastrar y soltar. Permite un formato mobi, epub o pdf</div>
+                                    <div class="py-3">2- Pulsar en Refrescar</div>
                                 </ng-template>
                                 <ng-template pTemplate="content">
                                     <ul class="w-full" *ngIf="uploadedFiles.length">
@@ -275,7 +276,7 @@
                             </div>
                         </ng-container>
                         <ng-template #notFound>
-                            <p>no se han encontrado coincidencias </p>
+                            <p>No se han encontrado coincidencias </p>
                         </ng-template>
                     </div>
 
@@ -315,7 +316,7 @@
 
                             <td>
                                 <ng-container *ngIf="(user.admin); else otherButton">
-                                    <p-button label='Si' styleClass="p-button-success p-button-text"
+                                    <p-button label='Sí' styleClass="p-button-success p-button-text"
                                         (click)="letAdmin(user)">
                                     </p-button> </ng-container>
                                 <ng-template #otherButton>

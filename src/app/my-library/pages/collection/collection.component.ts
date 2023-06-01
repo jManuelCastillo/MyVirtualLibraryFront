@@ -147,4 +147,25 @@ export class CollectionComponent implements OnInit {
     return this.currentUser!.favouritesBooks != undefined && this.currentUser?.favouritesBooks?.some(favBook => favBook.idBook == idBook)}
       return false
   }
+
+  finisedButton(idBook: string, title: string) {
+
+    this.currentUser = this.userService.currentUser;
+
+    if (this.currentUser?.finishedBooks?.findIndex(finishedBook => finishedBook.idBook === idBook) === -1) {
+        this.userService.currentUser?.finishedBooks?.push({ idBook, title })
+
+    } else {
+        const index = this.userService.currentUser?.finishedBooks?.findIndex(finishedBook => finishedBook.idBook === idBook);
+        this.userService.currentUser?.finishedBooks?.splice(index!, 1);
+        this.currentUser?.finishedBooks?.splice(index!, 1);
+    }
+
+    this.userService.updateUser()
+}
+
+isFinised(idBook: string) {
+    this.currentUser = JSON.parse(localStorage.getItem('user')!)
+    return this.currentUser!.finishedBooks != undefined && this.currentUser?.finishedBooks?.some(finishedBook => finishedBook.idBook == idBook)
+}
 }

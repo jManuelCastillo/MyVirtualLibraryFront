@@ -1,7 +1,9 @@
 <app-navbar></app-navbar>
 <!-- title -->
 <p-toast></p-toast>
-<div class="grid p-align-center mt-2 w-full">
+
+
+<div class="p-align-center mt-2 w-full">
     <div class="bg-cover bg-center border-round h-25rem w-full align-items-center justify-content-center flex flex-column h-full "
         style="background-image: url('../../../../assets/images/libraryIMG.png')">
         <span class="text-6xl text-50 flex ">VISÍTANOS</span>
@@ -12,7 +14,7 @@
 
 <!-- recomended -->
 <div class="w-full flex justify-content-between align-items-center">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Recomendaciones</p> <span class="flex mr-5"
+    <p class="flex pt-3 sm:pl-8 font-bold text-2xl">Recomendaciones</p> <span class="flex mr-5"
         *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' (click)="modifySuggestions()"
             class="h-1 mr-2" icon="pi pi-cog" label="Modificar preferencias"></p-button></span>
 </div>
@@ -33,7 +35,7 @@
 
             <div class="flex flex-column font-bold text-gray-900">
                 <div class="flex align-items-center font-bold border-round ml-2 text-xl">{{book.title}}</div>
-                <div class="flex align-items-center font-light ml-2 mt-1">{{book.author}}</div>
+                <div class="flex align-items-center font-bold ml-2 mt-1 text-color-secondary">{{book.author}}</div>
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.publisher}}</div>
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.pages}} páginas</div>
             </div>
@@ -42,10 +44,11 @@
 
 </div>
 
-<div class="w-full flex justify-content-between align-items-center surface-ground ">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Lo más visto</p>
-</div>
-<div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
+
+<div class="surface-ground px-4 pb-5 md:px-6 lg:px-8">
+    <div class="w-full flex justify-content-between align-items-center">
+        <p class="flex pl-8 font-bold text-2xl">Lo más visto</p>
+    </div>
     <div class="grid">
         <div class="col-12 lg:col-4 p-3">
             <div class="shadow-2 surface-card p-3 h-full" style="border-radius: 12px;">
@@ -123,8 +126,8 @@
             <div class="flex-1 flex h-full font-bold m-2 w-full">
                 <div class="flex flex-column justify-content-around flex-wrap w-full">
                     <div class="flex flex-column">
-                        <div class="flex align-items-center text-xl">{{filteredBooks[j].title}}</div>
-                        <div class="flex align-items-center text pb-2">{{filteredBooks[j].author}}</div>
+                        <div class="flex align-items-center text-2xl">{{filteredBooks[j].title}}</div>
+                        <div class="flex align-items-center text-color-secondary text pb-2">{{filteredBooks[j].author}}</div>
                         <div class="flex align-items-center font-light">{{filteredBooks[j].description | slice:0:300 }}
                         </div>
                     </div>

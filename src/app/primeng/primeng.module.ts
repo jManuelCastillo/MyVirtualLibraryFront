@@ -29,7 +29,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TableModule } from 'primeng/table';
 import { PasswordModule } from 'primeng/password';
 import { MultiSelectModule } from 'primeng/multiselect';
-
+import { SlideMenuModule } from 'primeng/slidemenu';
 
 @NgModule({
   declarations: [],
@@ -63,7 +63,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
     ConfirmDialogModule,
     TableModule,
     PasswordModule,
-    MultiSelectModule
+    MultiSelectModule,
+    SlideMenuModule
   ]
 })
 

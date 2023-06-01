@@ -63,7 +63,7 @@ export class BookInfoComponent {
             default: this.numberOfBooks = 'saga'
           }
 
-
+          this.authorBooks = []
           this.libraryService.bookByAuthor(this.currentBook.author).then(Snapshot => Snapshot.forEach((doc) => {
             this.authorBooks.push(doc.data() as Book)
           })).catch(error => console.log(error)
@@ -196,6 +196,11 @@ export class BookInfoComponent {
     );
     this.tempBook = book
   }
+
+  showInfo(id: string) {
+    this.router.navigate(['/bookinfo', id]);
+  }
+
 
   async showWithdrawBook(book: Book) {
     this.visible = true;

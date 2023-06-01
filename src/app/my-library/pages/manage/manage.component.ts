@@ -35,7 +35,7 @@ export class ManageComponent {
   numberOfDigitalBooks?: number;
   numberOfphysicalBooks?: number;
   numOfBooks?: number;
-  stateOptions: any[] = [{ label: 'No', value: 'false' }, { label: 'Si', value: 'true' }];
+  stateOptions: any[] = [{ label: 'No', value: 'false' }, { label: 'Sí', value: 'true' }];
   activeIndex!: number;
   genresInput!: string[]
   uploadedFiles: any[] = [];
@@ -192,12 +192,24 @@ export class ManageComponent {
   }
 
   async saveBook() {
+    let tempbook;
 
-    if (this.bookForm.invalid || (this.uploadedFiles.length == 0 && this.bookForm.value.physBooknput == 'false')) {
+    await this.libraryService.bookExist(this.bookForm.value.titleInput, this.bookForm.value.authorInput).then(Snapshot => Snapshot.forEach((doc) => {
+      tempbook = doc.data() as Book
+      tempbook.id = doc.id
+    })
+    )
+
+    if (this.bookForm.invalid || (this.uploadedFiles.length == 0 && this.bookForm.value.physBooknput == 'false') ||
+      tempbook !== undefined) {
 
       this.bookForm.markAllAsTouched();
       if (this.uploadedFiles.length == 0 && this.bookForm.value.physBooknput == 'false') {
         this.messageService.add({ severity: 'warn', summary: 'Debe haber al menos un libro digital o que esté en físico', detail: '' });
+      }
+
+      if (tempbook !== undefined) {
+        this.messageService.add({ severity: 'warn', summary: 'Este libro ya existe', detail: '' });
       }
       return;
     }
@@ -328,8 +340,8 @@ export class ManageComponent {
       this.libraryService.getBookFromApi(this.titlecasePipe.transform(this.inputSearch.value)).subscribe((response) => {
         dataBook = Object.values(response)[0]
         this.foundBooks.data = dataBook!
-        console.log( this.foundBooks.data === undefined && this.inputSearch.value !== '');
-        
+        console.log(this.foundBooks.data === undefined && this.inputSearch.value !== '');
+
       })
     } else {
       this.foundBooks.data = dataBook!;
@@ -384,7 +396,7 @@ export class ManageComponent {
             nameInput: '',
             emailInput: '',
             passwordInput: ''
-          }) 
+          })
         })
         .catch((error) => {
           const errorCode = error.code;
