@@ -49,7 +49,7 @@ export class HomeComponent implements OnDestroy, OnInit {
     mostUsedGenre?: any;
     bookMostRead: string = '';
     mostFavBook: string = '';
-
+    isMobile = false;
     constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
         public dialogService: DialogService, public messageService: MessageService,
         private storage: Storage, private userService: UserService, private router: Router,
@@ -94,6 +94,8 @@ export class HomeComponent implements OnDestroy, OnInit {
 
     async ngOnInit() {
 
+        this.onWindowResize();
+        
         await this.mostFinishedBookGenre()
 
         this.libraryService.getAllBooksSuggestions().subscribe({
@@ -114,6 +116,9 @@ export class HomeComponent implements OnDestroy, OnInit {
         })
     }
 
+    onWindowResize() {
+        this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
+    }
 
     showInfo(id: string) {
         this.router.navigate(['/bookinfo', id]);
@@ -515,42 +520,42 @@ export class HomeComponent implements OnDestroy, OnInit {
 
         users.forEach((user) => {
             user.finishedBooks?.forEach((finishedBook) => {
-              const book = books.find((book) => book.id === finishedBook.idBook);
-              if (book && book.genre) {
-                book.genre.forEach((genre) => {
-                  genreFrequency[genre] = (genreFrequency[genre] || 0) + 1;
-                });
-              }
+                const book = books.find((book) => book.id === finishedBook.idBook);
+                if (book && book.genre) {
+                    book.genre.forEach((genre) => {
+                        genreFrequency[genre] = (genreFrequency[genre] || 0) + 1;
+                    });
+                }
             });
-          });
-      
-          // Obtener el título y el número de veces que aparece cada libro en finishedBooks
-          const bookFrequency: Record<string, number> = {};
-      
-          users.forEach((user) => {
+        });
+
+        // Obtener el título y el número de veces que aparece cada libro en finishedBooks
+        const bookFrequency: Record<string, number> = {};
+
+        users.forEach((user) => {
             user.finishedBooks?.forEach((finishedBook) => {
-              const book = books.find((book) => book.id === finishedBook.idBook);
-              if (book) {
-                const { title, idBook } = finishedBook;
-                const bookKey = `${title} (${idBook})`;
-                bookFrequency[bookKey] = (bookFrequency[bookKey] || 0) + 1;
-              }
+                const book = books.find((book) => book.id === finishedBook.idBook);
+                if (book) {
+                    const { title, idBook } = finishedBook;
+                    const bookKey = `${title} (${idBook})`;
+                    bookFrequency[bookKey] = (bookFrequency[bookKey] || 0) + 1;
+                }
             });
-          });
-      
-          // Encontrar el género más utilizado
-          this.mostUsedGenre = Object.keys(genreFrequency).reduce((a, b) =>
+        });
+
+        // Encontrar el género más utilizado
+        this.mostUsedGenre = Object.keys(genreFrequency).reduce((a, b) =>
             genreFrequency[a] > genreFrequency[b] ? a : b
-          );
-      
-          const idBookFrequency: Record<string, number> = {};
-      
-          users.forEach((user) => {
+        );
+
+        const idBookFrequency: Record<string, number> = {};
+
+        users.forEach((user) => {
             user.finishedBooks?.forEach((finishedBook) => {
-              const { idBook } = finishedBook;
-              idBookFrequency[idBook] = (idBookFrequency[idBook] || 0) + 1;
+                const { idBook } = finishedBook;
+                idBookFrequency[idBook] = (idBookFrequency[idBook] || 0) + 1;
             });
-          });
+        });
 
         /*   console.log(users);
           users.forEach((user) => {
