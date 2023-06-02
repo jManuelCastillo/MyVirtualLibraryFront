@@ -21,7 +21,8 @@ export class CollectionComponent implements OnInit {
   classicBooks: Book[] = [];
   currentUser!: UserIt;
   responsiveOptions: any[] = [];
-
+  isMobile = false;
+  
   constructor(private libraryService: LibraryService, private router: Router,
      private userService: UserService) { }
 
@@ -31,6 +32,8 @@ export class CollectionComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.onWindowResize()
+
     this.currentUser = this.userService.currentUser
     await this.libraryService.getFantasyBooks().then(Snapshot => Snapshot.forEach((doc) => {
       const newFantasyBook = doc.data() as Book
@@ -82,6 +85,10 @@ export class CollectionComponent implements OnInit {
   showInfo(id: string) {
     this.router.navigate(['/bookinfo', id]);
   }
+
+  onWindowResize() {
+    this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
+}
 
   downloadBookData(books: Book[], genre: string) {
 

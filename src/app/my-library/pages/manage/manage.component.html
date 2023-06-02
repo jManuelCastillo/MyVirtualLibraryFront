@@ -65,7 +65,7 @@
 
 <!-- accion accoridion -->
 
-<div class="m-8">
+<div class="xl:m-8 lg:m-8 md:m-4 ">
     <p-accordion class="w-full" [activeIndex]="activeIndex">
         <p-accordionTab>
             <ng-template pTemplate="header">
@@ -81,7 +81,7 @@
                     <form autocomplete="off" [formGroup]="bookForm" (ngSubmit)="saveBook()">
                         <div class="grid formgrid p-fluid flex">
 
-                            <div class="field mb-3 col-6">
+                            <div class="field mb-4 col-12 md:col-6">
                                 <label for="titleInput" class="font-medium">Titulo*</label>
                                 <input id="titleInput" formControlName="titleInput" pinputtext
                                     class="p-inputtext p-component p-element" type="text">
@@ -89,7 +89,7 @@
                                    y 100 caracteres" *ngIf="validFieldBooks('titleInput')"></p-message>
 
                             </div>
-                            <div class="field mb-3 col-6">
+                            <div class="field mb-4 col-12 md:col-6">
                                 <label for="authorInput" class="font-medium">Autor*</label>
                                 <input id="authorInput" formControlName="authorInput" pinputtext
                                     class="p-inputtext p-component p-element" type="text">
@@ -151,7 +151,7 @@
                                 <p-message severity="error" text="Debe de haber entre 1
                                     y 50 caracteres" *ngIf="validFieldBooks('publisherInput')"></p-message>
                             </div>
-                            <div class="field mb-3 col-6">
+                            <div class="field mb-4 col-12 md:col-6">
                                 <label for="ISBNInput" class="font-medium">ISBN</label>
                                 <input id="ISBNInput" pinputtext formControlName="ISBNInput"
                                     class="p-inputtext p-component p-element" type="text">
@@ -179,7 +179,8 @@
                                 class="w-full" chooseLabel="Subir libro" uploadLabel="Refrescar" cancelLabel="Cancelar"
                                 [showUploadButton]=true [multiple]=true accept=".pdf, .epub, .mobi">
                                 <ng-template pTemplate="toolbar">
-                                    <div class="py-3">1- Subir libro o arrastrar y soltar. Permite un formato mobi, epub o pdf</div>
+                                    <div class="py-3">1- Subir libro o arrastrar y soltar. Permite un formato mobi, epub
+                                        o pdf</div>
                                     <div class="py-3">2- Pulsar en Refrescar</div>
                                 </ng-template>
                                 <ng-template pTemplate="content">
@@ -214,8 +215,8 @@
             <ng-template pTemplate="content">
                 <!-- search by api -->
                 <div class="surface-card p-4 shadow-2 border-round w-full">
-                    <div class="grid formgrid p-fluid w-full ">
-                        <div class="field mx-6 mb-4 col-11">
+                    <div class="grid formgrid p-fluid w-full flex justify-content-center">
+                        <div class="field flex mx-4 xl:col-11 lg:col-11 md:col-11 sm:col-11">
                             <span class="p-input-icon-right border-round">
                                 <i class="pi pi-search"></i>
                                 <input class="w-full" type="text" pInputText [formControl]="inputSearch"
@@ -225,12 +226,9 @@
                     </div>
                 </div>
 
-
-
                 <div class="surface-card p-4 shadow-2 border-round" *ngIf="inputSearch.value !== ''">
                     <div class="bg-white flex">
-                        <ng-container
-                            *ngIf="this.foundBooks.data !== undefined ; else notFound">
+                        <ng-container *ngIf="this.foundBooks.data !== undefined ; else notFound">
                             <ng-container
                                 *ngIf="foundBooks.data.cover && foundBooks.data.cover.large !== undefined; else elseTemplate">
                                 <img src="{{foundBooks.data.cover.large}}" alt=""
@@ -293,7 +291,7 @@
             </ng-template>
             <ng-template pTemplate="content">
 
-                <div class="w-full flex justify-content-end ">
+                <div class="w-full flex justify-content-end mb-2">
                     <p-button styleClass='p-button-success' class="flex mr-2" (click)="downloadUsersData(users)"
                         icon="pi pi-plus" label="Descargar datos de usuario"></p-button>
                     <p-button styleClass='p-button-success' class="flex " (click)="showDialog()" icon="pi pi-plus"

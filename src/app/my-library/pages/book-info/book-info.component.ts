@@ -37,7 +37,7 @@ export class BookInfoComponent {
   showModifySuggestion: boolean = false;
   showfinishedBookWindow: boolean = false;
   showRemovefinishedBookWindow: boolean = false;
-
+  isMobile:boolean = false;
 
   constructor(private libraryService: LibraryService, private route: ActivatedRoute, private formBuilder: FormBuilder,
     private router: Router, public dialogService: DialogService, private userService: UserService,
@@ -47,6 +47,9 @@ export class BookInfoComponent {
   }
 
   async ngOnInit() {
+
+    this.onWindowResize()
+
     this.route.params.subscribe(params => {
       this.libraryService.getBookByID(params['id'])
         .then(book => {
@@ -78,6 +81,10 @@ export class BookInfoComponent {
     if (this.ref) {
       this.ref.close();
     }
+  }
+
+  onWindowResize() {
+    this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
   }
 
   async showPdf(route: string, title: string, id: string) {
