@@ -18,6 +18,7 @@ import { Storage, getDownloadURL, ref } from '@angular/fire/storage';
   styleUrls: ['./book-info.component.css'],
   providers: [DialogService, MessageService, ConfirmationService]
 })
+
 export class BookInfoComponent {
 
   currentBook!: Book;
@@ -49,7 +50,6 @@ export class BookInfoComponent {
   async ngOnInit() {
 
     this.onWindowResize()
-
     this.route.params.subscribe(params => {
       this.libraryService.getBookByID(params['id'])
         .then(book => {
@@ -96,7 +96,7 @@ export class BookInfoComponent {
       this.libraryService.currentPdfId = id;
       this.ref = this.dialogService.open(PdfViewerComponent, {
         header: title,
-        width: '70%',
+        width: (this.isMobile)? '100%': '70%',  
         contentStyle: { overflow: 'auto' },
         baseZIndex: 10000,
         maximizable: true

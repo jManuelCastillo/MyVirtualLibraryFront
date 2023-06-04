@@ -1,6 +1,11 @@
 
 
 
-<ngx-extended-pdf-viewer [listenToURL]="true" [textLayer]="true" [showHandToolButton]="false" height='100%'showBookmarkButton="true" 
-[handTool]="true" [useBrowserLocale]="true" [(src)]="currentPdf" (pageChange)="onEvent($event)">  
+<ngx-extended-pdf-viewer *ngIf="!isMobile" [listenToURL]="true" [textLayer]="true" [showHandToolButton]="false" height='100%'showBookmarkButton="true" 
+[handTool]="true" [useBrowserLocale]="true" [(src)]="currentPdf" (pageChange)="onEvent($event)" [showOpenFileButton]=false
+[showPrintButton]="true">  
+</ngx-extended-pdf-viewer>
+<ngx-extended-pdf-viewer *ngIf="isMobile" [listenToURL]="true" [textLayer]="true" [showHandToolButton]="false" height='100%' showBookmarkButton="true" 
+[handTool]="true" [useBrowserLocale]="true" [(src)]="currentPdf" (pageChange)="onEvent($event)"
+[mobileFriendlyZoom]="zoom" [showPrintButton]="false" [showRotateButton]="false" [showBorders]="false" [showOpenFileButton]=false [showPagingButtons]=false>  
 </ngx-extended-pdf-viewer>

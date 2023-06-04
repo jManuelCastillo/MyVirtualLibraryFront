@@ -1,18 +1,16 @@
 <app-navbar></app-navbar>
 
-
-<div class="w-full flex justify-content-between align-items-center">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Fantasía</p> <span class="flex mr-5"
+<div class="w-full flex sm:flex-column xl:flex-column lg:flex-row  md:flex-row justify-content-between xl:justify-content-between align-items-center flex-row flex-wrap p-4">
+    <p class="flex pl-4 pr-6 pt-3 font-bold text-2xl">Fantasía</p> 
+    <span class="flex mr-5"
         *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success'
-            (click)="downloadBookData(fantasyBooks, 'Fantasía')" class="h-1 mr-2" icon="pi pi-plus"
-            label="Descargar libros"></p-button></span>
+            (click)="downloadBookData(fantasyBooks, 'Fantasía')" class="h-1 mr-2 pl-4" icon="pi pi-download"
+            label="Descargar libros"></p-button>
+        </span>
 </div>
 
-
-
-
-<p-carousel *ngIf="!isMobile" [value]="fantasyBooks" [numVisible]="3" [numScroll]="3" [showIndicators]="false" [showIndicators]="false"
-    [responsiveOptions]="responsiveOptions">
+<p-carousel *ngIf="!isMobile" [value]="fantasyBooks" [numVisible]="3" [numScroll]="3" [showIndicators]="false"
+    [showIndicators]="false" [responsiveOptions]="responsiveOptions">
     <ng-template let-fantasyBook pTemplate="item">
         <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
             <div class="mb-3">
@@ -69,8 +67,8 @@
     </ng-template>
 </p-carousel>
 
-<p-carousel *ngIf="isMobile" [value]="fantasyBooks" [numVisible]="1" [numScroll]="1" [showIndicators]="false" [showIndicators]="false"
-    [responsiveOptions]="responsiveOptions">
+<p-carousel *ngIf="isMobile" [value]="fantasyBooks" [numVisible]="1" [numScroll]="1" [showIndicators]="false"
+    [showIndicators]="false" [responsiveOptions]="responsiveOptions">
     <ng-template let-fantasyBook pTemplate="item">
         <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
             <div class="mb-3">
@@ -127,15 +125,15 @@
     </ng-template>
 </p-carousel>
 
-<div class="w-full flex justify-content-between align-items-center">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Ciencia Ficción</p> <span class="flex mr-5"
+<div class="w-full flex justify-content-between align-items-center flex-row flex-wrap p-4">
+    <p class="flex pl-4 pt-3 font-bold text-2xl">Ciencia Ficción</p> <span class="flex mr-5"
         *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success'
-            (click)="downloadBookData(scifiBooks, 'Ciencia Ficción')" class="h-1 mr-2" icon="pi pi-plus"
+            (click)="downloadBookData(scifiBooks, 'Ciencia Ficción')" class="h-1 mr-2 pl-4" icon="pi pi-download"
             label="Descargar libros"></p-button></span>
 </div>
 
-<p-carousel *ngIf="!isMobile" [value]="scifiBooks" [numVisible]="3" [numScroll]="3" [showIndicators]="false" [showIndicators]="false"
-    [responsiveOptions]="responsiveOptions">
+<p-carousel *ngIf="!isMobile" [value]="scifiBooks" [numVisible]="3" [numScroll]="3" [showIndicators]="false"
+    [showIndicators]="false" [responsiveOptions]="responsiveOptions">
     <ng-template let-sciFiBook pTemplate="item">
         <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
             <div class="mb-3">
@@ -192,8 +190,8 @@
     </ng-template>
 </p-carousel>
 
-<p-carousel *ngIf="isMobile" [value]="scifiBooks" [numVisible]="1" [numScroll]="1" [showIndicators]="false" [showIndicators]="false"
-    [responsiveOptions]="responsiveOptions">
+<p-carousel *ngIf="isMobile" [value]="scifiBooks" [numVisible]="1" [numScroll]="1" [showIndicators]="false"
+    [showIndicators]="false" [responsiveOptions]="responsiveOptions">
     <ng-template let-sciFiBook pTemplate="item">
         <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
             <div class="mb-3">
@@ -250,15 +248,15 @@
     </ng-template>
 </p-carousel>
 
-<div class="w-full flex justify-content-between align-items-center">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Romántico</p> <span class="flex mr-5"
+<div class="w-full flex justify-content-between align-items-center flex-row flex-wrap p-4">
+    <p class="flex pl-4 pt-3 font-bold text-2xl">Romántico</p> <span class="flex mr-5"
         *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success'
-            (click)="downloadBookData(romanticBooks, 'Romántico')" class="h-1 mr-2" icon="pi pi-plus"
-            label="Descargar libros"></p-button> </span>
+            (click)="downloadBookData(romanticBooks, 'Romántico')" class="h-1 mr-2 pl-4" icon="pi pi-download"
+            label="Descargar libros"></p-button></span>
 </div>
 
-<p-carousel *ngIf="!isMobile" [value]="romanticBooks" [numVisible]="3" [numScroll]="3" [showIndicators]="false" [showIndicators]="false"
-    [responsiveOptions]="responsiveOptions">
+<p-carousel *ngIf="!isMobile" [value]="romanticBooks" [numVisible]="3" [numScroll]="3" [showIndicators]="false"
+    [showIndicators]="false" [responsiveOptions]="responsiveOptions">
     <ng-template let-romanticBook pTemplate="item">
         <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
             <div class="mb-3">
@@ -315,8 +313,8 @@
 </p-carousel>
 
 
-<p-carousel *ngIf="isMobile" [value]="romanticBooks" [numVisible]="1" [numScroll]="1" [showIndicators]="false" [showIndicators]="false"
-    [responsiveOptions]="responsiveOptions">
+<p-carousel *ngIf="isMobile" [value]="romanticBooks" [numVisible]="1" [numScroll]="1" [showIndicators]="false"
+    [showIndicators]="false" [responsiveOptions]="responsiveOptions">
     <ng-template let-romanticBook pTemplate="item">
         <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
             <div class="mb-3">
@@ -372,15 +370,15 @@
     </ng-template>
 </p-carousel>
 
-<div class="w-full flex justify-content-between align-items-center">
-    <p class="flex pt-3 pl-8 font-bold text-2xl">Clásicos</p> <span class="flex mr-5"
+<div class="w-full flex justify-content-between align-items-center flex-row flex-wrap p-4">
+    <p class="flex pl-4 pt-3 font-bold text-2xl pr-6">Clásicos</p> <span class="flex mr-5"
         *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success'
-            (click)="downloadBookData(classicBooks, 'Clásicos')" class="h-1 mr-2" icon="pi pi-plus"
-            label="Descargar libros"></p-button> </span>
+            (click)="downloadBookData(classicBooks, 'Clásicos')" class="h-1 mr-2 pl-4" icon="pi pi-download"
+            label="Descargar libros"></p-button></span>
 </div>
 
-<p-carousel *ngIf="!isMobile" [value]="classicBooks" [numVisible]="3" [numScroll]="3" [showIndicators]="false" [showIndicators]="false"
-    [responsiveOptions]="responsiveOptions">
+<p-carousel *ngIf="!isMobile" [value]="classicBooks" [numVisible]="3" [numScroll]="3" [showIndicators]="false"
+    [showIndicators]="false" [responsiveOptions]="responsiveOptions">
     <ng-template let-classicBook pTemplate="item">
         <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
             <div class="mb-3">
@@ -437,8 +435,8 @@
 </p-carousel>
 
 
-<p-carousel *ngIf="isMobile" [value]="classicBooks" [numVisible]="1" [numScroll]="1" [showIndicators]="false" [showIndicators]="false"
-    [responsiveOptions]="responsiveOptions">
+<p-carousel *ngIf="isMobile" [value]="classicBooks" [numVisible]="1" [numScroll]="1" [showIndicators]="false"
+    [showIndicators]="false" [responsiveOptions]="responsiveOptions">
     <ng-template let-classicBook pTemplate="item">
         <div class="border-1 surface-border border-round m-2 text-center py-5 px-3">
             <div class="mb-3">

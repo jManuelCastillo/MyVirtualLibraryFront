@@ -1,6 +1,7 @@
 <app-navbar></app-navbar>
 <!-- title -->
-<p-toast></p-toast>
+
+<p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
 
 
 <div class="p-align-center mt-2 w-full">
@@ -13,10 +14,10 @@
 
 
 <!-- recomended -->
-<div class="w-full flex justify-content-between align-items-center flex-row flex-wrap">
-    <p class="flex pt-3 p-4 sm:pl-4 font-bold text-2xl">Recomendaciones</p> <span class="flex mr-5"
+<div class="w-full flex justify-content-between align-items-center flex-row flex-wrap p-4">
+    <p class="flex pt-3 font-bold text-2xl">Recomendaciones</p> <span class="flex mr-5"
         *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' (click)="modifySuggestions()"
-            class="h-1 mr-2 pl-4" icon="pi pi-cog" label="Modificar preferencias"></p-button></span>
+            class="h-1 mr-2 sm:pl-0 lg:pl-4 xl:pl-4 md:pl-4" icon="pi pi-cog" label="Modificar preferencias"></p-button></span>
 </div>
 
 <div class="grid w-full md:p-6 lg:p-6 xl:p-6 ">
@@ -287,7 +288,7 @@
 </div>
 
 
-<p-dialog [(visible)]="showfinishedBookWindow" #cd [style]="{width: '25vw', height:'60vh'}">
+<p-dialog *ngIf="!isMobile" [(visible)]="showfinishedBookWindow" #cd [style]="{width: '25vw', height:'60vh'}">
     <ng-template pTemplate="header">
         <h3>Marcar libro leído para un usuario</h3>
     </ng-template>
@@ -324,7 +325,7 @@
     </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="showRemovefinishedBookWindow" #cd [style]="{width: '25vw', height:'60vh'}">
+<p-dialog *ngIf="!isMobile" [(visible)]="showRemovefinishedBookWindow" #cd [style]="{width: '25vw', height:'60vh'}">
     <ng-template pTemplate="header">
         <h3>Desmarcar libro como leído para un usuario</h3>
     </ng-template>
@@ -361,7 +362,7 @@
     </ng-template>
 </p-dialog>
 
-<p-dialog [(visible)]="visible" #cd [style]="{width: '25vw', height:'60vh'}">
+<p-dialog *ngIf="!isMobile" [(visible)]="visible" #cd [style]="{width: '25vw', height:'60vh'}">
     <ng-template pTemplate="header">
         <h3>Retirar un libro para un usuario</h3>
     </ng-template>
@@ -398,8 +399,7 @@
     </ng-template>
 </p-dialog>
 
-
-<p-dialog [(visible)]="visible2" [style]="{width: '50vw', height:'40vh'}">
+<p-dialog *ngIf="!isMobile" [(visible)]="visible2" [style]="{width: '50vw', height:'40vh'}">
     <ng-template pTemplate="header">
         <h3>Devolver un libro </h3>
     </ng-template>
@@ -417,9 +417,7 @@
     </ng-template>
 </p-dialog>
 
-
-
-<p-dialog [(visible)]="showModifySuggestion" #cd [style]="{width: '80vw', height:'80vh'}">
+<p-dialog *ngIf="!isMobile" [(visible)]="showModifySuggestion" #cd [style]="{width: '100vw', height:'80vh'}">
     <ng-template pTemplate="header">
         <h3>Modifica las preferencias</h3>
     </ng-template>
@@ -475,5 +473,190 @@
     </div>
 </p-dialog>
 
+
+<p-dialog *ngIf="isMobile" [(visible)]="showfinishedBookWindow" #cd [style]="{width: '100vw', height:'60vh'}">
+    <ng-template pTemplate="header">
+        <h3>Marcar libro leído para un usuario</h3>
+    </ng-template>
+
+    <div [formGroup]="bookForm">
+        <p-dropdown [options]="usersForHelp" (ngModelChange)="selectedUser=$event" optionLabel="fullName"
+            [filter]="true" filterBy="fullName" [showClear]="true" placeholder="Selecciona un usuario"
+            formControlName="searchUser">
+            <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="selectedUser">
+                    <div>{{ selectedUser.fullName }}</div>
+                </div>
+            </ng-template>
+            <ng-template let-user pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                    <div>{{ user.fullName }}</div>
+                </div>
+            </ng-template>
+
+        </p-dropdown>
+        <ng-template pTemplate="footer">
+            <h4>Marcar {{tempBook!.title}}</h4>
+        </ng-template>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="selectAsFinishedForUser(selectedUser!, tempBook!)" label="Confirmar"
+            styleClass="p-button-text">
+        </p-button>
+
+        <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog *ngIf="isMobile" [(visible)]="showRemovefinishedBookWindow" #cd [style]="{width: '100vw', height:'60vh'}">
+    <ng-template pTemplate="header">
+        <h3>Desmarcar libro como leído para un usuario</h3>
+    </ng-template>
+
+    <div [formGroup]="bookForm">
+        <p-dropdown [options]="usersForHelp" (ngModelChange)="selectedUser=$event" optionLabel="fullName"
+            [filter]="true" filterBy="fullName" [showClear]="true" placeholder="Selecciona un usuario"
+            formControlName="searchUser">
+            <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="selectedUser">
+                    <div>{{ selectedUser.fullName }}</div>
+                </div>
+            </ng-template>
+            <ng-template let-user pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                    <div>{{ user.fullName }}</div>
+                </div>
+            </ng-template>
+
+        </p-dropdown>
+        <ng-template pTemplate="footer">
+            <h4>Desmarcar {{tempBook!.title}}</h4>
+        </ng-template>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="deselectAsFinishedForUser(selectedUser!, tempBook!)" label="Confirmar"
+            styleClass="p-button-text">
+        </p-button>
+
+        <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog *ngIf="isMobile" [(visible)]="visible" #cd [style]="{width: '100vw', height:'60vh'}">
+    <ng-template pTemplate="header">
+        <h3>Retirar un libro para un usuario</h3>
+    </ng-template>
+
+    <div [formGroup]="bookForm">
+        <p-dropdown [options]="usersForHelp" (ngModelChange)="selectedUser=$event" optionLabel="fullName"
+            [filter]="true" filterBy="fullName" [showClear]="true" placeholder="Selecciona un usuario"
+            formControlName="searchUser">
+            <ng-template pTemplate="selectedItem">
+                <div class="flex align-items-center gap-2" *ngIf="selectedUser">
+                    <div>{{ selectedUser.fullName }}</div>
+                </div>
+            </ng-template>
+            <ng-template let-user pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                    <div>{{ user.fullName }}</div>
+                </div>
+            </ng-template>
+
+        </p-dropdown>
+        <ng-template pTemplate="footer">
+            <h4>Retirar {{tempBook!.title}}</h4>
+        </ng-template>
+
+    </div>
+
+    <ng-template pTemplate="footer">
+        <p-button icon="pi pi-check" (click)="withdrawForUser(selectedUser!.fullName, selectedUser!.id, tempBook!)"
+            label="Confirmar" styleClass="p-button-text">
+        </p-button>
+
+        <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog *ngIf="isMobile" [(visible)]="visible2" [style]="{width: '100vw', height:'40vh'}">
+    <ng-template pTemplate="header">
+        <h3>Devolver un libro </h3>
+    </ng-template>
+    <input id="disabled-input" type="text" class="w-full" pInputText [disabled]="true"
+        value="{{tempBook?.isNotAvailableReason?.name}}" />
+
+    <ng-template pTemplate="footer">
+        <h4>¿ Quiéres devolver {{tempBook!.title}}?</h4>
+        <p-button icon="pi pi-check" (click)="returnBookForUser(tempBook!)" label="Confirmar"
+            styleClass="p-button-text">
+        </p-button>
+
+        <p-button icon="pi pi-times" (click)="cancel()" label="Cancelar">
+        </p-button>
+    </ng-template>
+</p-dialog>
+
+<p-dialog *ngIf="isMobile" [(visible)]="showModifySuggestion" #cd [style]="{width: '100vw', height:'80vh'}">
+    <ng-template pTemplate="header">
+        <h3>Modifica las preferencias</h3>
+    </ng-template>
+
+    <div>
+        <p-table [value]="bookList" dataKey="id" [tableStyle]="{ 'min-width': '75rem' }" [paginator]="true" [rows]="5"
+            [globalFilterFields]="['title', 'author', 'genre', 'publisher']">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th pSortableColumn="title">Título <p-sortIcon field="title"></p-sortIcon></th>
+                    <th pSortableColumn="author">Autor <p-sortIcon field="author"></p-sortIcon></th>
+                    <th pSortableColumn="genre">Género <p-sortIcon field="genre"></p-sortIcon></th>
+                    <th pSortableColumn="publisher">Editorial <p-sortIcon field="publisher"></p-sortIcon></th>
+                    <th style="width: 5rem"></th>
+                </tr>
+                <tr>
+                    <th>
+                        <p-columnFilter type="text" field="title"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter type="text" field="author"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter type="text" field="genre"></p-columnFilter>
+                    </th>
+                    <th>
+                        <p-columnFilter type="text" field="publisher"></p-columnFilter>
+                    </th>
+                    <th style="width: 4rem">
+                    </th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-book>
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.genre }}</td>
+                    <td>{{ book.publisher}}</td>
+                    <td>
+                        <ng-container *ngIf="!checkSuggestion(book); else elseTemplate">
+                            <button type="button" pButton pRipple icon="pi pi-plus"
+                                (click)="managePreferenceBooks(book)"></button>
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            <button style="background-color: rgb(164, 34, 34);" type="button" pButton pRipple
+                                icon="pi pi-times" (click)="managePreferenceBooks(book)"></button>
+                        </ng-template>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+</p-dialog>
 
 <app-footer></app-footer>

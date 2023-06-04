@@ -20,7 +20,8 @@ export class PdfViewerComponent implements OnInit {
   currentPdf!: string;
   public pageLabel: string = "";
   currentMark!: Bookmark;
-
+  zoom = '150%';
+  isMobile: boolean = false;
   constructor(
     private libraryService: LibraryService,
     private bookMarkService: BookmarkService,
@@ -31,48 +32,23 @@ export class PdfViewerComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.onWindowResize()
     this.currentPdf = this.libraryService.currentPdf;
     this.bookMarkService.getBookmarkByID(this.userService.currentUser!.id)
       .then(bookMark => {
         this.currentMark = bookMark.data() as Bookmark
         console.log(this.currentMark);
-        
+
       });
   }
 
   async onEvent(event: any) {
-   /*  if (this.currentMark) {
-
-      let index = this.currentMark.files.findIndex(data => data.bookId === this.libraryService.currentPdfId);
-
-      if (index === -1) {
-        console.log('añade');
-        // Si el "bookId" no existe en la lista, lo agregamos
-        this.currentMark.userId = this.userService.currentUser!.id;
-        this.currentMark.files.push(event); 
-      } else {
-        console.log('actualiza');
-        
-        // Si el "bookId" ya existe en la lista, lo actualizamos
-        this.currentMark.data[index] = {
-          bookId: this.libraryService.currentPdfId,
-          currentPage: event
-        };
-      }
-    } else {
-        console.log('no existe');
-        
-      this.currentMark = {
-        userId: this.userService.currentUser!.id,
-        data: [{
-          bookId: this.libraryService.currentPdfId,
-          currentPage: event
-        }]
-      }
-    } */
 
     await this.bookMarkService.postBookmark(this.userService.currentUser!.id).
       then(response => console.log(response))
   }
-
+    
+  onWindowResize() {
+    this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
+  }
 }

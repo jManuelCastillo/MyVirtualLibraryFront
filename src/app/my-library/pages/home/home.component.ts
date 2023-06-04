@@ -193,7 +193,7 @@ export class HomeComponent implements OnDestroy, OnInit {
             this.libraryService.currentPdfId = id;
             this.ref = this.dialogService.open(PdfViewerComponent, {
                 header: title,
-                width: '70%',
+                width: (this.isMobile) ? '100%' : '70%',
                 contentStyle: { overflow: 'auto' },
                 baseZIndex: 10000,
                 maximizable: true

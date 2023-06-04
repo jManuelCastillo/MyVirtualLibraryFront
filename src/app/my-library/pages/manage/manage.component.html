@@ -1,7 +1,7 @@
 <app-navbar></app-navbar>
 
 <!-- app stadistics -->
-
+<p-toast [breakpoints]="{'920px': {width: '100%', right: '0', left: '0'}}"></p-toast>
 <div class="surface-ground px-4 py-5 md:px-6 lg:px-8">
     <div class="grid">
         <div class="col-12 md:col-6 lg:col-3">
@@ -174,7 +174,7 @@
                             </div>
                             <div class="field mb-3 col-2"></div>
                             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
-                            <p-toast></p-toast>
+                        
                             <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true skinSimple="true"
                                 class="w-full" chooseLabel="Subir libro" uploadLabel="Refrescar" cancelLabel="Cancelar"
                                 [showUploadButton]=true [multiple]=true accept=".pdf, .epub, .mobi">
@@ -297,7 +297,7 @@
                     <p-button styleClass='p-button-success' class="flex " (click)="showDialog()" icon="pi pi-plus"
                         label="Nuevo usuario"></p-button>
                 </div>
-                <p-toast></p-toast>
+                
                 <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="5">
                     <ng-template pTemplate="header">
                         <tr>
