@@ -20,10 +20,12 @@
                     [menuWidth]="170"></p-slideMenu>
             </ng-container>
             <ng-template #elseAdmin>
-                <button type="button" class="m-4" pButton icon="pi pi-bars" label="Menú" (click)="menu.toggle($event)"></button>
-                <p-slideMenu #menu [model]="items" [popup]="true" [viewportHeight]="185" [menuWidth]="170"></p-slideMenu>
+                <button type="button" class="m-4" pButton icon="pi pi-bars" label="Menú"
+                    (click)="menu.toggle($event)"></button>
+                <p-slideMenu #menu [model]="items" [popup]="true" [viewportHeight]="185"
+                    [menuWidth]="170"></p-slideMenu>
             </ng-template>
-            
+
         </ng-template>
 
         <!-- avatar column -->
@@ -83,7 +85,14 @@
 
 
         </p-sidebar>
-        <p-dialog [(visible)]="visibleLogin" [style]="{width: '70vw', height:'80vh'}">
+
+        <p-dialog *ngIf="!isMobile" [(visible)]="visibleLogin" [style]="{width: '70vw', height:'80vh'}">
+
+            <app-login></app-login>
+
+        </p-dialog>
+
+        <p-dialog *ngIf="isMobile" [(visible)]="visibleLogin" [style]="{width: '100vw', height:'80vh'}">
 
             <app-login></app-login>
 

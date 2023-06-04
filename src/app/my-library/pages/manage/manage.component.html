@@ -174,14 +174,20 @@
                             </div>
                             <div class="field mb-3 col-2"></div>
                             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
-                        
+
                             <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true skinSimple="true"
                                 class="w-full" chooseLabel="Subir libro" uploadLabel="Refrescar" cancelLabel="Cancelar"
                                 [showUploadButton]=true [multiple]=true accept=".pdf, .epub, .mobi">
                                 <ng-template pTemplate="toolbar">
-                                    <div class="py-3">1- Subir libro o arrastrar y soltar. Permite un formato mobi, epub
-                                        o pdf</div>
-                                    <div class="py-3">2- Pulsar en Refrescar</div>
+                                    <div *ngIf="!isMobile">
+                                        <div class="py-3">1- Subir libro o arrastrar y soltar. Permite un formato
+                                            formato mobi, epub o pdf</div>
+                                        <div class="py-3">2- Pulsar en Refrescar</div>
+                                    </div>
+                                    <div *ngIf="isMobile">
+                                        <div class="py-3">1- Subir libro. Permite un formato mobi, epub o pdf</div>
+                                        <div class="py-3">2- Pulsar en Refrescar</div>
+                                    </div>
                                 </ng-template>
                                 <ng-template pTemplate="content">
                                     <ul class="w-full" *ngIf="uploadedFiles.length">
@@ -297,7 +303,7 @@
                     <p-button styleClass='p-button-success' class="flex " (click)="showDialog()" icon="pi pi-plus"
                         label="Nuevo usuario"></p-button>
                 </div>
-                
+
                 <p-table [value]="users" [tableStyle]="{ 'min-width': '50rem' }" [paginator]="true" [rows]="5">
                     <ng-template pTemplate="header">
                         <tr>

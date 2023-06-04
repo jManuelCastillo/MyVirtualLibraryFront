@@ -51,7 +51,7 @@ export class ManageComponent {
   users: UserIt[] = []
   genres: Genre[] = [];
   selectedGenre: Genre[] = [];
-
+  isMobile= false
 
   constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
     private confirmationService: ConfirmationService, private usersService: UserService,
@@ -115,6 +115,8 @@ export class ManageComponent {
 
   async ngOnInit() {
 
+    this.onWindowResize()
+
     this.activeIndex = 0
     this.bookForm.reset({
       titleInput: '',
@@ -176,6 +178,10 @@ export class ManageComponent {
 
 
   }
+
+  onWindowResize() {
+    this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
+}
 
   validFieldBooks(field: string) {
     return this.bookForm.controls[field].errors &&

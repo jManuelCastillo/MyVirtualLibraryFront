@@ -27,6 +27,7 @@ export class UpdateBookComponent {
   filesToDelete: string[] = [];
   genres: Genre[] = [];
   selectedGenre: Genre[] = [];
+  isMobile = false;
 
   constructor(private formBuilder: FormBuilder, private titlecasePipe: TitleCasePipe, private route: ActivatedRoute,
     private messageService: MessageService, private storage: Storage, private libraryService: LibraryService,
@@ -36,6 +37,7 @@ export class UpdateBookComponent {
   }
 
   ngOnInit() {
+    this.onWindowResize();
 
     this.route.params.subscribe(params => {
       this.libraryService.getBookByID(params['id'])
@@ -48,8 +50,8 @@ export class UpdateBookComponent {
             const [day, month, year] = fechaStr.split("/").map(Number);
             date = new Date(year, month - 1, day)
           }
-       
-          
+
+
           this.bookForm.reset({
             titleInput: this.currentBook?.title ?? '',
             authorInput: this.currentBook?.author ?? '',
@@ -165,6 +167,10 @@ export class UpdateBookComponent {
 
   }
 
+  onWindowResize() {
+    this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
+}
+
   validField(field: string) {
     return this.bookForm.controls[field].errors &&
       this.bookForm.controls[field].touched
@@ -202,7 +208,7 @@ export class UpdateBookComponent {
       ISBN: this.bookForm.value.ISBNInput,
       numberOfBooks: this.bookForm.value.booksNumberInput,
       publish_date: `${day}/${month}/${year}`,
-      genre:  this.bookForm.value.genreInput.map(genre => genre.title ),
+      genre: this.bookForm.value.genreInput.map(genre => genre.title),
       files: this.currentBook.files,
       image: this.bookForm.value.imageInput,
       authorImage: this.bookForm.value.imageAuthorInput,

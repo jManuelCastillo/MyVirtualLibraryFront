@@ -107,7 +107,17 @@
             <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true class="field mb-4 col-12 md:col-12"
                 chooseLabel="Añadir libro" uploadLabel="Refrescar" labe cancelLabel="Cancelar" [showUploadButton]=true
                 [multiple]=true accept=".pdf, .epub, .mobi">
-
+                <ng-template pTemplate="toolbar">
+                    <div *ngIf="!isMobile">
+                        <div class="py-3">1- Subir libro o arrastrar y soltar. Permite un formato
+                            formato mobi, epub o pdf</div>
+                        <div class="py-3">2- Pulsar en Refrescar</div>
+                    </div>
+                    <div *ngIf="isMobile">
+                        <div class="py-3">1- Subir libro. Permite un formato mobi, epub o pdf</div>
+                        <div class="py-3">2- Pulsar en Refrescar</div>
+                    </div>
+                </ng-template>
                 <ng-template pTemplate="content">
 
                     <ul *ngIf="uploadedFiles.length">

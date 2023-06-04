@@ -117,7 +117,6 @@ export class HomeComponent implements OnDestroy, OnInit {
     }
 
 
-
     onWindowResize() {
         this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
     }
@@ -130,7 +129,7 @@ export class HomeComponent implements OnDestroy, OnInit {
         let tempUsers: UserIt[] = await this.userService.getAllUsers();
         this.confirmationService.confirm({
             target: event.target,
-            message: '¿Seguro que quieres borrar el libro?',
+            message: '¿Seguro qué quieres borrar el libro?',
             icon: 'pi pi-exclamation-triangle',
             accept: () => {
                 this.libraryService.deleteBook(id);

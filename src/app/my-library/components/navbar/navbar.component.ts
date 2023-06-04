@@ -75,7 +75,7 @@ export class NavbarComponent implements OnInit {
       this.items.push({ label: 'Administrar', icon: 'pi pi-wrench', 'routerLink': "/manage" })
     }
   }
-
+  
   onWindowResize() {
     this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
   }
