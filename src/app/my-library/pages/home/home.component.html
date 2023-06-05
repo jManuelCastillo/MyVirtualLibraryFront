@@ -244,12 +244,12 @@
 
                     <ng-container *ngIf="isFinised(filteredBooks[j].id); else finishedTemplate">
                         <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye"
-                            styleClass="p-button-rounded p-button-warning" title="Quitar de leidos"
+                            styleClass="p-button-rounded p-button-warning" title="Quitar de leído"
                             (onClick)="finisedButton(filteredBooks[j].id, filteredBooks[j].title)"></p-button>
                     </ng-container>
                     <ng-template #finishedTemplate>
                         <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye-slash"
-                            styleClass="p-button-rounded p-button-warning" title="Guardar en leidos"
+                            styleClass="p-button-rounded p-button-warning" title="Guardar en leído"
                             (onClick)="finisedButton(filteredBooks[j].id, filteredBooks[j].title)"></p-button>
                     </ng-template>
                 </div>
