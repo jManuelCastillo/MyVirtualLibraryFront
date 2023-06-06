@@ -118,7 +118,7 @@ export class HomeComponent implements OnDestroy, OnInit {
 
 
     onWindowResize() {
-        this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
+        this.isMobile = window.innerWidth < 768; //Define el ancho máximo para considerar como pantalla móvil
     }
 
     showInfo(id: string) {

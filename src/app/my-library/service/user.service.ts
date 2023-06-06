@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {
   Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
-  signInWithPopup, GoogleAuthProvider, getAuth, deleteUser, User, user,
+  signInWithPopup, GoogleAuthProvider,
 } from '@angular/fire/auth';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LoginComponent } from '../components/login/login.component';
