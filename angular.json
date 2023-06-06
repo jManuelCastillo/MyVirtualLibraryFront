@@ -27,8 +27,7 @@
                 "glob": "**/*",
                 "input": "node_modules/ngx-extended-pdf-viewer/assets/",
                 "output": "/assets/"
-              },
-              {
+              },{
                 "glob": "**/*",
                 "input": "node_modules/ngx-extended-pdf-viewer/bleeding-edge/",
                 "output": "/bleeding-edge/"
@@ -44,13 +43,7 @@
             "scripts": []
           },
           "configurations": {
-            "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.prod.ts",
-                  "with": "/etc/secrets/environment.prod.ts"
-                }
-              ],
+            "production": { 
               "budgets": [
                 {
                   "type": "initial",
