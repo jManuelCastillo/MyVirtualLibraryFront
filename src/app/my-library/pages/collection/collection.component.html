@@ -1,9 +1,8 @@
 <app-navbar></app-navbar>
 
-<div class="w-full flex sm:flex-column xl:flex-column lg:flex-row  md:flex-row justify-content-between xl:justify-content-between align-items-center flex-row flex-wrap p-4">
-    <p class="flex pl-4 pr-6 pt-3 font-bold text-2xl">Fantasía</p> 
-    <span class="flex mr-5"
-        *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success'
+<div class="w-full flex justify-content-between align-items-center flex-row flex-wrap p-4">
+    <p class="flex pl-4 pt-3 font-bold text-2xl pr-6">Fantasía</p> <span class="flex mr-5"
+        *ngIf="currentUser && currentUser.admin">  <p-button styleClass='p-button-success'
             (click)="downloadBookData(fantasyBooks, 'Fantasía')" class="h-1 mr-2 pl-4" icon="pi pi-download"
             label="Descargar libros"></p-button>
         </span>
