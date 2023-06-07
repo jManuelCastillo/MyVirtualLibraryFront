@@ -17,7 +17,7 @@
 <div class="w-full flex justify-content-between align-items-center flex-row flex-wrap px-4">
     <p class="flex pt-3 font-bold text-2xl">Recomendaciones</p> <span class="flex mr-5"
         *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' (click)="modifySuggestions()"
-            class="h-1 mr-2 sm:pl-0 lg:pl-4 xl:pl-4 md:pl-4" icon="pi pi-cog" label="Modificar preferencias"></p-button></span>
+            class="h-1 mr-2 sm:pl-0 lg:pl-4 xl:pl-4 md:pl-4" icon="pi pi-cog" label="Modificar recomendaciones"></p-button></span>
 </div>
 
 <div class="grid w-full md:p-6 lg:p-6 xl:p-6 ">
@@ -419,7 +419,7 @@
 
 <p-dialog *ngIf="!isMobile" [(visible)]="showModifySuggestion" #cd [style]="{width: '100vw', height:'80vh'}">
     <ng-template pTemplate="header">
-        <h3>Modifica las preferencias</h3>
+        <h3>Modifica las recomendaciones</h3>
     </ng-template>
 
     <div>
@@ -605,7 +605,7 @@
 
 <p-dialog *ngIf="isMobile" [(visible)]="showModifySuggestion" #cd [style]="{width: '100vw', height:'80vh'}">
     <ng-template pTemplate="header">
-        <h3>Modifica las preferencias</h3>
+        <h3>Modifica las recomendaciones</h3>
     </ng-template>
 
     <div>
