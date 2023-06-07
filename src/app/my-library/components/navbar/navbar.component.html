@@ -1,19 +1,20 @@
 <div class="flex-wrap align-items-center flex justify-content-between w-full">
     <!-- header title -->
-    <div class="flex px-4 flex-row align-items-center cursor-pointer" routerLink="home">
+    <div class="flex px-4 flex-row align-items-center cursor-pointer " routerLink="home">
         <img src="../../../../favicon.ico" class="pr-3" style="width: 3rem; height: 3rem;" alt="">
         <p class="title"> My Virtual Library </p>
     </div>
     <div
-        class="flex xl:justify-content-end lg:justify-content-end md:justify-content-center justify-content-between">
+        class="flex xl:justify-content-end lg:justify-content-end md:justify-content-center justify-content-between 
+        ">
         <!-- menu -->
-        <div class="flex p-4" *ngIf="!isMobile; else mobileScreen">
+        <div class="flex p-4 " *ngIf="!isMobile; else mobileScreen">
             <p-tabMenu [model]="items" [activeItem]="activeItem" [scrollable]="true"
                 (activeItemChange)="onActiveItemChange($event)"></p-tabMenu>
         </div>
         <ng-template class="flex" #mobileScreen>
             <ng-container *ngIf="!currentUser || !currentUser.admin; else elseAdmin">
-                <button type="button" class="m-4" pButton icon="pi pi-bars" label="Menú"
+                <button type="button" class="my-4 mx-7" pButton icon="pi pi-bars" label="Menú"
                     (click)="menu.toggle($event)"></button>
                 <p-slideMenu #menu [model]="items" [popup]="true" [viewportHeight]="140"
                     [menuWidth]="170"></p-slideMenu>
