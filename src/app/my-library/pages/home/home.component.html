@@ -14,14 +14,14 @@
 
 
 <!-- recomended -->
-<div class="w-full flex justify-content-between align-items-center flex-row flex-wrap p-4">
+<div class="w-full flex justify-content-between align-items-center flex-row flex-wrap px-4">
     <p class="flex pt-3 font-bold text-2xl">Recomendaciones</p> <span class="flex mr-5"
         *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' (click)="modifySuggestions()"
             class="h-1 mr-2 sm:pl-0 lg:pl-4 xl:pl-4 md:pl-4" icon="pi pi-cog" label="Modificar preferencias"></p-button></span>
 </div>
 
 <div class="grid w-full md:p-6 lg:p-6 xl:p-6 ">
-    <div class=" grid col-12 flex  justify-content-center lg:justify-content-between">
+    <div class=" grid col-11 flex  justify-content-center lg:justify-content-between">
 
         <div class="flex column-gap-3 row-gap-2 m-4 max-w-20rem min-w-20rem cursor-pointer"
             *ngFor="let book of suggestionBooks; let i=index" (click)="showInfo(book.id)">
@@ -30,7 +30,7 @@
                 style="min-width: 150px; min-height: 200px; max-width: 150px; max-height: 200px;" src="{{book.image}}"
                 onerror="this.src='../../../../assets/images/photoNotFound.png'" alt="Imagen">
 
-            <div class="flex flex-column font-bold text-gray-900">
+            <div class="flex flex-column w-full">
                 <div class="flex align-items-center font-bold border-round ml-2 text-xl">{{book.title}}</div>
                 <div class="flex align-items-center font-bold ml-2 mt-1 text-color-secondary">{{book.author}}</div>
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.publisher}}</div>
