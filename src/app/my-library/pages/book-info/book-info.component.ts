@@ -38,7 +38,7 @@ export class BookInfoComponent {
   showModifySuggestion: boolean = false;
   showfinishedBookWindow: boolean = false;
   showRemovefinishedBookWindow: boolean = false;
-  isMobile:boolean = false;
+  isMobile: boolean = false;
 
   constructor(private libraryService: LibraryService, private route: ActivatedRoute, private formBuilder: FormBuilder,
     private router: Router, public dialogService: DialogService, private userService: UserService,
@@ -96,7 +96,7 @@ export class BookInfoComponent {
       this.libraryService.currentPdfId = id;
       this.ref = this.dialogService.open(PdfViewerComponent, {
         header: title,
-        width: (this.isMobile)? '100%': '70%',  
+        width: (this.isMobile) ? '100%' : '70%',
         contentStyle: { overflow: 'auto' },
         baseZIndex: 10000,
         maximizable: true

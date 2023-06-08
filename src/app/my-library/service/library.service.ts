@@ -77,8 +77,6 @@ export class LibraryService {
     })
   }
 
-
-
   postBook(tempBook: Book) {
     const bookRef = collection(this.firestore, 'books');
     return addDoc(bookRef, tempBook);

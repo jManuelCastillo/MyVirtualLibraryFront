@@ -176,8 +176,8 @@
                             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
 
                             <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true skinSimple="true"
-                                class="w-full" chooseLabel="Subir libro" uploadLabel="Refrescar" cancelLabel="Cancelar" 
-                                uploadStyleClass="p-button-secondary"  cancelStyleClass="p-button-danger"
+                                class="w-full" chooseLabel=" Subir libro" uploadLabel="Refrescar" cancelLabel="Cancelar" 
+                                 chooseStyleClass="p-button-secondary" uploadStyleClass="p-button-secondary"  cancelStyleClass="p-button-danger"
                                 [showUploadButton]=true [multiple]=true accept=".pdf, .epub, .mobi">
                                 <ng-template pTemplate="toolbar">
                                     <div *ngIf="!isMobile">
@@ -300,8 +300,8 @@
 
                 <div class="w-full flex justify-content-end mb-2">
                     <p-button styleClass='p-button-success' class="flex mr-2" (click)="downloadUsersData(users)"
-                        icon="pi pi-plus" label="Descargar datos de usuario"></p-button>
-                    <p-button styleClass='p-button-success' class="flex " (click)="showDialog()" icon="pi pi-plus"
+                        icon="pi pi-download" label="Descargar datos de usuario"></p-button>
+                    <p-button styleClass='p-button-success' class="flex " (click)="showDialog()" icon="pi pi-download"
                         label="Nuevo usuario"></p-button>
                 </div>
 

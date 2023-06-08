@@ -284,6 +284,11 @@ export class ManageComponent {
       isAvailable: 'false',
       isNotAvailableReason: { name: '', id: '' }
     });
+    await this.libraryService.bookExist(newBook.title).then(Snapshot => Snapshot.forEach((doc) => {
+      newBook.id = doc.id
+    })
+    )
+    await this.libraryService.updateBook(newBook)
   }
 
   onUpload(event: any) {
