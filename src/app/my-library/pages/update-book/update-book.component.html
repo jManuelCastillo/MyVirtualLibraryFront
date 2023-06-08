@@ -9,7 +9,7 @@
         <div class="grid formgrid p-fluid flex ">
 
             <div class="field mb-4 col-12 md:col-6">
-                <label for="titleInput" class="font-medium">Titulo</label>
+                <label for="titleInput" class="font-medium">Titulo*</label>
                 <input id="titleInput" formControlName="titleInput" pinputtext class="p-inputtext p-component p-element"
                     type="text">
                 <p-message severity="error" text="Debe de haber entre 1
@@ -17,7 +17,7 @@
 
             </div>
             <div class="field mb-4 col-12 md:col-6">
-                <label for="authorInput" class="font-medium">Autor</label>
+                <label for="authorInput" class="font-medium">Autor*</label>
                 <input id="authorInput" formControlName="authorInput" pinputtext
                     class="p-inputtext p-component p-element" type="text">
             </div>
@@ -68,7 +68,7 @@
             <div class="surface-100 mb-3 col-12" style="height: 2px;">
             </div>
             <div class="field mb-4 col-12 md:col-6">
-                <label for="publisher" class="font-medium">Editorial</label>
+                <label for="publisher" class="font-medium">Editorial*</label>
                 <input id="publisher" formControlName="publisherInput" type="text" pinputtext
                     class="p-inputtext p-component p-element">
             </div>
@@ -105,7 +105,7 @@
 
 
             <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true class="field mb-4 col-12 md:col-12"
-                chooseLabel="Añadir libro" uploadLabel="Refrescar" labe cancelLabel="Cancelar" [showUploadButton]=true
+                chooseLabel="Subir libro" uploadStyleClass="p-button-secondary"  cancelStyleClass="p-button-danger" uploadLabel="Refrescar" labe cancelLabel="Cancelar" [showUploadButton]=true
                 [multiple]=true accept=".pdf, .epub, .mobi">
                 <ng-template pTemplate="toolbar">
                     <div *ngIf="!isMobile">

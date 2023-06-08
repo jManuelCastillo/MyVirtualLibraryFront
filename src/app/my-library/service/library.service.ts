@@ -150,9 +150,9 @@ export class LibraryService {
     return snapshot.data().count
   }
 
-  async bookExist(title:string, author: string){
+  async bookExist(title:string){
      const bookRef = collection(this.firestore, "books");
-    return await getDocs(query(bookRef,  where("title", "==", title), where("author", "==", author)));
+    return await getDocs(query(bookRef,  where("title", "==", title)));
   }
 
   async getNumberOfFinisedBooks() {

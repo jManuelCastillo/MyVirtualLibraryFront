@@ -51,7 +51,7 @@ export class ManageComponent {
   users: UserIt[] = []
   genres: Genre[] = [];
   selectedGenre: Genre[] = [];
-  isMobile= false
+  isMobile = false
 
   constructor(private libraryService: LibraryService, private formBuilder: FormBuilder,
     private confirmationService: ConfirmationService, private usersService: UserService,
@@ -181,7 +181,7 @@ export class ManageComponent {
 
   onWindowResize() {
     this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
-}
+  }
 
   validFieldBooks(field: string) {
     return this.bookForm.controls[field].errors &&
@@ -200,7 +200,7 @@ export class ManageComponent {
   async saveBook() {
     let tempbook;
 
-    await this.libraryService.bookExist(this.bookForm.value.titleInput, this.bookForm.value.authorInput).then(Snapshot => Snapshot.forEach((doc) => {
+    await this.libraryService.bookExist(this.bookForm.value.titleInput).then(Snapshot => Snapshot.forEach((doc) => {
       tempbook = doc.data() as Book
       tempbook.id = doc.id
     })
@@ -368,7 +368,7 @@ export class ManageComponent {
         this.users.splice(index!, 1);
         this.usersService.deleteUser(idUser)
 
-        this.messageService.add({ severity: 'info', summary: 'Confirmed', detail: 'Has borrado este usuario correctamente =(' });
+        this.messageService.add({ severity: 'info', summary: 'Éxito', detail: 'Has borrado este usuario correctamente =(' });
       },
       reject: () => {
         this.messageService.add({ severity: 'warn', summary: 'Cancelado', detail: 'Has cancelado la acción' });

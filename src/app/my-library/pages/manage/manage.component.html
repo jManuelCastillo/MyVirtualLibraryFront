@@ -176,7 +176,8 @@
                             <div class="surface-100 mb-3 col-12" style="height: 2px;"></div>
 
                             <p-fileUpload (uploadHandler)="onUpload($event)" [customUpload]=true skinSimple="true"
-                                class="w-full" chooseLabel="Subir libro" uploadLabel="Refrescar" cancelLabel="Cancelar"
+                                class="w-full" chooseLabel="Subir libro" uploadLabel="Refrescar" cancelLabel="Cancelar" 
+                                uploadStyleClass="p-button-secondary"  cancelStyleClass="p-button-danger"
                                 [showUploadButton]=true [multiple]=true accept=".pdf, .epub, .mobi">
                                 <ng-template pTemplate="toolbar">
                                     <div *ngIf="!isMobile">

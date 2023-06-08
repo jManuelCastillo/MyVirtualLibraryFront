@@ -28,6 +28,7 @@ export class UpdateBookComponent {
   genres: Genre[] = [];
   selectedGenre: Genre[] = [];
   isMobile = false;
+  
 
   constructor(private formBuilder: FormBuilder, private titlecasePipe: TitleCasePipe, private route: ActivatedRoute,
     private messageService: MessageService, private storage: Storage, private libraryService: LibraryService,
@@ -177,13 +178,27 @@ export class UpdateBookComponent {
   }
 
   async saveBook() {
-
-    if (this.bookForm.invalid || ((this.uploadedFiles.length == 0 && this.currentBook.files.length == 0) && this.bookForm.value.physBooknput == 'false')) {
+    let tempbook;
+    await this.libraryService.bookExist(this.bookForm.value.titleInput).then(Snapshot => Snapshot.forEach((doc) => {
+      tempbook = doc.data() as Book
+      tempbook.id = doc.id
+      console.log(tempbook);
+      
+    })
+    )
+    
+    if (this.bookForm.invalid || ((this.uploadedFiles.length == 0 && this.currentBook.files.length == 0) && this.bookForm.value.physBooknput == 'false') ||
+    tempbook !== undefined) {
       this.bookForm.markAllAsTouched();
 
       if ((this.uploadedFiles.length == 0 && this.currentBook.files.length == 0) && this.bookForm.value.physBooknput == 'false') {
         this.messageService.add({ severity: 'warn', summary: 'Debe haber almenos un libro digital o que esté en físico', detail: '' });
       }
+
+      if (tempbook !== undefined) {
+        this.messageService.add({ severity: 'warn', summary: 'Este libro ya existe', detail: '' });
+      }
+
       return;
     }
 
