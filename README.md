@@ -1,8 +1,6 @@
 <h1 align="center">Hola 👋, Soy Jose Manuel Castillo Gómez</h1>
 <h3 align="center">📚 Os presento my proyecto final de mi grado superior</h3>
 
-- 🔭 Actualmente estoy trabajando en  **FERNANTICKET**
-
 - 🌱 Estoy aprendiendo **Angular y Firebase**
 
 - 📫 Como contactar conmigo: **josemanuel6201@hotmail.com**
@@ -190,7 +188,7 @@ En esta opción nos aparecerá un botón encima de cada género que nos permitir
 
 Al pulsarlo se nos abrirá un pdf y dentro dicha información.
 
-[![38.jpg](https://i.postimg.cc/4yByQtZH/38.jpg)](https://postimg.cc/vxxGQ44G)
+[![38.jpg](https://i.postimg.cc/9MSJFxrJ/38.jpg)](https://postimg.cc/1nGpvr0q)
 
 ## Administrar.
 Nada más entrar en la página de administrar encontraremos más estadísticas de la página. 
