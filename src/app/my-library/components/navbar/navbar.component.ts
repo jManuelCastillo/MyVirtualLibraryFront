@@ -52,10 +52,25 @@ export class NavbarComponent implements OnInit {
     this.setItems()
 
     this.items2 = [
-      { title: 'Favoritos', icon: 'pi pi-star-fill', command: (event) => this.sidebarVisible1 = !this.sidebarVisible1 },
-      { title: 'Leidos', icon: 'pi pi-eye', command: (event) => this.sidebarVisible2 = !this.sidebarVisible2 },
       {
-        title: 'Cerrar Sesión', icon: 'pi pi-power-off', command: (event) => {
+        tooltipOptions: {
+          tooltipLabel: "Favoritos",
+          tooltipPosition: "bottom"
+        },
+        icon: 'pi pi-star-fill', command: (event) => this.sidebarVisible1 = !this.sidebarVisible1
+      },
+      {
+        tooltipOptions: {
+          tooltipLabel: "Leídos",
+          tooltipPosition: "bottom"
+        }, icon: 'pi pi-eye', command: (event) => this.sidebarVisible2 = !this.sidebarVisible2
+      },
+      {
+        tooltipOptions: {
+          tooltipLabel: "Cerrar sesión",
+          tooltipPosition: "bottom"
+        }
+        , icon: 'pi pi-power-off', command: (event) => {
           this.logOut()
           this.router.navigate(['/home']);
         }
@@ -75,7 +90,7 @@ export class NavbarComponent implements OnInit {
       this.items.push({ label: 'Administrar', icon: 'pi pi-wrench', 'routerLink': "/manage" })
     }
   }
-  
+
   onWindowResize() {
     this.isMobile = window.innerWidth < 768; // Define el ancho máximo para considerar como pantalla móvil
   }

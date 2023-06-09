@@ -56,14 +56,14 @@
                                         <a (click)="withdrawABook(currentBook)" class="cursor-pointer">
                                             <img style="width: 3rem; height: 3rem;"
                                                 src="../../../../assets/images/utils/iconapplication/iconGetBook.svg"
-                                                alt="get book icon">
+                                                alt="get book icon" pTooltip="Retirar libro">
                                         </a>
                                     </ng-container>
                                     <ng-template #physicalTemplate>
                                         <a (click)="withdrawABook(currentBook)" class="cursor-pointer">
                                             <img style="width: 3rem; height: 3rem;"
                                                 src="../../../../assets/images/utils/iconapplication/iconReturnBook.svg"
-                                                alt="get book icon">
+                                                alt="get book icon" pTooltip="Devolver libro">
                                         </a>
                                     </ng-template>
                                 </ng-container>
@@ -72,7 +72,7 @@
                                         <img style="width: 3rem; height: 3rem;" [ariaDisabled]="true"
                                             src="../../../../assets/images/utils/iconapplication/iconNotAvailableBook.svg"
                                             alt="get book icon"
-                                            title="Este libro lo tiene {{currentBook.isNotAvailableReason!.name}}">
+                                            pTooltip="Este libro lo tiene {{currentBook.isNotAvailableReason!.name}}">
                                     </a>
                                 </ng-template>
                             </div>
@@ -128,23 +128,23 @@
 
                 <ng-container *ngIf="isFav(currentBook.id); else favTemplate">
                     <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star-fill"
-                        styleClass="p-button-rounded p-button-warning" title="Quitar de favoritos"
+                        styleClass="p-button-rounded p-button-warning" pTooltip="Quitar de favoritos"
                         (onClick)="favButton(currentBook.id, currentBook.title)"></p-button>
                 </ng-container>
                 <ng-template #favTemplate>
                     <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-star"
-                        styleClass="p-button-rounded p-button-warning" title="Guardar en favoritos"
+                        styleClass="p-button-rounded p-button-warning" pTooltip="Guardar en favoritos"
                         (onClick)="favButton(currentBook.id, currentBook.title)"></p-button>
                 </ng-template>
 
                 <ng-container *ngIf="isFinised(currentBook.id); else finishedTemplate">
                     <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye"
-                        styleClass="p-button-rounded p-button-warning" title="Quitar de leídos"
+                        styleClass="p-button-rounded p-button-warning" pTooltip="Quitar de leídos"
                         (onClick)="finisedButton(currentBook.id, currentBook.title)"></p-button>
                 </ng-container>
                 <ng-template #finishedTemplate>
                     <p-button class="flex justify-content-end pr-2 pt-2" icon="pi pi-eye-slash"
-                        styleClass="p-button-rounded p-button-warning" title="Guardar en leídos"
+                        styleClass="p-button-rounded p-button-warning" pTooltip="Guardar en leídos"
                         (onClick)="finisedButton(currentBook.id, currentBook.title)"></p-button>
                 </ng-template>
             </div>

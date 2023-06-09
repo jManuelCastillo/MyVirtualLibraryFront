@@ -4,8 +4,7 @@
         <img src="../../../../favicon.ico" class="pr-3" style="width: 3rem; height: 3rem;" alt="">
         <p class="title"> My Virtual Library </p>
     </div>
-    <div
-        class="flex xl:justify-content-end lg:justify-content-end md:justify-content-center justify-content-between 
+    <div class="flex xl:justify-content-end lg:justify-content-end md:justify-content-center justify-content-between 
         ">
         <!-- menu -->
         <div class="flex p-4 " *ngIf="!isMobile; else mobileScreen">
@@ -50,7 +49,6 @@
         </div>
         <p-sidebar [(visible)]="sidebarVisible1" position="right">
             <h2>Libros Favoritos</h2>
-
             <ng-container *ngIf="currentUser && currentUser.favouritesBooks && 
                 currentUser.favouritesBooks.length != 0; else NonFavorites">
                 <div *ngFor="let book of currentUser.favouritesBooks">
