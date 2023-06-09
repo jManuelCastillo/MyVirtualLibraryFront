@@ -17,13 +17,15 @@
 <div class="w-full flex justify-content-between align-items-center flex-row flex-wrap px-4">
     <p class="flex pt-3 font-bold text-2xl">Recomendaciones</p> <span class="flex mr-5"
         *ngIf="currentUser && currentUser.admin"> <p-button styleClass='p-button-success' (click)="modifySuggestions()"
-            class="h-1 mr-2 sm:pl-0 lg:pl-4 xl:pl-4 md:pl-4" icon="pi pi-cog" label="Modificar recomendaciones"></p-button></span>
+            class="h-1 mr-2 sm:pl-0 lg:pl-4 xl:pl-4 md:pl-4" icon="pi pi-cog"
+            label="Modificar recomendaciones"></p-button></span>
 </div>
 
 <div class="grid w-full md:p-6 lg:p-6 xl:p-6 ">
     <div class=" grid col-11 flex  justify-content-center lg:justify-content-between">
 
-        <div class="flex column-gap-3 row-gap-2 m-4 max-w-20rem min-w-20rem cursor-pointer"
+        <div class="flex column-gap-3 row-gap-2 m-4 max-w-20rem min-w-20rem cursor-pointer
+        transition-colors transition-duration-1000 hover:bg-cyan-100 text-black border-round-md"
             *ngFor="let book of suggestionBooks; let i=index" (click)="showInfo(book.id)">
 
             <img class="flex bg-cover bg-center flex-wrap mx-1"
@@ -35,7 +37,7 @@
                 <div class="flex align-items-center font-bold ml-2 mt-1 text-color-secondary">{{book.author}}</div>
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.publisher}}</div>
                 <div class="flex align-items-center font-light ml-2 mt-1">{{book.pages}} páginas</div>
-            </div>  
+            </div>
         </div>
     </div>
 
@@ -110,7 +112,8 @@
 
         <div
             class="bg-white grid lg:col-offset-2 lg:col-8 xl:col-offset-2 xl:col-8 ml:col-offset-1 ml:col-9 sm:col-offset-0 sm:col-12">
-            <div *ngIf="!isMobile" (click)="showInfo(book.id)">
+            <div *ngIf="!isMobile" (click)="showInfo(book.id)"
+                class="transition-colors transition-duration-1000 hover:bg-cyan-100 text-black hover:text-white border-round-md">
                 <!-- pc image -->
                 <img class="flex bg-cover bg-center flex-wrap my-5 mx-1 cursor-pointer"
                     style="width: 150px; height: 200px;" src="{{filteredBooks[j].image}}"
@@ -137,14 +140,17 @@
                             <span class="flex justify-content-start align-items-start flex-row"
                                 *ngFor="let file of filteredBooks[j].files">
 
-                                <a *ngIf="file.format != 'pdf'" (click)="uploadBook(file.route)" class="cursor-pointer"
-                                    download>
+                                <a *ngIf="file.format != 'pdf'" (click)="uploadBook(file.route)"
+                                    class="cursor-pointer pt-1
+                                transition-colors transition-duration-1000 hover:bg-blue-500 text-black hover:text-white border-round-md" download>
                                     <img style="width: 3rem; height: 3rem;"
                                         src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
                                         alt="{{file.format}}  icon">
                                 </a>
                                 <a (click)="showPdf(file.route, filteredBooks[j].title,filteredBooks[j].id)"
-                                    *ngIf="file.format == 'pdf'" class="cursor-pointer">
+                                    *ngIf="file.format == 'pdf'"
+                                    class="cursor-pointer pt-1
+                                    transition-colors transition-duration-1000 hover:bg-blue-500 text-black hover:text-white border-round-md">
                                     <img style="width: 3rem; height: 3rem;"
                                         src="../../../../assets/images/utils/iconapplication/icon{{file.format}}.svg"
                                         alt="{{file.format}} icon">
@@ -155,27 +161,39 @@
                                     <ng-container
                                         *ngIf="filteredBooks[j].isNotAvailableReason!.id == currentUser.id || filteredBooks[j].isAvailable; else bookIsTaken">
                                         <ng-container *ngIf="filteredBooks[j].isAvailable; else physicalTemplate">
-                                            <a (click)="withdrawABook(filteredBooks[j])" class="cursor-pointer">
-                                                <img style="width: 3rem; height: 3rem;"
-                                                    src="../../../../assets/images/utils/iconapplication/iconGetBook.svg"
-                                                    alt="get book icon">
-                                            </a>
+                                            <div
+                                                class="cursor-pointer pt-1
+                                            transition-colors transition-duration-1000 hover:bg-blue-500 text-black hover:text-white border-round-md">
+                                                <a (click)="withdrawABook(filteredBooks[j])">
+                                                    <img style="width: 3rem; height: 3rem;"
+                                                        class="cursor-pointer
+                                                transition-colors transition-duration-1000 hover:bg-blue-500 text-black hover:text-white border-round-md"
+                                                        src="../../../../assets/images/utils/iconapplication/iconGetBook.svg"
+                                                        alt="get book icon">
+                                                </a>
+                                            </div>
                                         </ng-container>
                                         <ng-template #physicalTemplate>
-                                            <a (click)="withdrawABook(filteredBooks[j])" class="cursor-pointer">
-                                                <img style="width: 3rem; height: 3rem;"
-                                                    src="../../../../assets/images/utils/iconapplication/iconReturnBook.svg"
-                                                    alt="get book icon">
-                                            </a>
+                                            <div
+                                                class="cursor-pointer pt-1
+                                            transition-colors transition-duration-1000 hover:bg-blue-500 text-black hover:text-white border-round-md">
+                                                <a (click)="withdrawABook(filteredBooks[j])">
+                                                    <img style="width: 3rem; height: 3rem;"
+                                                        src="../../../../assets/images/utils/iconapplication/iconReturnBook.svg"
+                                                        alt="get book icon">
+                                                </a>
+                                            </div>
                                         </ng-template>
                                     </ng-container>
                                     <ng-template #bookIsTaken>
-                                        <a>
-                                            <img style="width: 3rem; height: 3rem;" [ariaDisabled]="true"
-                                                src="../../../../assets/images/utils/iconapplication/iconNotAvailableBook.svg"
-                                                alt="get book icon"
-                                                title="Este libro lo tiene {{filteredBooks[j].isNotAvailableReason!.name}}">
-                                        </a>
+                                        <div class="pt-1">
+                                            <a>
+                                                <img style="width: 3rem; height: 3rem;" [ariaDisabled]="true"
+                                                    src="../../../../assets/images/utils/iconapplication/iconNotAvailableBook.svg"
+                                                    alt="get book icon"
+                                                    title="Este libro lo tiene {{filteredBooks[j].isNotAvailableReason!.name}}">
+                                            </a>
+                                        </div>
                                     </ng-template>
                                 </div>
                             </span>
