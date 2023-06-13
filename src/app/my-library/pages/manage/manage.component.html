@@ -162,6 +162,7 @@
                                 <textarea id="descriptionInput" pInputTextarea [autoResize]="true"
                                     formControlName="descriptionInput">
                                     </textarea>
+                                    <p-message severity="error" text="No puedes poner mas de 1500 caracteres" *ngIf="validFieldBooks('descriptionInput')"></p-message>
                             </div>
                             <div class="field mb-3 col-4">
                                 <label class="pb-3" for="descriptionInput" class="font-medium">Libro en físico</label>

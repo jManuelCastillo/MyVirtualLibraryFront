@@ -84,7 +84,7 @@ export class ManageComponent {
     imageAuthorInput: [],
     publisherInput: [, [Validators.required, Validators.maxLength(50)]],
     ISBNInput: [, [Validators.maxLength(50)]],
-    descriptionInput: [, [Validators.minLength(0), Validators.maxLength(200)]],
+    descriptionInput: [, [Validators.minLength(0), Validators.maxLength(1500)]],
     physBooknput: ['false']
   })
 
@@ -321,7 +321,7 @@ export class ManageComponent {
 
     this.bookForm.reset({
       titleInput: this.foundBooks?.data?.title ?? '',
-      authorInput: this.foundBooks?.data?.authors[0]?.name ?? '',
+      authorInput: (this.foundBooks && this.foundBooks.data && this.foundBooks.data.authors && this.foundBooks.data.authors[0])?   this.foundBooks?.data?.authors[0]?.name : '',
       genreInput: [],
       booksNumberInput: 1,
       publishDateInput: new Date(this.foundBooks?.data?.publish_date ?? ''),
@@ -351,7 +351,6 @@ export class ManageComponent {
       this.libraryService.getBookFromApi(this.titlecasePipe.transform(this.inputSearch.value)).subscribe((response) => {
         dataBook = Object.values(response)[0]
         this.foundBooks.data = dataBook!
-        console.log(this.foundBooks.data === undefined && this.inputSearch.value !== '');
 
       })
     } else {
